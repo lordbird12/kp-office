@@ -1,0 +1,109 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <!-- Loader -->
+    <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+    </div>
+    <div class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 flemin-w-0">
+            <!-- Title -->
+            <div class="flex flex-row mt-2 justify-between">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    รายการเงินเดือน
+                </h2>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="grid gap-4 sm:grid-cols-1  mx-10 mt-10 ">
+        <form class="bg-card rounded-lg md:shadow px-8 pt-6 pb-8 mb-4 flex flex-col my-2"
+            [formGroup]="form">
+            <div class="-mx-3 md:flex mb-6">
+                <div class="md:w-1/5 px-3 mb-6 md:mb-0">
+                    <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                        <mat-label class="text-lg font-bold">ปี</mat-label>
+                        <mat-select [formControlName]="'year'" (selectionChange)="changeData()">
+                            <mat-option [value]="''">
+                                <span>เลือกปี</span>
+                            </mat-option>
+                            <mat-option *ngFor="let item of year" [value]="item">
+                                {{item}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="md:w-1/5 px-3 mb-6 md:mb-0">
+                    <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                        <mat-label class="text-lg font-bold">เดือน</mat-label>
+                        <mat-select [formControlName]="'month'" (selectionChange)="changeData()">
+                            <mat-option [value]="''">
+                                <span>เลือกเดือน</span>
+                            </mat-option>
+                            <mat-option *ngFor="let item of month" [value]="item.code">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="flex flex-row mt-2 justify-end">
+                <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="createPayroll()">
+                       สร้างเงินเดือน
+                    </button>
+                    <button class="px-6 ml-3" mat-flat-button [color]="'warn'" (click)="clear()">
+                        ยกเลิก
+                    </button>
+                </div>
+            </div>  
+        </form>
+    </div>
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg m-10  bg-white">
+        <div class="flex flex-col flex-auto p-5  sm:overflow-y-auto">
+            <table datatable [dtOptions]="dtOptions" class="table row-border hover w-full bg-white whitespace-nowrap">
+                <thead>
+                    <tr>
+                        <th class="w-[100px]">จัดการ</th>
+                        <th class="w-[10px]">ลำดับ</th>
+                        <th>ชื่อ - นามสกุล</th>
+                        <th>เงินได้</th>
+                        <th>เงินหัก</th>
+                        <th>เงินหักมาสาย</th>
+                        <th>เงินโอที</th>
+                        <th>เงินเดือน</th>
+                        <th>รวมทั้งหมด</th>
+                        <th>สร้างโดย</th>
+                        <th>วันที่สร้าง</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="dataRow?.length != 0">
+                    <tr *ngFor="let item of dataRow; let i = index">
+                        <td>
+                            <button mat-icon-button color="accent" (click)="pdf(item.user_no)">
+                                <mat-icon>print</mat-icon>
+                            </button>
+                        </td>
+                        <td>{{ pages.begin + (i + 1) }}</td>
+                        <td>{{ item.user_no ? item.user_no : "-" }}</td>
+                        <td>{{ item.total_income ? item.total_income : "-" }}</td>
+                        <td>{{ item.total_deduct ? item.total_deduct : "-" }}</td>
+                        <td>{{ item.total_late_deduct ? item.total_late_deduct : "-" }}</td>
+                        <td>{{ item.total_ot ? item.total_ot : "-" }}</td>
+                        <td>{{ item.salary ? item.salary : "-" }}</td>
+                        <td>{{ item.total_summary ? item.total_summary : "-" }}</td>
+                        <td>{{ item.create_by ? item.create_by : "-" }}</td>
+                        <td>{{ item.created_at !== null ? (item.created_at | date : "dd-MM-yy, HH:mm"): "-"}}</td>
+                    </tr>
+                </tbody>
+                <tbody *ngIf="dataRow?.length == 0">
+                    <tr>
+                        <td colspan="11" class="no-data-available text-center">ไม่มีข้อมูล !</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

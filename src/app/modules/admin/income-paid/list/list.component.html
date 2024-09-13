@@ -1,0 +1,154 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <!-- Loader -->
+    <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+    </div>
+    <div class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 flemin-w-0">
+            <!-- Title -->
+            <div class="flex flex-row mt-2 justify-between">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    รายการเงินได้ - เงินหัก
+                </h2>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="grid gap-4 sm:grid-cols-1 md:grid-cols-2 mx-10 mt-10 ">
+        <form class="bg-card rounded-lg md:shadow px-8 pt-6 pb-8 mb-4 flex flex-col my-2 col-span-2"
+            [formGroup]="form">
+            <div class="-mx-3 md:flex mb-6">
+                <div class="md:w-1/5 px-3 mb-6 md:mb-0">
+                    <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                        <mat-label class="text-lg font-bold">พนักงาน</mat-label>
+                        <mat-select [formControlName]="'user_id'">
+                            <mat-option [value]="''">
+                                <span>เลือกพนักงาน</span>
+                            </mat-option>
+                            <mat-option *ngFor="let item of userData" [value]="item.id">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="md:w-1/5 px-3 mb-6 md:mb-0">
+                    <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                        <mat-label class="text-lg font-bold">ปี</mat-label>
+                        <mat-select [formControlName]="'year'">
+                            <mat-option [value]="''">
+                                <span>เลือกปี</span>
+                            </mat-option>
+                            <mat-option *ngFor="let item of year" [value]="item">
+                                {{item}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="md:w-1/5 px-3 mb-6 md:mb-0">
+                    <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                        <mat-label class="text-lg font-bold">เดือน</mat-label>
+                        <mat-select [formControlName]="'month'">
+                            <mat-option [value]="''">
+                                <span>เลือกเดือน</span>
+                            </mat-option>
+                            <mat-option *ngFor="let item of month" [value]="item.code">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="flex flex-row mt-2 justify-end">
+                <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="getData()">
+                        <mat-icon>search</mat-icon>
+                        &nbsp;
+                       ค้นหา
+                    </button>
+                    <button class="px-6 ml-3" mat-flat-button [color]="'warn'" (click)="clear()">
+                        ยกเลิก
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-1 md:grid-cols-2 mx-10 mt-4 ">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg  bg-white">
+            <div class="flex flex-row mt-2 justify-between px-5 pt-5">
+                <span class="text-lg md:text-lg font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    รายการเงินได้
+                </span>
+                <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="addElement('INCOME')">
+                    <mat-icon svgIcon="heroicons_outline:plus"></mat-icon>
+                    &nbsp;
+                   เพิ่มเงินได้
+                </button>
+            </div>
+            <div class="flex flex-col flex-auto p-5 pt-0 sm:overflow-y-auto overflow-x-auto">
+                <table class="rounded-lg m-5 w-full mx-auto bg-gray-200 text-gray-800 whitespace-nowrap">
+                    <thead class="border-b font-medium dark:border-neutral-500 ">
+                        <tr>
+                            <th class="w-[10px] h-[50px]">จัดการ</th>
+                            <th class="w-[10px]  border-2">ลำดับ</th>
+                            <th class="w-[100px] border-2">เงินได้</th>
+                            <th class="w-[200px]  border-2">จำนวนเงิน</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="incomePaid?.length != 0">
+                        <tr *ngFor="let item of incomePaid; let i = index" class="bg-white">
+                            <td class="text-center">
+                                <button mat-icon-button color="accent" (click)="delete(item.id, 'income_paid')">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </td>
+                            <td class="text-center h-[50px]">{{i + 1 }}</td>
+                            <td class="text-center">{{ item.income ? item.income?.name : '-' }}</td>
+                            <td class="text-center">{{ item.paid  ? item.paid : '-' }}</td>
+                       </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg  bg-white">
+            <div class="flex flex-row mt-2 justify-between px-5 pt-5">
+                <span class="text-lg md:text-lg font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    รายการเงินหัก
+                </span>
+                <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="addElement('DEDUCT')">
+                    <mat-icon svgIcon="heroicons_outline:plus"></mat-icon>
+                    &nbsp;
+                   เพิ่มเงินหัก
+                </button>
+            </div>
+            <div class="flex flex-col flex-auto p-5 pt-0 sm:overflow-y-auto overflow-x-auto">
+                <table class="rounded-lg m-5 w-full mx-auto bg-gray-200 text-gray-800 whitespace-nowrap">
+                    <thead class="border-b font-medium dark:border-neutral-500 ">
+                        <tr>
+                            <th class="w-[10px] h-[50px]">จัดการ</th>
+                            <th class="w-[10px]  border-2">ลำดับ</th>
+                            <th class="w-[100px] border-2">เงินหัก</th>
+                            <th class="w-[200px]  border-2">จำนวนเงิน</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="deductPaid?.length != 0">
+                        <tr *ngFor="let item of deductPaid; let i = index" class="bg-white">
+                            <td class="text-center">
+                                <button mat-icon-button color="accent" (click)="delete(item.id , 'deduct_paid')">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </td>
+                            <td class="text-center h-[50px]">{{i + 1 }}</td>
+                            <td class="text-center">{{ item.deduct ? item.deduct?.name : '-' }}</td>
+                            <td class="text-center">{{ item.paid  ? item.paid : '-' }}</td>
+                       </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+   
+
+</div>

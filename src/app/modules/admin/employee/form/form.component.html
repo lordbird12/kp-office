@@ -1,0 +1,216 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <div
+        class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 flemin-w-0">
+            <!-- Title -->
+            <div class="flex flex-row mt-2 justify-between" *ngIf="!this.Id">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    เพิ่มพนักงาน
+                </h2>
+            </div>
+
+            <div class="flex flex-row mt-2 justify-between" *ngIf="this.Id">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    แก้ไขข้อมูลพนักงาน
+                </h2>
+            </div>
+            <!-- <div class="mt-2">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    Fields
+                </h2>
+            </div> -->
+        </div>
+    </div>
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+        <div class="grid gap-4 w-full sm:grid-cols-1 md:grid-cols-2">
+            <form class="bg-card rounded-2xl md:shadow overflow-hidden px-8 pt-6 pb-8 mb-4 flex flex-col my-2"
+                [formGroup]="addForm">
+                <span
+                    class="text-xl md:text-xl font-bold tracking-tight leading-7 sm:leading-10 truncate text-gray-500">
+                    ข้อมูลพนักงาน
+                </span>
+                <div class="-mx-3 md:flex mb-6">
+                    <div class="md:w-full px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>สิทธิ์การใช้งาน</mat-label>
+                            <mat-select [formControlName]="'permission_id'">
+                                <mat-option *ngFor="let item of this.permissions;" value="{{item.id}}">
+                                    {{item.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="-mx-3 md:flex mb-6">
+
+                    <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>ตำแหน่ง</mat-label>
+                            <mat-select [formControlName]="'position_id'">
+                                <mat-option *ngFor="let item of this.positions;" [value]="item.id">
+                                    {{item.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>แผนก</mat-label>
+                            <mat-select [formControlName]="'department_id'">
+                                <mat-option *ngFor="let item of this.departments;" [value]="item.id">
+                                    {{item.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="-mx-3 md:flex mb-6">
+                    <div class="md:w-full px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>เบอร์ติดต่อ</mat-label>
+                            <input matInput [placeholder]="'กรอกเบอร์ติดต่อ'" formControlName="phone">
+                            <!-- <mat-hint>This is a hint text</mat-hint> -->
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="-mx-3 md:flex mb-6">
+                    <div class="md:w-full px-3 mb-6 md:mb-0">
+
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>อีเมล</mat-label>
+                            <input matInput [placeholder]="'กรอกอีเมล'" formControlName="email">
+                            <!-- <mat-hint>This is a hint text</mat-hint> -->
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="-mx-3 md:flex mb-6">
+                    <div class="md:w-1/2 px-3" *ngIf="this.url_image">
+                        <img class="object-cover h-44 w-auto border-2 border-gray-50 rounded-sm"
+                            src="{{this.url_image}}">
+                    </div>
+                    <div class="md:w-full px-3">
+                        <ngx-dropzone (change)="onSelect($event)">
+                            <ngx-dropzone-label>เลือกรูปโปรไฟล์</ngx-dropzone-label>
+                            <div *ngFor="let f of files">
+                                <ngx-dropzone-image-preview [file]="f" [removable]="true"
+                                    (removed)="onRemove(f)"></ngx-dropzone-image-preview>
+                            </div>
+                        </ngx-dropzone>
+                    </div>
+                </div>
+            </form>
+            <form class="bg-card rounded-2xl md:shadow overflow-hidden px-8 pt-6 pb-8 mb-4 flex flex-col my-2"
+                [formGroup]="addForm2">
+                <span
+                    class="text-xl md:text-xl font-bold tracking-tight leading-7 sm:leading-10 truncate text-gray-500">
+                    ข้อมูลการใช้งาน
+                </span>
+                <div class="-mx-3 md:flex mb-6">
+                    <div class="md:w-1/3 px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>รหัสพนักงาน</mat-label>
+                            <input matInput [placeholder]="''" formControlName="user_no">
+                        </mat-form-field>
+                    </div>
+                    <div class="md:w-2/3 px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>ชื่อ</mat-label>
+                            <input matInput [placeholder]="''" formControlName="name">
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="-mx-3 md:flex mb-6">
+                    <div class="md:w-full px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>Username</mat-label>
+                            <input matInput [placeholder]="''" formControlName="username">
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="-mx-3 md:flex mb-6">
+                    <div class="md:w-full px-3 mb-6 md:mb-0">
+                        <mat-form-field class="w-full" [ngClass]="formFieldHelpers">
+                            <mat-label>Password</mat-label>
+                            <input id="password" matInput type="password" [formControlName]="'password'" #passwordField>
+                            <button mat-icon-button type="button"
+                                (click)="passwordField.type === 'password' ? passwordField.type = 'text' : passwordField.type = 'password'"
+                                matSuffix>
+                                <mat-icon class="icon-size-5" *ngIf="passwordField.type === 'password'"
+                                    [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                                <mat-icon class="icon-size-5" *ngIf="passwordField.type === 'text'"
+                                    [svgIcon]="'heroicons_solid:eye-slash'"></mat-icon>
+                            </button>
+                            <mat-error>
+                                Password is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="-mx-3 md:flex mb-6">
+                    <div class="md:w-full px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>OT/ชั่วโมง</mat-label>
+                            <input matInput [placeholder]="'โอที'" [formControlName]="'ot'">
+                        </mat-form-field>
+                    </div>
+                    <div class="md:w-full px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>เงินเดือน</mat-label>
+                            <input matInput [placeholder]="'เงินเดือน'" [formControlName]="'salary'">
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div
+                    class="flex items-end justify-end text-3xl md:text-4xl md:mt-36 font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    <button class="px-6 ml-3" mat-flat-button (click)="onSaveClick()" [color]="'primary'">
+                        บันทึก
+                    </button>
+                    <button class="px-6 ml-3" mat-flat-button [color]="'warn'">
+                        ยกเลิก
+                    </button>
+                </div>
+            </form>
+            <!-- <div class="bg-card rounded-2xl md:shadow overflow-hidden px-8 pt-6 pb-8 mb-4 flex flex-col my-2">
+                <div class="flex flex-col flex-auto p-5  sm:overflow-y-auto">
+                    <table datatable [dtOptions]="dtOptions" class="table row-border hover w-full bg-white whitespace-nowrap">
+                        <thead>
+                            <tr>
+                                <th class="w-[100px]">จัดการ</th>
+                                <th class="w-[10px]">ลำดับ</th>
+                                <th>เงินได้</th>
+                                <th>จำนวน</th>
+                                <th>เดือน</th>
+                                <th>รายละเอียด</th>
+                            </tr>   
+                        </thead>
+                        <tbody *ngIf="dataRow?.length != 0">
+                            <tr *ngFor="let item of dataRow; let i = index">
+                                <td>
+                                    <button mat-icon-button color="accent" (click)="editElement(item)">
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                    <button mat-icon-button color="accent" (click)="deleteElement(item)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </td>
+                                <td>{{  i + 1 }}</td>
+                                <td>{{ item.incode ? item.incode : '-' }}</td>
+                                <td>{{ item.paid ? item.paid : '-' }}</td>
+                                <td>{{ item.month ? item.month : "-" }}</td>
+                                <td>{{ item.remark ? item.remark : "-" }}</td>
+                            </tr>
+                        </tbody>
+                        <tbody *ngIf="dataRow?.length == 0">
+                            <tr>
+                                <td colspan="7" class="no-data-available text-center">ไม่มีข้อมูล !</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div> -->
+        </div>
+
+    </div>
+</div>

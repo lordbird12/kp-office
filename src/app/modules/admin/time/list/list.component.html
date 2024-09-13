@@ -1,0 +1,131 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <!-- Loader -->
+    <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+    </div>
+    <div class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 flemin-w-0">
+            <!-- Title -->
+            <div class="flex flex-row mt-2 justify-between">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    ดึงเวลาทำงาน
+                </h2>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="grid gap-4 sm:grid-cols-1  mx-10 mt-10 ">
+        <form class="bg-card rounded-lg md:shadow px-8 pt-6 pb-8 mb-4 flex flex-col my-2"
+            [formGroup]="form">
+            <div class="-mx-3 md:flex mb-6">
+                <div class="md:w-1/5 px-3 mb-6 md:mb-0">
+                    <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                        <mat-label class="text-lg font-bold">ปี</mat-label>
+                        <mat-select [formControlName]="'year'">
+                            <mat-option [value]="''">
+                                <span>เลือกปี</span>
+                            </mat-option>
+                            <mat-option *ngFor="let item of year" [value]="item">
+                                {{item}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="md:w-1/5 px-3 mb-6 md:mb-0">
+                    <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                        <mat-label class="text-lg font-bold">เดือน</mat-label>
+                        <mat-select [formControlName]="'month'">
+                            <mat-option [value]="''">
+                                <span>เลือกเดือน</span>
+                            </mat-option>
+                            <mat-option *ngFor="let item of month" [value]="item.code">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="flex flex-row mt-2 justify-end">
+                <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="getData()">
+                        <mat-icon>search</mat-icon>
+                        &nbsp;
+                       ค้นหา
+                    </button>
+                    <button class="px-6 ml-3" mat-flat-button [color]="'warn'" (click)="clear()">
+                        ยกเลิก
+                    </button>
+                </div>
+            </div>  
+        </form>
+    </div>
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg m-10  bg-white">
+        <div class="flex flex-row mt-2 justify-end p-5 pb-0">
+            <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="syncOlaf()">
+                    <mat-icon svgIcon="mat_outline:sync"></mat-icon>
+                    &nbsp;
+                   ดึงข้อมูล
+                </button>
+            </div>
+        </div>
+        <div class="flex flex-col flex-auto p-5  sm:overflow-y-auto overflow-x-auto">
+            <table class="rounded-lg m-5 w-full mx-auto bg-gray-200 text-gray-800 whitespace-nowrap">
+                <thead class="font-medium dark:border-neutral-500 border-b-2 border-collapse">
+                    <tr>
+                        <th class="w-[100px] h-[50px]">จัดการ</th>
+                        <th class="w-[10px]  border-2">ลำดับ</th>
+                        <th class="w-[100px] border-2">รหัส</th>
+                        <th class="w-[200px] border-2">ชื่อ - นามสกุล</th>
+                        <th class="w-[200px]  border-2">แผนก</th>
+                        <!-- <th class="w-[250px]  border-2">ตำแหน่ง</th> -->
+                        <th class="w-[250px]  border-2">วันทำงานทั้งหมด</th>
+                        <th class="w-[250px]  border-2">วันมาทำงานจริง</th>
+                        <th class="w-[250px]  border-2">จำนวนวันมาสาย</th>
+                        <th class="w-[250px]  border-2">จำนวนวันขาดงาน</th>
+                        <th class="w-[250px]  border-2">จำนวนวันลา</th>
+                        <th class="w-[250px]  border-2">จำนวนวันลาป่วย</th>
+                        <th class="w-[250px]  border-2">% มาทำงาน</th>
+                        <th class="w-[250px]  border-2">รวมมาสาย</th>
+                        <th class="w-[250px]  border-2">เวลามาไวสุด</th>
+                        <th class="w-[250px]  border-2">รวมโอที</th>
+                        <!-- <th>วันที่สร้าง</th> -->
+                    </tr>
+                </thead>
+                <tbody *ngIf="payrolls?.length != 0">
+                    <tr *ngFor="let item of payrolls; let i = index" class="bg-white border-b-2 border-collapse">
+                        <td class="text-center">
+                            <button mat-icon-button color="accent" (click)="pdf()">
+                                <mat-icon>print</mat-icon>
+                            </button>
+                        </td>
+                        <td class="text-center h-[50px]">{{i + 1 }}</td>
+                        <td>{{ item.employeeNo }}</td>
+                        <td>{{ item.name }}</td>
+                        <td class="text-center">{{ item?.groupName}}</td>
+                        <td class="text-center">{{ item?.totalWorkday }}</td>
+                        <td class="text-center">{{ item?.actualWorkday }}</td>
+                        <td class="text-center">{{ item?.lateCount }}</td>
+                        <td class="text-center">{{ item?.absentCount }}</td>
+                        <td class="text-center">{{ item?.personalLeaveCount }}</td>
+                        <td class="text-center">{{ item?.sickLeaveCount }}</td>
+                        <td class="text-center">{{ item?.percenWork }}</td>
+                        <td class="text-center">{{ item?.sumLate }}</td>
+                        <td class="text-center">{{ item?.sumEarly }}</td>
+                        <td class="text-center">{{ item?.sumOT }}</td>
+                        <!-- <td>{{ item.created_at !== null ? (item.created_at | date : "dd-MM-yy, HH:mm"): "-"}}</td> -->
+                    </tr>
+                </tbody>
+                <tbody *ngIf="payrolls?.length == 0">
+                    <tr>
+                        <td colspan="7" class="no-data-available text-center">ไม่มีข้อมูล !</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

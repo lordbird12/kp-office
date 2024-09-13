@@ -1,0 +1,90 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <!-- Loader -->
+    <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+    </div>
+    <div class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 flemin-w-0">
+            <!-- Title -->
+            <div class="flex flex-row mt-2 justify-between">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    รายงานสต๊อครวมภาษี
+                </h2>
+                <!-- <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="addElement()">
+                        <mat-icon svgIcon="heroicons_outline:plus-small"></mat-icon>
+                        &nbsp;
+                        เพิ่มคำสั่งซื้อ
+                    </button>
+                </div> -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg m-10  bg-white">
+        <div class="flex flex-col flex-auto p-5  sm:overflow-y-auto">
+            <table datatable [dtOptions]="dtOptions" class="table row-border hover w-full bg-white whitespace-nowrap">
+                <thead>
+                    <tr>
+                        <th class="w-[10px]">ลำดับ</th>
+                        <th>ยื่นภาษีเดือนที่</th>
+                        <th>วัน/เดือน/ปี</th>
+                        <th>เลขที่ใบกำกับ</th>
+                        <th>รุ่น</th>
+                        <th>สี</th>
+                        <th>หมายเลขถัง</th>
+                        <th>หมายเลขเครื่อง</th>
+                        <th>CORD</th>
+                        <th>รถมาจาก</th>
+                        <th>ก่อนภาษี</th>
+                        <th>ภาษีมูลค่าเพิ่ม</th>
+                        <th>จำนวนรวม</th>
+                        <th>เลขที่ใบกำกับขาย</th>
+                        <th>วัน/เดือน/ปี ที่ขาย</th>
+                        <th>ก่อนภาษี</th>
+                        <th>ภาษีมูลค่าเพิ่ม</th>
+                        <th>จำนวนรวม</th>
+                        <th>กำไร/ขาดทุน</th>
+                        <th>ค่าส่งเสริม</th>
+                        <th>ค่าจดทะเบียน</th>
+                        <th>พรบ</th>
+                        <th>ของแถม</th>
+                        <th>Vatขาย-Vatซื้อ</th>
+                        <th>กำไร คงเหลือ</th>
+                        <th>ชื่อลูกค้า</th>
+                        <th>สาขาที่ขาย</th>
+                        <th>เซลล์ผู้ขาย</th>
+                        <th>ไฟแนนท์</th>
+                        <th>เช็คยอดเงินเข้าธนาคาร</th>
+                    </tr>
+                </thead>
+                <!-- <tbody *ngIf="dataRow?.length != 0">
+                    <tr *ngFor="let item of dataRow; let i = index">
+                        <td>
+                            <button mat-icon-button color="accent" (click)="editElement(item)">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button color="accent" (click)="deleteElement(item)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </td>
+                        <td>{{ pages.begin + (i + 1) }}</td>
+                        <td>{{ item.code ? item.code : "-" }}</td>
+                        <td>{{ item.date | date : "dd-MM-yyyy" }}</td>
+                        <td>{{ item.client ? item.client.name : "-" }}</td>
+                        <td>{{ item.total_price ? item.total_price : "-" }}</td>
+                        <td>{{ item.create_by ? item.create_by : "-" }}</td>
+                        <td>{{ item.created_at | date : "dd-MM-yyyy hh:mm a " }}</td>
+                    </tr>
+                </tbody> -->
+                <tbody *ngIf="dataRow?.length == 0">
+                    <tr>
+                        <td colspan="30" class="no-data-available text-center">ไม่มีข้อมูล !</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

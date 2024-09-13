@@ -1,0 +1,69 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <!-- Loader -->
+    <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+    </div>
+    <div class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 flemin-w-0">
+            <!-- Title -->
+            <div class="flex flex-row mt-2 justify-between">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    รายงานจำนวนคงเหลือ
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg m-10  bg-white">
+        <form [formGroup]="form">
+        <div class="flex flex-col md:flex-row m-5 justify-between">
+                <div class="md:w-1/3 px-3 mb-6 md:mb-0">
+                    <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                        <mat-label>เลือกรุ่นรถ</mat-label>
+                        <mat-select (selectionChange)="onCheck($event.value)">
+                            <mat-option *ngFor="let item of brand;" value="{{item.id}}">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <!-- <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate mt-4">
+                    <button class="px-6 mt-2" mat-flat-button [color]="'primary'" >
+                        <mat-icon>search</mat-icon>
+                        ค้นหา
+                    </button>
+                </div> -->
+
+            </div>
+        </form>
+        <div class="flex flex-col flex-auto p-5  sm:overflow-y-auto">
+            <table class="min-w-full text-left text-lg font-light">
+                <thead class="border-b font-medium dark:border-neutral-500">
+                    <tr>
+                        <th scope="col" class="px-6 py-4">ลำดับ</th>
+                        <th scope="col" class="px-6 py-4 ">รุ่นรถ</th>
+                        <th scope="col" class="px-6 py-4">จำนวนคงเหลือ</th>
+                        <th scope="col" class="px-6 py-4">หน่วยนับ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b dark:border-neutral-500" *ngFor="let item of dataRow;let i = index">
+                        <td class="whitespace-nowrap px-6 py-4 font-medium">{{i + 1 }}</td>
+                        <td class="whitespace-nowrap px-6 py-4 ">{{item.name? item.name: '-'}}</td>
+                        <td class="whitespace-nowrap px-6 py-4 ">{{item.products ? item.products.length : '0'}}</td>
+                        <td class="whitespace-nowrap px-6 py-4">คัน</td>
+                    </tr>
+                    <tr class="border-b dark:border-neutral-500">
+                        <td class="whitespace-nowrap px-6 py-4 font-bold text-center" ></td>
+                        <td class="whitespace-nowrap px-6 py-4 font-bold" >รวม</td>
+                        <td class="whitespace-nowrap px-6 py-4 font-bold">{{this.total}}</td>
+                        <td class="whitespace-nowrap px-6 py-4 font-bold">คัน</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
