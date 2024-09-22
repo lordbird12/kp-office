@@ -220,6 +220,16 @@ export const appRoutes: Route[] = [
                             import('app/modules/admin/finance/page.routes'),
                     },
                     {
+                        path: 'broker',
+                        loadChildren: () =>
+                            import('app/modules/admin/broker/page.routes'),
+                    },
+                    {
+                        path: 'insurance',
+                        loadChildren: () =>
+                            import('app/modules/admin/insurance/page.routes'),
+                    },
+                    {
                         path: 'brand',
                         loadChildren: () =>
                             import('app/modules/admin/brand/page.routes'),

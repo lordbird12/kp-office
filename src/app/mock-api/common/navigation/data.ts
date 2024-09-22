@@ -208,6 +208,20 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon: 'heroicons_mini:building-office',
                 link: '/admin/finance/list',
             },
+            {
+                id: 'broker.list',
+                title: 'ตัวแทนนายหน้า',
+                type: 'basic',
+                icon: 'mat_outline:safety_divider',
+                link: '/admin/broker/list',
+            },
+            {
+                id: 'insurance.list',
+                title: 'ประกันภัย',
+                type: 'basic',
+                icon: 'mat_outline:health_and_safety',
+                link: '/admin/insurance/list',
+            },
         ],
     },
     {
