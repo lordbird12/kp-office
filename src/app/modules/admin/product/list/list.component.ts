@@ -27,6 +27,7 @@ import { EditDialogComponent } from '../edit-dialog/edit-dialog.component';
 import { DataTableDirective, DataTablesModule } from 'angular-datatables';
 import { Router } from '@angular/router';
 import { PictureComponent } from '../../picture/picture.component';
+import { FormReportComponent } from '../form-report/form-report.component';
 
 @Component({
     selector: 'employee-list',
@@ -153,6 +154,19 @@ export class ListComponent implements OnInit, AfterViewInit {
         const dialogRef = this.dialog.open(EditDialogComponent, {
             width: '700px', // กำหนดความกว้างของ Dialog
             data: element
+        });
+
+        dialogRef.afterClosed().subscribe((result) => {
+            if (result) {
+                //    console.log(result,'result')
+            }
+        });
+    }
+    downloadReport() {
+        const dialogRef = this.dialog.open(FormReportComponent, {
+            width: '700px', // กำหนดความกว้างของ Dialog
+            maxHeight: '900px'
+         
         });
 
         dialogRef.afterClosed().subscribe((result) => {

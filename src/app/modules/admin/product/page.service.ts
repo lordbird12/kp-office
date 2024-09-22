@@ -32,7 +32,7 @@ export class Service {
     /**
      * Constructor
      */
-    constructor(private _httpClient: HttpClient) {}
+    constructor(private _httpClient: HttpClient) { }
 
     httpOptionsFormdata = {
         headers: new HttpHeaders({ Authorization: `Bearer ${token}` }),
@@ -242,5 +242,10 @@ export class Service {
                     return of(response);
                 })
             );
+    }
+    exportExcel(data: any): Observable<any> {
+        return this._httpClient.post(environment.baseURL + '/api/downloadExcel', {sheets: data}, {
+            responseType: 'blob'
+        })
     }
 }
