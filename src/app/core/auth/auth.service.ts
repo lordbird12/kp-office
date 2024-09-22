@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
 import { environment } from 'environments/environment.development';
-import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
+import { catchError, forkJoin, lastValueFrom, Observable, of, switchMap, throwError } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class AuthService
@@ -80,10 +80,18 @@ export class AuthService
         }
 
         return this._httpClient.post(environment.baseURL + '/api/login', credentials).pipe(
-            switchMap((response: any) =>
+            switchMap(async (response: any) =>
             {
                 // Store the access token in the local storage
                 this.accessToken = response.token;
+                // const initialData = await lastValueFrom(
+                //     forkJoin(this.setlocalpermission())
+                // );
+                // localStorage.setItem(
+                //     'permission',
+                //     JSON.stringify(initialData[0])
+                // );
+                // localStorage.setItem('user', JSON.stringify(response.data));
 
                 // Set the authenticated flag to true
                 this._authenticated = true;
@@ -199,5 +207,15 @@ export class AuthService
 
         // If the access token exists, and it didn't expire, sign in using it
         return this.signInUsingToken();
+    }
+
+    setlocalpermission(): Observable<any> {
+        return this._httpClient
+            .get(environment.baseURL + '/api/get_permisson_user')
+            .pipe(
+                switchMap((response: any) => {
+                    return of(response.data);
+                })
+            );
     }
 }

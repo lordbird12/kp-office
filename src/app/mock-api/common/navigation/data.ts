@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { FuseNavigationItem } from '@fuse/components/navigation';
-
+const storedPermission = JSON.parse(localStorage.getItem('permission'));
 export const defaultNavigation: FuseNavigationItem[] = [
     {
         id: 'admin',
@@ -8,6 +8,15 @@ export const defaultNavigation: FuseNavigationItem[] = [
         subtitle: 'ขัอมูลเกี่ยวกับระบบ',
         type: 'group',
         icon: 'heroicons_outline:home',
+        hidden: () => {
+            // const storedPermission = JSON.parse(localStorage.getItem('permission'));
+            const menu = storedPermission?.find((e) => e.menu_id == 1);
+            if (menu?.view == 0) {
+                return true;
+            } else {
+                return false;
+            }
+        },
         children: [
             {
                 id: 'admin.comp',
