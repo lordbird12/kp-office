@@ -82,15 +82,16 @@ export class FormComponent implements OnInit {
     this.Id = this.activatedRoute.snapshot.paramMap.get('id');
 
     this.addForm = this._formBuilder.group({
-      id: '',
-      name: '',
-      tax: '',
-      phone: '',
-      email: '',
-      detail: '',
-      address: '',
-      image: '',
-      status: '',
+        id: '',
+        name: '',
+        email: '',
+        idcard: '',
+        company: '',
+        phone: '',
+        phone2: '',
+        address : '',
+        age: '',
+        gender: '',
     })
   }
 
@@ -122,7 +123,7 @@ export class FormComponent implements OnInit {
   }
 
   backTo() {
-    this._router.navigate(['admin/garage/list'])
+    this._router.navigate(['admin/customers/list'])
   }
 
   onSubmit(): void {
@@ -163,7 +164,7 @@ export class FormComponent implements OnInit {
           }
           this._Service.update(formData).subscribe({
             next: (resp: any) => {
-              this._router.navigate(['admin/garage/list'])
+              this._router.navigate(['admin/customers/list'])
             },
             error: (err: any) => {
               this.addForm.enable();
@@ -230,7 +231,7 @@ export class FormComponent implements OnInit {
           }
           this._Service.create(formData).subscribe({
             next: (resp: any) => {
-              this._router.navigate(['admin/garage/list'])
+              this._router.navigate(['admin/customers/list'])
             },
             error: (err: any) => {
               this.addForm.enable();

@@ -26,9 +26,25 @@
                 <div class="-mx-3 md:flex mb-6">
                     <div class="md:w-full px-3">
                         <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
-                            <mat-label>ชื่อบริษัท</mat-label>
+                            <mat-label>ชื่อ</mat-label>
                             <input matInput [placeholder]="'กรอกชื่อบริษัท'" formControlName="name">
                             <!-- <mat-hint>This is a hint text</mat-hint> -->
+                        </mat-form-field>
+                    </div>
+                    <div class="md:w-full px-3">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>อายุ</mat-label>
+                            <input matInput [placeholder]="'กรอกอายุ'" formControlName="age">
+                            <!-- <mat-hint>This is a hint text</mat-hint> -->
+                        </mat-form-field>
+                    </div>
+                    <div class="md:w-full px-3">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>เพศ</mat-label>
+                            <mat-select placeholder="กรอกเพศ" formControlName="gender">
+                                <mat-option value="M">ชาย</mat-option>
+                                <mat-option value="F">หญิง</mat-option>
+                            </mat-select>
                         </mat-form-field>
                     </div>
                     <!-- <div class="md:w-1/2 px-3">
@@ -44,6 +60,22 @@
                         <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
                             <mat-label>เบอร์ติดต่อ</mat-label>
                             <input matInput [placeholder]="'กรุณากรอกเบอร์ติดต่อ'" formControlName="phone">
+                            <!-- <mat-hint>This is a hint text</mat-hint> -->
+                        </mat-form-field>
+                    </div>
+                    <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>เบอร์ติดต่อสำรอง</mat-label>
+                            <input matInput [placeholder]="'กรุณากรอกเบอร์ติดต่อสำรอง'" formControlName="phone2">
+                            <!-- <mat-hint>This is a hint text</mat-hint> -->
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="-mx-3 md:flex mb-6">
+                    <div class="md:w-1/2 px-3">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>เลขบัตรประชาชน</mat-label>
+                            <input matInput [placeholder]="'กรุณากรอกเลขบัตรประชาชน'" formControlName="idcard">
                             <!-- <mat-hint>This is a hint text</mat-hint> -->
                         </mat-form-field>
                     </div>

@@ -152,10 +152,10 @@ export class ListComponent implements OnInit, AfterViewInit {
         });
     }
     addElement() {
-        this._router.navigate(['/admin/garage/form'])
+        this._router.navigate(['/admin/customers/form'])
     }
     editElement(data: any) {
-        this._router.navigate(['/admin/garage/edit/' + data.id])
+        this._router.navigate(['/admin/customers/edit/' + data.id])
     }
 
     showPicture(imgObject: any): void {
