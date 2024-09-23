@@ -243,8 +243,8 @@ export class Service {
                 })
             );
     }
-    exportExcel(data: any): Observable<any> {
-        return this._httpClient.post(environment.baseURL + '/api/downloadExcel', {sheets: data}, {
+    exportExcel(data: any, id: any): Observable<any> {
+        return this._httpClient.post(environment.baseURL + '/api/downloadExcel', {sheets: data, order_id: id}, {
             responseType: 'blob'
         })
     }

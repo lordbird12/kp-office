@@ -237,10 +237,10 @@ export class FormComponent implements OnInit {
                     });
 
                     this._changeDetectorRef.markForCheck();
-                    this._service.getClaim(this.claimId).subscribe((res: any) => {
-                        this.claimData = res.data;
-                        this._changeDetectorRef.markForCheck();
-                    })
+                    // this._service.getClaim(this.claimId).subscribe((res: any) => {
+                    //     this.claimData = res.data;
+                    //     this._changeDetectorRef.markForCheck();
+                    // })
 
                     const promotionFormArray = this.formData.get('promotions') as FormArray;
                     this.itemData.promotions.forEach(promotion => {
@@ -254,9 +254,17 @@ export class FormComponent implements OnInit {
                         
                         promotionFormArray.push(promo);
                     });
-
+                    const repairFormArray = this.formData.get('repairs') as FormArray;
+                    this.itemData.repairs.forEach(repair => {
+                        let promo = this._fb.group({
+                            engineer_id: +repair.engineer_id,
+                            type: [repair.type || 'IN'],
+                            detail: repair.detail,
+                        });
+                        
+                        repairFormArray.push(promo);
+                    })
                 });
-
             });
         } else {
             const currentDateTime = DateTime.now();
@@ -481,7 +489,8 @@ export class FormComponent implements OnInit {
         console.log(item);
         
         this.formData.patchValue({
-            product_id: item.id
+            product_id: item.id,
+            sale_price: item.sale_price
         })
         let data = {
             brand_model: item.brand?.name + '/' + item.brand_model?.name,

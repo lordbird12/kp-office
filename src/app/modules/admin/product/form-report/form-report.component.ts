@@ -319,7 +319,7 @@ export class FormReportComponent implements OnInit {
 
       downloadReport() {
      
-        this._service.exportExcel(this.sheets).subscribe({
+        this._service.exportExcel(this.sheets, this.data.id ).subscribe({
             next: (resp) => {
                 // this.toastr.success('ดำเนินการสำเร็จ')
                 createFileFromBlob(resp, `report.xlsx`);
