@@ -178,7 +178,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 title: 'ลูกค้าของเรา',
                 type: 'basic',
                 icon: 'heroicons_mini:user-group',
-                link: '/admin/customer/list',
+                link: '/admin/customers/list',
             },
             {
                 id: 'claim.list',
@@ -230,6 +230,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 type: 'basic',
                 icon: 'mat_outline:health_and_safety',
                 link: '/admin/insurance/list',
+            },
+            {
+                id: 'garage.list',
+                title: 'อู่นอก',
+                type: 'basic',
+                icon: 'mat_outline:home',
+                link: '/admin/garage/list',
             },
         ],
     },
