@@ -95,24 +95,24 @@
                         <div class="w-full px-3 mb-6 md:mb-0">
                             <mat-form-field class="w-full">
                                 <mat-label>ชื่อ - นามสกุล (ลูกค้า)</mat-label>
-                                <input matInput placeholder="ชื่อ - นามสกุล" [formControlName]="'customer_name'">
+                                <input matInput placeholder="ชื่อ - นามสกุล" [formControlName]="'customer_name'" readonly>
                             </mat-form-field>
                         </div>
                         <div class="w-full px-3 mb-6 md:mb-0 flex flex-col md:flex-row gap-2">
                             <mat-form-field class="w-full md:w-1/2">
                                 <mat-label>เบอร์ติดต่อ</mat-label>
-                                <input matInput placeholder="เบอร์ติดต่อ" [formControlName]="'phone'">
+                                <input matInput placeholder="เบอร์ติดต่อ" [formControlName]="'phone'" readonly>
                             </mat-form-field>
                             <mat-form-field class="w-full md:w-1/2">
                                 <mat-label>เลขประจำตัวประชาชน</mat-label>
-                                <input matInput placeholder="เลขประจำตัวประชาชน" [formControlName]="'idcard'">
+                                <input matInput placeholder="เลขประจำตัวประชาชน" [formControlName]="'idcard'" readonly>
                             </mat-form-field>
                         </div>
                         <div class="w-full px-3 mb-6 md:mb-0">
                             <mat-form-field class="w-full">
                                 <mat-label>ที่อยู่</mat-label>
                                 <textarea matInput [placeholder]="'กรอกข้อมูลที่อยู่'" [rows]="5"
-                                    formControlName="address"></textarea>
+                                    formControlName="address" readonly></textarea>
                                 <mat-icon class="icon-size-5" matPrefix>
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                         aria-hidden="true" fit="" height="100%" width="100%"
