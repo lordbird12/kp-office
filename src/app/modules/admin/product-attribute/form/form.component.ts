@@ -178,11 +178,11 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
         this.companie = response.companie.data;
         this.itemCC = response.cc.data;
         this.itemColor = response.color.data;
-        
+
         if (this.Id) {
-            
-           
-            
+
+
+
             this._Service.getById(this.Id).subscribe((resp: any) => {
                 this.itemData = resp.data
                 const item = this.companie.find(item => item.id === +this.itemData.area?.companie_id);
@@ -204,14 +204,14 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
                         image: [''],
                         images: [''],
                     })
-    
+
                     this.formData2.patchValue({
                         ...this.itemData,
                         image: [''],
                         images: [''],
                     })
                 });
-       
+
             })
         }
 
@@ -361,7 +361,7 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
                 },
                 dismissible: true,
             });
-    
+
             // Subscribe to the confirmation dialog closed action
             confirmation.afterClosed().subscribe((result) => {
                 // If the confirm button pressed...
@@ -375,11 +375,11 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
                     for (var i = 0; i < this.files.length; i++) {
                         formData.append('image', this.files[i]);
                     }
-    
+
                     for (var i = 0; i < this.files1.length; i++) {
                         formData.append('images[]', this.files1[i]);
                     }
-    
+
                     this._Service.update(formData).subscribe({
                         next: (resp: any) => {
                             this._router.navigate(['admin/product/list'])
@@ -414,11 +414,11 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
         } else {
 
         }
-   
+
     }
 
     backTo() {
-        this._router.navigate(['admin/product/list'])
+        this._router.navigate(['admin/product-attribute/list'])
     }
 
 }

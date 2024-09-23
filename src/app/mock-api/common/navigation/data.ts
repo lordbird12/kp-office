@@ -143,13 +143,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon: 'heroicons_outline:cube',
                 link: '/admin/product/list',
             },
-            // {
-            //     id: 'products.product-attribute',
-            //     title: 'คลังอุปกรณ์เสริม',
-            //     type: 'basic',
-            //     icon: 'heroicons_outline:cube',
-            //     link: '/admin/product-attribute/list',
-            // },
+            {
+                id: 'products.product-attribute',
+                title: 'คลังอุปกรณ์เสริม',
+                type: 'basic',
+                icon: 'heroicons_outline:cube',
+                link: '/admin/product-attribute/list',
+            },
             // {
             //     id: 'products.transfer',
             //     title: 'โอนย้ายสินค้า',
@@ -172,6 +172,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 type: 'basic',
                 icon: 'checklist',
                 link: '/admin/sales/list',
+            },
+            {
+                id: 'promotion.list',
+                title: 'โปรโมชัน',
+                type: 'basic',
+                icon: 'heroicons_mini:bolt',
+                link: '/admin/promotion/list',
             },
             {
                 id: 'client.list',
