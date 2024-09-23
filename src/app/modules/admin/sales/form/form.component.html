@@ -503,12 +503,12 @@
                                         class="px-6 text-xl md:text-xl font-bold tracking-tight leading-7 sm:leading-10 truncate text-gray-900">เฮง
                                         เฮง เฮง</span>
                                 </p>
-                                <p>
+                                <!-- <p>
                                     <button class="px-6 ml-3" mat-flat-button [color]="'primary'"
                                         (click)="addPromotion()">
                                         เพิ่ม Promotion
                                     </button>
-                                </p>
+                                </p> -->
                             </div>
                         </span>
                         <div class="relative overflow-x-auto shadow-md m-4 border-2" formArrayName="promotions">
@@ -549,13 +549,6 @@
                         <span
                             class="px-6 text-xl md:text-xl font-bold tracking-tight leading-7 sm:leading-10 truncate text-gray-500">
                             ข้อมูลซ่อมบำรุง
-                            <div class="flex flex-row justify-between">
-                                <p>
-                                    <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="addRepair()">
-                                        เพิ่ม
-                                    </button>
-                                </p>
-                            </div>
                         </span>
                         <div class="relative overflow-x-auto shadow-md m-4 border-2" formArrayName="repairs">
                             <table class="w-full text-md text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -568,10 +561,10 @@
                                         <th scope="col" class="px-6 py-3 w-2/12 h-full">
                                             ประเภทช่าง
                                         </th>
-                                        <th scope="col" class="px-6 py-3 w-3/12 text-center h-full">
-                                            รายละเอียด
+                                        <th scope="col" class="px-6 py-3 w-3/12  h-full">
+                                            เลือกช่าง
                                         </th>
-                                        <th scope="col" class="px-6 py-3 w-6/12 text-center h-full">
+                                        <th scope="col" class="px-6 py-3 w-6/12 h-full">
                                             รายละเอียด
                                         </th>
                                     </tr>
@@ -580,12 +573,12 @@
                                     <tr *ngFor="let depo; of: repairs().controls; let i = index" [formGroupName]="i"
                                         class="bg-white border-b dark:bg-gray-800 h-15 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                         <td class="px-6 py-1">
-                                            <button class="px-6 ml-3 mb-2 bg-red-500" mat-flat-button [color]="'warn'" (click)="removeRepair(i)">
+                                            <button class="mb-2 bg-red-500" mat-flat-button [color]="'warn'" (click)="removeRepair(i)">
                                                 <mat-icon svgIcon="heroicons_solid:trash"> </mat-icon>&nbsp;
                                             </button>
                                         </td>
                                         <td class="px-6 py-1 text-center">
-                                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full md:w-full">
+                                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full md:w-full mt-3">
                                                 <mat-select formControlName="type">
                                                     <mat-option *ngFor="let item of repairType;" [value]="item.code">
                                                         {{item.name}}
@@ -594,14 +587,14 @@
                                             </mat-form-field>
                                         </td>
                                         <td class="px-6 py-1 text-center">
-                                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full md:w-full" *ngIf="this.formData.value.repairs[i].type === 'IN'">
+                                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full md:w-full  mt-3" *ngIf="this.formData.value.repairs[i].type === 'IN'">
                                                 <mat-select formControlName="engineer_id">
                                                     <mat-option *ngFor="let item of engineerData;" [value]="item.id">
                                                         {{item.name}}
                                                     </mat-option>
                                                 </mat-select>
                                             </mat-form-field>
-                                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full md:w-full" *ngIf="this.formData.value.repairs[i].type === 'OUT'">
+                                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full md:w-full  mt-3" *ngIf="this.formData.value.repairs[i].type === 'OUT'">
                                                 <mat-select formControlName="engineer_id">
                                                     <mat-option *ngFor="let item of garageData;" [value]="item.id">
                                                         {{item.name}}
@@ -610,9 +603,16 @@
                                             </mat-form-field>
                                         </td>
                                         <td class="px-6 py-1 text-center">
-                                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full md:w-full">
+                                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full md:w-full mt-3">
                                                 <input matInput placeholder="รายละเอียด" [formControlName]="'detail'">
                                             </mat-form-field>
+                                        </td>
+                                    </tr>
+                                    <tr class="text-md text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                        <td colspan="4">
+                                            <button class="mx-6 my-3" mat-flat-button [color]="'primary'" (click)="addRepair()">
+                                                เพิ่ม
+                                            </button>
                                         </td>
                                     </tr>
                                 </tbody>
