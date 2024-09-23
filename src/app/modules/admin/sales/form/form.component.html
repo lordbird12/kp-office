@@ -129,8 +129,9 @@
                     <div class="md:w-1/3 px-3">
                         <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
                             <mat-label>วันที่ชำระ</mat-label>
-                            <input matInput type="int" min="1" max="31" [placeholder]="'วันที่ชำระ'" formControlName="payment_date">
-                            <!-- <mat-hint>This is a hint text</mat-hint> -->
+                            <input matInput [matDatepicker]="picker_pay" formControlName="payment_date">
+                            <mat-datepicker-toggle matIconSuffix [for]="picker_pay"></mat-datepicker-toggle>
+                            <mat-datepicker #picker_pay></mat-datepicker>
                         </mat-form-field>
                     </div>
                     <div class="md:w-1/3 px-3">

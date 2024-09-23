@@ -92,7 +92,7 @@
                         <mat-select [formControlName]="'status'">
                             <mat-option [value]="''">
                                 <span>เลือกสถานะ</span>
-                            </mat-option>   
+                            </mat-option>
                             <mat-option value="free">ว่าง</mat-option>
                             <mat-option value="sold">ขาย</mat-option>
                             <mat-option value="book">จอง</mat-option>
@@ -113,13 +113,13 @@
                 </div>
             </div>
             <div class="-mx-3 md:flex mb-6">
-                
+
                 <div class="md:w-1/5 px-3 mb-6 md:mb-0">
                     <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
                         <mat-label>สาขา</mat-label>
                         <mat-select [formControlName]="'area_id'">
                             <mat-option [value]="''">
-                                <span>เลือกซัพพลายเอ่อ</span>
+                                <span>เลือกสาขา</span>
                             </mat-option>
                             <mat-option *ngFor="let item of areas" [value]="item.id">
                                 {{item.name}}

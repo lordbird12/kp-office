@@ -60,7 +60,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
             //     icon: 'heroicons_outline:clock',
             //     link: '/admin/time-attendance/list',
             // },
-            
+
         ],
     },
     // {
@@ -70,7 +70,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
     //     type: 'group',
     //     icon: 'heroicons_outline:home',
     //     children: [
-           
+
     //         {
     //             id: 'finance.payroll',
     //             title: 'เงินเดือน',
@@ -143,13 +143,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon: 'heroicons_outline:cube',
                 link: '/admin/product/list',
             },
-            {
-                id: 'products.product-attribute',
-                title: 'คลังอุปกรณ์เสริม',
-                type: 'basic',
-                icon: 'heroicons_outline:cube',
-                link: '/admin/product-attribute/list',
-            },
+            // {
+            //     id: 'products.product-attribute',
+            //     title: 'คลังอุปกรณ์เสริม',
+            //     type: 'basic',
+            //     icon: 'heroicons_outline:cube',
+            //     link: '/admin/product-attribute/list',
+            // },
             // {
             //     id: 'products.transfer',
             //     title: 'โอนย้ายสินค้า',

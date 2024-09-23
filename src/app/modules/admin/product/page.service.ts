@@ -94,6 +94,16 @@ export class Service {
             );
     }
 
+    getAreas(): Observable<any> {
+        return this._httpClient
+            .get<any>(environment.baseURL + '/api/get_area')
+            .pipe(
+                tap((data) => {
+                    this._data.next(data);
+                })
+            );
+    }
+
     getSuppliers(): Observable<any> {
         return this._httpClient
             .get<any>(environment.baseURL + '/api/get_supplier')

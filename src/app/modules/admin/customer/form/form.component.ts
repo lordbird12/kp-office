@@ -78,6 +78,7 @@ export class FormComponent implements OnInit {
             address : '',
             remark: '',
             status: '',
+            gender: '',
         })
     }
 
