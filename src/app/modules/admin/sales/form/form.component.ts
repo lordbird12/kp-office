@@ -203,6 +203,8 @@ export class FormComponent implements OnInit {
                 this.Id = id
                 this._service.getById(id).subscribe((resp: any) => {
                     this.itemData = resp.data;
+                    const currentDateTime = DateTime.fromISO(this.itemData.date)
+                    this.formattedDateTime = currentDateTime.toFormat('dd/MM/yyyy')
                     this.saleFilter.setValue(this.itemData.sale?.name)
                     this.financeFilter.setValue(this.itemData.finance?.name)
                     this.engineerFilter.setValue(this.itemData.engineer?.name)
