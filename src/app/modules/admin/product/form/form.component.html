@@ -122,14 +122,14 @@
                     </div>
                 </div>
                 <div class="-mx-3 md:flex mb-6" *ngIf="this.formData.value.type === 'Secound'">
-                    <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                    <!-- <div class="md:w-1/2 px-3 mb-6 md:mb-0">
                         <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
                             <mat-label>เลขไมล์</mat-label>
                             <input matInput [placeholder]="'เลขไมล์'" [formControlName]="'mile'">
-                            <!-- <mat-hint>This is a hint text</mat-hint> -->
+                            <mat-hint>This is a hint text</mat-hint>
                         </mat-form-field>
-                    </div>
-                    <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                    </div> -->
+                    <div class="md:w-full px-3 mb-6 md:mb-0">
                         <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
                             <mat-label>ทะเบียนรถ</mat-label>
                             <input matInput [placeholder]="'ทะเบียน'" [formControlName]="'license_plate'">
@@ -237,7 +237,7 @@
                             </mat-select>
                         </mat-form-field>
                     </div>
-             
+
                 </div>
                 <div class="-mx-3 md:flex mb-6">
                     <div class="md:min-w-full px-3 mb-6 md:mb-0">

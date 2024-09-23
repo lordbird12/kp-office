@@ -258,12 +258,6 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
-    getAreas(): void {
-        this._Service.getAreas().subscribe((resp) => {
-            this.areas = resp.data;
-        });
-    }
-
     getBrandModel(id: any): void {
         this._Service.getBrandModel(id).subscribe((resp) => {
             this.itemBrandModel = resp.data;
@@ -309,15 +303,11 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
         this.itemColor = event.value;
     }
     areas: any[] = [];
-    // somethingCompanie(event: any): void {
-    //     const item = this.companie.find(item => item.id === event.value);
-    //     this.areas = item.areas
-
-
-    // }
-
     somethingCompanie(event: any): void {
-        this.areas = event.value;
+        const item = this.companie.find(item => item.id === event.value);
+        this.areas = item.areas
+
+
     }
 
 
@@ -426,7 +416,6 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
     }
-
 
     backTo() {
         this._router.navigate(['admin/product/list'])
