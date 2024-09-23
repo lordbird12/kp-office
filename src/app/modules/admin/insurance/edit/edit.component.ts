@@ -69,14 +69,14 @@ export class EditComponent implements OnInit {
         private _fuseConfirmationService: FuseConfirmationService,
     ) {
         this.editForm = this._formBuilder.group({
-            code: '',
+            id: '',
             name: '',
             tax: '',
-            contact: '',
-            tel1: '',
-            tel2: '',
-            address : '',
-            remark: '',
+            phone: '',
+            email: '',
+            detail: '',
+            address: '',
+            image: '',
             status: '',
         })
     }

@@ -323,13 +323,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
         type: 'group',
         icon: 'heroicons_outline:home',
         children: [
-            {
-                id: 'self.employee',
-                title: 'แก้ไขข้อมูลส่วนตัว',
-                type: 'basic',
-                icon: 'heroicons_outline:user',
-                link: '/admin/employee/list',
-            },
+            // {
+            //     id: 'self.employee',
+            //     title: 'แก้ไขข้อมูลส่วนตัว',
+            //     type: 'basic',
+            //     icon: 'heroicons_outline:user',
+            //     link: '/admin/employee/list',
+            // },
             {
                 id: 'admin.logout',
                 title: 'ออกจากระบบ',

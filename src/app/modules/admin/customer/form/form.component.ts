@@ -69,14 +69,14 @@ export class FormComponent implements OnInit {
         private _fuseConfirmationService: FuseConfirmationService,
     ) {
         this.addForm = this._formBuilder.group({
-            code: '',
             name: '',
-            tax: '',
-            contact: '',
-            tel1: '',
-            tel2: '',
+            email: '',
+            idcard: '',
+            company: '',
+            phone: '',
+            phone2: '',
             address : '',
-            remark: '',
+            age: '',
             status: '',
             gender: '',
         })
