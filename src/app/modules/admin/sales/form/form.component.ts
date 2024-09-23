@@ -3,7 +3,7 @@
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { CommonModule, NgClass } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, UntypedFormBuilder, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatChipsModule } from '@angular/material/chips';
@@ -23,13 +23,19 @@ import { MatDialog } from '@angular/material/dialog';
 import { PictureComponent } from '../picture/picture.component';
 import { environment } from 'environments/environment.development';
 import { ClaimDialogComponent } from '../claim-dialog/claim-dialog.component';
+import { DateTime } from 'luxon';
+import { ReplaySubject, Subject, takeUntil } from 'rxjs';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { NgxMaskDirective } from 'ngx-mask';
+import { MatRadioModule } from '@angular/material/radio';
+import { CustomerDialogComponent } from '../customer-dialog/customer-dialog.component';
 @Component({
     selector: 'form-product',
     templateUrl: './form.component.html',
     encapsulation: ViewEncapsulation.None,
     standalone: true,
     imports: [
-        CommonModule, MatIconModule, FormsModule, MatFormFieldModule, NgClass, MatInputModule, TextFieldModule, ReactiveFormsModule, MatButtonToggleModule, MatButtonModule, MatSelectModule, MatOptionModule, MatChipsModule, MatDatepickerModule],
+        MatRadioModule,  NgxMaskDirective, MatAutocompleteModule, CommonModule, MatIconModule, FormsModule, MatFormFieldModule, NgClass, MatInputModule, TextFieldModule, ReactiveFormsModule, MatButtonToggleModule, MatButtonModule, MatSelectModule, MatOptionModule, MatChipsModule, MatDatepickerModule],
 })
 export class FormComponent implements OnInit {
     formFieldHelpers: string[] = ['fuse-mat-dense'];
@@ -45,11 +51,13 @@ export class FormComponent implements OnInit {
     brandModelData: any[] = [];
     paymentData: any[] = [];
     claimData: any[] = [];
+    userData: any[] = [];
+
     itemData: any;
     total: number;
     Id: number;
     claimId: number;
-    product_select:any;
+    product_select: any;
     saleType: any[] = [
         {
             code: 'Installment_with_finance',
@@ -66,6 +74,25 @@ export class FormComponent implements OnInit {
 
     ];
     formData: FormGroup;
+    formattedDateTime: string;
+    productSelected: any;
+
+    ///sale_user
+    saleFilter = new FormControl('', Validators.required);
+    filterSale: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+    saleData: any[] = [];
+
+    ///finance_user
+    financeFilter = new FormControl('');
+    filterFinance: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+    financeData: any[] = [];
+
+     ///engineer_user
+     engineerFilter = new FormControl('');
+     filterEngineer: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+     engineerData: any[] = [];
+
+    user_login: any = JSON.parse(localStorage.getItem('user'));
     /**
      * Constructor
      */
@@ -78,56 +105,83 @@ export class FormComponent implements OnInit {
         private dialog: MatDialog,
         private _changeDetectorRef: ChangeDetectorRef,
     ) {
+        console.log(this.user_login);
 
+        this._service.getUserByDepartment(2).subscribe((resp: any) => {
+            this.saleData = resp.data
+            this.filterSale.next(this.saleData.slice());
 
+        })
+        this._service.getUserByDepartment(1).subscribe((resp: any) => {
+            this.engineerData = resp.data
+            this.filterEngineer.next(this.engineerData.slice());
+
+        })
+        this._service.getFinanace().subscribe((resp: any) => {
+            this.financeData = resp.data
+            this.filterFinance.next(this.financeData.slice());
+
+        })
         this.formData = this._fb.group({
-            code:'',
-            date: '',
-            client_id: '',
-            total_price: '',
-            down_payment: '',
-            finance_id: '',
-            interest: '',
-            payment_period: '',
-            payment_date: '',
-            sale_type: '',
-            product: {
-                product_id: '',
-                cost: '', //ต้นทุน
-                price: '' //ราคา
-            },
-            brand_id:'',
-            brand_model_id:'',
-            color_id:'',
-            cc_id:'',
-            product_code:''
-
+            date: null,
+            sale_id: null,
+            client_id: null,
+            finance_id: null,
+            finance_payment_period:null,
+            finance_other: null,
+            sale_price: 0,
+            finance_price: 0,
+            down_price: 0,
+            sale_type: null,
+            tax_and_plo: 0,
+            finance_fee: 0,
+            assemble_fee: 0,
+            gps_fee: 0,
+            insurance_level: null,
+            insurance_price: 0,
+            total_price: 0,
+            first_payment: 0,
+            discount: 0,
+            other_price: 0,
+            final_price: 0,
+            remark: null,
+            interview: null,
+            product_id: null,
+            promotions: this._fb.array([]),
+            engineer_id: null,
+            customer_name: null,
+            phone: null,
+            idcard: null,
+            address: null,
         });
 
         this._service.getClient().subscribe((resp: any) => {
             this.clientData = resp.data
         });
-        this._service.getFinanace().subscribe((resp: any) => {
-            this.finanaceData = resp.data
-        });
-      
+        // this._service.getFinanace().subscribe((resp: any) => {
+        //     this.finanaceData = resp.data
+        // });
+
         this._service.getBrand().subscribe((resp: any) => {
             this.brandData = resp.data
         });
-       
-        console.log(this._router.url)
-        if(this._router.url !== '/admin/sales/form') {
+
+        if (this._router.url !== '/admin/sales/form') {
             this.activatedRoute.params.subscribe(params => {
+               
                 this.isForm = false;
                 const id = params.id;
-                this.Id= id
+                this.Id = id
                 this._service.getById(id).subscribe((resp: any) => {
                     this.itemData = resp.data;
-                    this._service.getBrandModel(this.itemData.orders.product.brand_id).subscribe((resp: any) => {
+                    this.saleFilter.setValue(this.itemData.sale?.name)
+                    this.financeFilter.setValue(this.itemData.finance?.name)
+                    this.engineerFilter.setValue(this.itemData.engineer?.name)
+                    this._service.getBrandModel(this.itemData.orders.brand.id).subscribe((resp: any) => {
                         this.brandModelData = resp.data
                     });
 
-                    this._service.getProduct(this.itemData.orders.product.brand_model_id).subscribe((resp: any) => {
+                    this._service.getProduct(this.itemData.orders.brand_model.id).subscribe((resp: any) => {
                         this.productData = resp.data
                         this.selectProduct(this.itemData.orders.product.code);
                         this._changeDetectorRef.markForCheck();
@@ -141,30 +195,66 @@ export class FormComponent implements OnInit {
                         ...this.itemData,
                     });
                     this.formData.patchValue({
-                        brand_id:this.itemData.orders.product.brand_id,
-                        brand_model_id:this.itemData.orders.product.brand_model_id,
-                        product_code:this.itemData.orders.product.code,
+                        brand_id: this.itemData.orders.product.brand_id,
+                        brand_model_id: this.itemData.orders.product.brand_model_id,
+                        product_code: this.itemData.orders.product.code,
+                        customer_name: this.itemData.client?.name,
+                        phone: this.itemData.client?.phone,
+                        idcard: this.itemData.client?.idcard,
+                        address: this.itemData.client?.address,
+
                     });
-                    
+
                     this._changeDetectorRef.markForCheck();
-                    this._service.getClaim(this.claimId).subscribe((res: any)=>{
+                    this._service.getClaim(this.claimId).subscribe((res: any) => {
                         this.claimData = res.data;
                         this._changeDetectorRef.markForCheck();
                     })
+                    
                 });
 
-              });
+            });
         }
 
 
     }
 
-    ngOnInit() {
-
-
-
-
+    addPromotion() {
+        // this.setPromotions(data.data);
     }
+
+    ngOnInit() {
+        const currentDateTime = DateTime.now();
+        this.formattedDateTime = currentDateTime.toFormat('dd/MM/yyyy');
+        this.formData.patchValue({
+            sale_id: this.user_login?.id,
+            date: currentDateTime.toFormat('yyyy-MM-dd')
+        })
+        this.saleFilter.setValue(this.user_login.name)
+        this.saleFilter.valueChanges
+            .pipe(takeUntil(this._onDestroy))
+            .subscribe(() => {
+                this._filterSale();
+            });
+        this.financeFilter.valueChanges
+            .pipe(takeUntil(this._onDestroy))
+            .subscribe(() => {
+                this._filterSale();
+            });
+        this.engineerFilter.valueChanges
+            .pipe(takeUntil(this._onDestroy))
+            .subscribe(() => {
+                this._filterEngineer();
+            });
+
+        this._service.getPromotion().subscribe((data) => {
+            this.setPromotions(data.data);
+            this._changeDetectorRef.markForCheck(); 
+        });
+    }
+        /**
+     * On destroy
+     */  protected _onDestroy = new Subject<void>();
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
@@ -173,6 +263,154 @@ export class FormComponent implements OnInit {
     /**
      * Get the form field helpers as string
      */
+
+    protected _filterEngineer() {
+
+        if (!this.engineerData) {
+            return;
+        }
+        let search = this.engineerFilter.value;
+        if (!search) {
+            this.filterEngineer.next(this.engineerData.slice());
+            return;
+        } else {
+            search = search.toLowerCase();
+        }
+        this.filterEngineer.next(
+            this.engineerData.filter(item => item.name.toLowerCase().indexOf(search) > -1)
+        );
+    }
+
+    protected _filterSale() {
+
+        if (!this.saleData) {
+            return;
+        }
+        let search = this.saleFilter.value;
+        if (!search) {
+            this.filterSale.next(this.saleData.slice());
+            return;
+        } else {
+            search = search.toLowerCase();
+        }
+        this.filterSale.next(
+            this.saleData.filter(item => item.name.toLowerCase().indexOf(search) > -1)
+        );
+    }
+
+    protected _filterFinance() {
+
+        if (!this.financeData) {
+            return;
+        }
+        let search = this.financeFilter.value;
+        if (!search) {
+            this.filterFinance.next(this.financeData.slice());
+            return;
+        } else {
+            search = search.toLowerCase();
+        }
+        this.filterSale.next(
+            this.financeData.filter(item => item.name.toLowerCase().indexOf(search) > -1)
+        );
+    }
+
+    promotions(): FormArray {
+        return this.formData.get('promotions') as FormArray;
+    }
+
+    createPromotionForm(promotion: any): FormGroup {
+        return this._fb.group({
+            promotion_id: [promotion.id || ''],
+            name: promotion.name,
+            amount: 0,
+            paid: '1',
+            detail: '',
+            checked: false
+        });
+    }
+    setPromotions(promotions: any[]) {
+
+        console.log('promotion',promotions);
+        
+        const promotionFormArray = this.formData.get('promotions') as FormArray;
+        promotions.forEach(promotion => {
+            console.log(promotion);
+            
+            promotionFormArray.push(this.createPromotionForm(promotion));
+        });
+    }
+
+    onSelectSale(event: any, type: any) {
+        if (!event) {
+            if (this.saleFilter.invalid) {
+
+                this.saleFilter.markAsTouched(); // กำหนดสถานะ touched เพื่อแสดง mat-error
+            }
+            console.log('No sale');
+            return;
+        }
+        const _value = event;
+        const selectedData = this.saleData.find(item => item.name === _value);
+        if (selectedData) {
+            this.formData.patchValue({
+                sale_id: selectedData.id,
+            });
+            this.saleFilter.setValue(selectedData?.name)
+        } else {
+            if (this.saleFilter.invalid) {
+
+                this.saleFilter.markAsTouched(); // กำหนดสถานะ touched เพื่อแสดง mat-error
+            }
+            console.log('No sale');
+            return;
+        }
+    }
+    onSelectEngineer(event: any, type: any) {
+        if (!event) {
+            if (this.engineerFilter.invalid) {
+
+                this.engineerFilter.markAsTouched(); // กำหนดสถานะ touched เพื่อแสดง mat-error
+            }
+            console.log('No Engineer');
+            return;
+        }
+        const _value = event;
+        const selectedData = this.engineerData.find(item => item.name === _value);
+        if (selectedData) {
+            this.formData.patchValue({
+                engineer_id: selectedData.id,
+            });
+            this.engineerFilter.setValue(selectedData?.name)
+        } else {
+            if (this.engineerFilter.invalid) {
+
+                this.engineerFilter.markAsTouched(); // กำหนดสถานะ touched เพื่อแสดง mat-error
+            }
+            console.log('No Engineer');
+            return;
+        }
+    }
+    onSelectFinance(event: any, type: any) {
+        if (!event) {
+
+            console.log('No Finance');
+            return;
+        }
+        const _value = event;
+        const selectedData = this.financeData.find(item => item.name === _value);
+        if (selectedData) {
+            this.formData.patchValue({
+                finance_id: selectedData.id,
+            });
+            this.financeFilter.setValue(selectedData?.name)
+        } else {
+
+            console.log('No Finance');
+            return;
+        }
+    }
+
     getFormFieldHelpersAsString(): string {
         return this.formFieldHelpers.join(' ');
     }
@@ -182,57 +420,62 @@ export class FormComponent implements OnInit {
     }
 
     selectProduct(item: any): void {
-        this.product_select = this.productData.find(product=> product.code === item)
-        console.log(this.product_select);
 
         this.formData.patchValue({
-            product: {
-                product_id: this.product_select.id,
-                cost: this.product_select.cost,
-                price: this.product_select.sale_price,
-            }
+            product_id: item.id
         })
+        let data = {
+            brand_model: item.brand?.name + '/' + item.brand_model?.name,
+            year: item.year,
+            color: item.color?.name,
+            gear: item.gear,
+            license_plete: item.license_plate,
+            engine_no: item.engine_no,
+            tank_no: item.tank_no,
+        }
+        this.productSelected = data
     }
 
     selectBrand(item: any): void {
+        console.log(item);
 
         this._service.getBrandModel(item).subscribe((resp: any) => {
             this.brandModelData = resp.data
         });
     }
-    
+
     selectBrandModel(item: any): void {
         this._service.getProduct(item).subscribe((resp: any) => {
             this.productData = resp.data
         });
     }
 
-    onSubmit() : void {
-        if(this.isForm === true) {
+    onSubmit(): void {
+        if (this.isForm === true) {
             const dialogRef = this._fuseConfirmationService.open({
                 "title": "บันทึกข้อมูล",
                 "message": "คุณต้องการบันทึกข้อมูลใช่หรือไม่ ?",
                 "icon": {
-                  "show": true,
-                  "name": "heroicons_outline:exclamation-triangle",
-                  "color": "accent"
+                    "show": true,
+                    "name": "heroicons_outline:exclamation-triangle",
+                    "color": "accent"
                 },
                 "actions": {
-                  "confirm": {
-                    "show": true,
-                    "label": "ตกลง",
-                    "color": "primary"
-                  },
-                  "cancel": {
-                    "show": true,
-                    "label": "ยกเลิก"
-                  }
+                    "confirm": {
+                        "show": true,
+                        "label": "ตกลง",
+                        "color": "primary"
+                    },
+                    "cancel": {
+                        "show": true,
+                        "label": "ยกเลิก"
+                    }
                 },
                 "dismissible": true
-              })
+            })
 
-              dialogRef.afterClosed().subscribe((result => {
-                if(result === 'confirmed') {
+            dialogRef.afterClosed().subscribe((result => {
+                if (result === 'confirmed') {
                     let formValue = this.formData.value;
                     formValue.date = moment(formValue.date).format('YYYY-MM-DD')
                     this._service.create(formValue).subscribe({
@@ -267,7 +510,7 @@ export class FormComponent implements OnInit {
                 } else {
 
                 }
-              }))
+            }))
         } else {
             return;
         }
@@ -278,7 +521,7 @@ export class FormComponent implements OnInit {
         const dialogRef = this.dialog.open(EditDialogComponent, {
             width: '500px', // กำหนดความกว้างของ Dialog
             data: {
-                    data: this.itemData.id,
+                data: this.itemData.id,
             } // ส่งข้อมูลเริ่มต้นไปยัง Dialog
         });
 
@@ -296,19 +539,24 @@ export class FormComponent implements OnInit {
         });
     }
     claim() {
-        const dialogRef = this.dialog.open(ClaimDialogComponent, {
-            width: '500px', // กำหนดความกว้างของ Dialog
+        const dialogRef = this.dialog.open(CustomerDialogComponent, {
+            width: 'auto', // กำหนดความกว้างของ Dialog
+            height: '900px',
             data: {
-                    data: this.itemData.id,
+                data: null
             } // ส่งข้อมูลเริ่มต้นไปยัง Dialog
         });
 
         dialogRef.afterClosed().subscribe(result => {
+            console.log(result);
+            
             if (result) {
-                this._service.getClaim(this.claimId).subscribe((res: any)=>{
-                    this.claimData = res.data;
-                    console.log(this.claimData)
-                    this._changeDetectorRef.markForCheck();
+                this.formData.patchValue({
+                    client_id: result.id,
+                    customer_name: result.name ?? null,
+                    phone:  result.phone ?? null,
+                    idcard: result.idcard ?? null,
+                    address: result.address ?? null,
                 })
             }
         });
@@ -320,7 +568,7 @@ export class FormComponent implements OnInit {
             .open(PictureComponent, {
                 autoFocus: false,
                 data: {
-                    imgSelected: environment.baseURL +  imgObject,
+                    imgSelected: environment.baseURL + imgObject,
                 },
             })
             .afterClosed()
@@ -328,6 +576,32 @@ export class FormComponent implements OnInit {
                 // Go up twice because card routes are setup like this; "card/CARD_ID"
                 // this._router.navigate(['./../..'], {relativeTo: this._activatedRoute});
             });
+    }
+    formatNumber() {
+
+        let value = this.formData.get('sale_price')?.value;
+
+
+        if (value) {
+            // Remove commas if any
+            value = value.replace(/,/g, '');
+            // Convert to number and then format
+            const formattedValue = new Intl.NumberFormat().format(value);
+            this.formData.get('sale_price')?.setValue(formattedValue);
+        }
+    }
+
+    onInputChange(event: any) {
+
+        // Remove all characters except numbers
+        let value = event.target.value.replace(/[^0-9]/g, '');
+        // Format as currency
+        const formattedValue = new Intl.NumberFormat().format(value);
+        console.log(formattedValue);
+
+        this.formData.get('sale_price')?.setValue(formattedValue);
+        // console.log(this.formData.value.sale_price);
+
     }
 }
 

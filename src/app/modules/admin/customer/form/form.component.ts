@@ -52,6 +52,16 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
 export class FormComponent implements OnInit {
         addForm: FormGroup;
     MenuList: any = [];
+    gender: any = [
+      {
+        key: 'M',
+        name: 'ผู้ชาย'
+      },
+      {
+        key: 'F',
+        name: 'ผู้หญิง'
+      }
+    ]
     formFieldHelpers: string[] = ['fuse-mat-dense'];
     fixedSubscriptInput: FormControl = new FormControl('', [Validators.required]);
     dynamicSubscriptInput: FormControl = new FormControl('', [Validators.required]);
@@ -69,15 +79,16 @@ export class FormComponent implements OnInit {
         private _fuseConfirmationService: FuseConfirmationService,
     ) {
         this.addForm = this._formBuilder.group({
-            code: '',
-            name: '',
-            tax: '',
-            contact: '',
-            tel1: '',
-            tel2: '',
-            address : '',
-            remark: '',
-            status: '',
+            code: null,
+            name: null,
+            idcard: null,
+            gender: null,
+            contact: null,
+            tel1: null,
+            tel2: null,
+            address : null,
+            remark: null,
+            status: null,
         })
     }
 
