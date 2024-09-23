@@ -105,6 +105,8 @@ export class FormComponent implements OnInit {
 
     garageData: any[] = []
     user_login: any = JSON.parse(localStorage.getItem('user'));
+
+    productFilter = new FormControl(Object);
     /**
      * Constructor
      */
@@ -215,10 +217,10 @@ export class FormComponent implements OnInit {
 
                     this._service.getProduct(this.itemData.orders?.brand_model.id).subscribe((resp: any) => {
                         this.productData = resp.data
-                        
-                        console.log('product 1',this.itemData.orders.product_id);
+                        // console.log('product 1',this.itemData.orders.product_id);
                         let value = this.productData.find(item => item.id === +this.itemData.orders.product_id)
-                        console.log('product data',value);
+                        this.productFilter.setValue(value)
+                        // console.log('product data',value);
                         this.selectProduct(value);
                         this._changeDetectorRef.markForCheck();
 
@@ -489,7 +491,7 @@ export class FormComponent implements OnInit {
     }
 
     selectProduct(item: any): void {
-        console.log(item);
+       
         
         this.formData.patchValue({
             product_id: item.id,
@@ -505,13 +507,14 @@ export class FormComponent implements OnInit {
             tank_no: item.tank_no,
         }
         this.productSelected = data
+        this.productFilter.setValue(item)
         // console.log(this.productSelected);
         this._changeDetectorRef.markForCheck();
         
     }
 
     selectBrand(item: any): void {
-        console.log(item);
+    
 
         this._service.getBrandModel(item).subscribe((resp: any) => {
             this.brandModelData = resp.data

@@ -145,7 +145,7 @@
                         <div class="w-full px-3 mb-6 md:mb-0">
                             <mat-form-field class="w-full" [ngClass]="formFieldHelpers">
                                 <mat-label>เลือกรถ</mat-label>
-                                <mat-select (selectionChange)="selectProduct($event.value)">
+                                <mat-select [formControl]="productFilter" (selectionChange)="selectProduct($event.value)">
                                     <mat-option *ngFor="let item of productData;" [value]="item">
                                         ชื่อรถ : {{item.name ?? '-'}} , ปี : {{year}} , เลขทะเบียน :
                                         {{item.license_plate ?? '-'}} ,เลขทะเบียน : {{item.license_plate ?? '-'}}
