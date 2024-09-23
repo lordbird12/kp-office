@@ -110,6 +110,7 @@ export class EditComponent implements OnInit, AfterViewInit, OnDestroy {
             category_product_id: ['', Validators.required],
             sub_category_product_id: ['', Validators.required],
             name: [''],
+            id: [''],
             detail: [''],
             qty: [''],
             sale_price: [''],

@@ -146,7 +146,7 @@ export class ListComponent implements OnInit, AfterViewInit {
     // เพิ่มเมธอด editElement(element) และ deleteElement(element)
     editElement(element: any) {
         this._router.navigate([
-            'admin/product/edit/' + element
+            'admin/product-attribute/edit/' + element
         ])
     }
     viewElement(element: any) {

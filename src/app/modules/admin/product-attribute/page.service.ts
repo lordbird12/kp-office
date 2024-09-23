@@ -48,7 +48,7 @@ export class Service {
 
     create(data: FormData): Observable<any> {
         return this._httpClient
-            .post<any>(environment.baseURL + '/api/user', data)
+            .post<any>(environment.baseURL + '/api/product_attribute', data)
             .pipe(
                 tap((result) => {
                     this._data.next(result);
@@ -60,7 +60,7 @@ export class Service {
 
     delete(id: any): Observable<any> {
         return this._httpClient.delete<any>(
-            environment.baseURL + '/api/employees/' + id,
+            environment.baseURL + '/api/product_attribute/' + id,
             { headers: this.httpOptionsFormdata.headers }
         );
     }
@@ -86,7 +86,7 @@ export class Service {
 
     getCategories(): Observable<any> {
         return this._httpClient
-            .get<any>(environment.baseURL + '/api/get_category_product')
+            .get<any>(environment.baseURL + '/api/get_category_attribute')
             .pipe(
                 tap((data) => {
                     this._data.next(data);
@@ -187,7 +187,7 @@ export class Service {
     getPage(dataTablesParameters: any): Observable<DataTablesResponse> {
         return this._httpClient
             .post(
-                environment.baseURL + '/api/product_page',
+                environment.baseURL + '/api/product_attribute_page',
                 dataTablesParameters,
                 this.httpOptionsFormdata
             )
@@ -233,7 +233,7 @@ export class Service {
         // }
         return this._httpClient
             .post(
-                environment.baseURL + '/api/product',
+                environment.baseURL + '/api/update_product_attribute',
                 data,
             )
             .pipe(
