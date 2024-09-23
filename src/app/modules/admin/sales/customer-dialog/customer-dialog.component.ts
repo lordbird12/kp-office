@@ -57,44 +57,47 @@ export class CustomerDialogComponent implements OnInit {
     flashMessage: 'success' | 'error' | null = null;
     form: FormGroup;
     order: any;
-    taxType: any[] = [
+    gender: any = [
         {
-            id: 1,
-            name: 'สินค้ามีภาษี',
+            id: 'M',
+            name: 'ชาย'
         },
         {
-            id: 2,
-            name: 'สินค้าไม่มีภาษี',
-        },
-    ];
-    uniType: any[] = [
-        {
-            id: 1,
-            name: 'แท่ง',
-        },
-        {
-            id: 2,
-            name: 'ชิ้น',
-        },
-        {
-            id: 3,
-            name: 'กิโลกรัม',
-        },
-        {
-            id: 4,
-            name: 'กล่อง',
-        },
-    ];
+            id: 'F',
+            name: 'หญิง'
+        }
+    ]
+
     constructor(private dialogRef: MatDialogRef<CustomerDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) private data: any,
+        @Inject(MAT_DIALOG_DATA) public data: any,
         private formBuilder: FormBuilder,
         private _fuseConfirmationService: FuseConfirmationService,
         private _changeDetectorRef: ChangeDetectorRef,
-        private _service: PageService
-    ) { }
+        private _service: PageService,
+     
+    ) 
+    { 
+        console.log(this.data.type);
+        
+        this.form = this.formBuilder.group({
+            name: '',
+            email: '',
+            idcard: '',
+            company: '',
+            phone: '',
+            phone2: '',
+            address : '',
+            age: '',
+            status: '',
+            gender: '',
+        })
+
+    }
 
     ngOnInit(): void {
-        this.loadTable();
+        if(this.data.type === 'LIST') {
+            this.loadTable();
+        }
     }
 
     onSaveClick(): void {
@@ -154,11 +157,11 @@ export class CustomerDialogComponent implements OnInit {
         confirmation.afterClosed().subscribe((result) => {
             if (result === 'confirmed') {
                 let formValue = this.form.value;
-                formValue.date = moment(formValue.date).format('YYYY-MM-DD')
-                this._service.claim(formValue).subscribe({
+                // formValue.date = moment(formValue.date).format('YYYY-MM-DD')
+                this._service.customerCreate(formValue).subscribe({
                     next: (resp: any) => {
                         this.showFlashMessage('success');
-                        this.dialogRef.close(resp);
+                        this.dialogRef.close(resp.data);
                     },
                     error: (err: any) => {
                         this.form.enable();

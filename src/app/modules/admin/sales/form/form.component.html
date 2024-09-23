@@ -84,9 +84,11 @@
                             </mat-form-field>
                         </div>
 
-                        <div class="w-full px-3 mb-6 md:mb-2">
-                            <button mat-raised-button color="accent" (click)="claim()" class="mx-1">
+                        <div class="flex flex-col md:flex-row gap-2 w-full px-3 mb-6 md:mb-2">
+                            <button mat-raised-button color="accent" (click)="customer('LIST')" class="mx-1">
                                 &nbsp;ค้นหาลูกค้า</button>
+                            <button mat-raised-button color="accent" (click)="customer('NEW')" class="mx-1">
+                                &nbsp;เพิ่มลูกค้า</button>
                         </div>
                         <div class="w-full px-3 mb-6 md:mb-0">
                             <mat-form-field class="w-full">
@@ -150,7 +152,7 @@
                             </mat-form-field>
                         </div>
 
-                        <div class="w-full mb-6 md:mb-0" *ngIf="productSelected">
+                        <div class="w-full mb-6 md:mb-0">
                             <div class="relative overflow-x-auto shadow-md m-4 border-2">
                                 <table class="w-full text-md text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                     <thead
@@ -171,7 +173,7 @@
                                                 ยี่ห้อ/รุ่นรถยนต์
                                             </td>
                                             <td class="px-6 text-center">
-                                                {{productSelected.brand_model ?? '-'}}
+                                                {{productSelected?.brand_model ?? '-'}}
                                             </td>
                                         </tr>
                                         <tr
@@ -180,7 +182,7 @@
                                                 ปี
                                             </td>
                                             <td class="px-6 text-center">
-                                                {{productSelected.year ?? '-'}}
+                                                {{productSelected?.year ?? '-'}}
                                             </td>
                                         </tr>
                                         <tr
@@ -189,7 +191,7 @@
                                                 สี
                                             </td>
                                             <td class="px-6 text-center">
-                                                {{productSelected.color ?? '-'}}
+                                                {{productSelected?.color ?? '-'}}
                                             </td>
                                         </tr>
                                         <tr
@@ -198,7 +200,7 @@
                                                 เกียร์
                                             </td>
                                             <td class="px-6 text-center">
-                                                {{productSelected.gear ?? '-'}}
+                                                {{productSelected?.gear ?? '-'}}
                                             </td>
                                         </tr>
                                         <tr
@@ -207,7 +209,7 @@
                                                 หมายเลขทะเบียน
                                             </td>
                                             <td class="px-6 text-center">
-                                                {{productSelected.license_plete ?? '-'}}
+                                                {{productSelected?.license_plete ?? '-'}}
                                             </td>
                                         </tr>
                                         <tr
@@ -216,7 +218,7 @@
                                                 หมายเลขเครื่องยนต์
                                             </td>
                                             <td class="px-6 text-center">
-                                                {{productSelected.engine_no ?? '-'}}
+                                                {{productSelected?.engine_no ?? '-'}}
                                             </td>
                                         </tr>
                                         <tr
@@ -225,7 +227,7 @@
                                                 หมายเลขตัวถัง
                                             </td>
                                             <td class="px-6 text-center">
-                                                {{productSelected.tank_no ?? '-'}}
+                                                {{productSelected?.tank_no ?? '-'}}
                                             </td>
                                         </tr>
                                     </tbody>

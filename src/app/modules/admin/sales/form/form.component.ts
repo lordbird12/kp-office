@@ -116,6 +116,7 @@ export class FormComponent implements OnInit {
         public activatedRoute: ActivatedRoute,
         private dialog: MatDialog,
         private _changeDetectorRef: ChangeDetectorRef,
+        
     ) {
 
         this._service.getUserByDepartment(2).subscribe((resp: any) => {
@@ -609,18 +610,16 @@ export class FormComponent implements OnInit {
             }
         });
     }
-    claim() {
+    customer(value: any) {
         const dialogRef = this.dialog.open(CustomerDialogComponent, {
-            width: 'auto', // กำหนดความกว้างของ Dialog
-            height: '900px',
+            width: '800px', 
+            height: '800px',
             data: {
-                data: null
-            } // ส่งข้อมูลเริ่มต้นไปยัง Dialog
+                type: value
+            } 
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            console.log(result);
-
             if (result) {
                 this.formData.patchValue({
                     client_id: result.id,
