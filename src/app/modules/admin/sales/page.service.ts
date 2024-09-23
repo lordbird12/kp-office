@@ -221,6 +221,15 @@ export class PageService {
                 })
             );
     }
+    getGarage(): Observable<any> {
+        return this._httpClient
+            .get<any>(environment.baseURL + '/api/get_garage')
+            .pipe(
+                tap((result) => {
+                    this._data.next(result);
+                })
+            );
+    }
 
    getPageCustomer(dataTablesParameters: any): Observable<DataTablesResponse> {
        return this._httpClient

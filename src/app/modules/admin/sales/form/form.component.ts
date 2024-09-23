@@ -35,7 +35,7 @@ import { CustomerDialogComponent } from '../customer-dialog/customer-dialog.comp
     encapsulation: ViewEncapsulation.None,
     standalone: true,
     imports: [
-        MatRadioModule,  NgxMaskDirective, MatAutocompleteModule, CommonModule, MatIconModule, FormsModule, MatFormFieldModule, NgClass, MatInputModule, TextFieldModule, ReactiveFormsModule, MatButtonToggleModule, MatButtonModule, MatSelectModule, MatOptionModule, MatChipsModule, MatDatepickerModule],
+        MatRadioModule, NgxMaskDirective, MatAutocompleteModule, CommonModule, MatIconModule, FormsModule, MatFormFieldModule, NgClass, MatInputModule, TextFieldModule, ReactiveFormsModule, MatButtonToggleModule, MatButtonModule, MatSelectModule, MatOptionModule, MatChipsModule, MatDatepickerModule],
 })
 export class FormComponent implements OnInit {
     formFieldHelpers: string[] = ['fuse-mat-dense'];
@@ -73,6 +73,17 @@ export class FormComponent implements OnInit {
         },
 
     ];
+    repairType: any[] = [
+        {
+            code: 'IN',
+            name: 'ช่างภายใน'
+        },
+        {
+            code: 'OUT',
+            name: 'ช่างภายนอก'
+        },
+
+    ];
     formData: FormGroup;
     formattedDateTime: string;
     productSelected: any;
@@ -87,11 +98,12 @@ export class FormComponent implements OnInit {
     filterFinance: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
     financeData: any[] = [];
 
-     ///engineer_user
-     engineerFilter = new FormControl('');
-     filterEngineer: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-     engineerData: any[] = [];
+    ///engineer_user
+    engineerFilter = new FormControl('');
+    filterEngineer: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+    engineerData: any[] = [];
 
+    garageData: any[] = []
     user_login: any = JSON.parse(localStorage.getItem('user'));
     /**
      * Constructor
@@ -105,7 +117,6 @@ export class FormComponent implements OnInit {
         private dialog: MatDialog,
         private _changeDetectorRef: ChangeDetectorRef,
     ) {
-        console.log(this.user_login);
 
         this._service.getUserByDepartment(2).subscribe((resp: any) => {
             this.saleData = resp.data
@@ -127,7 +138,7 @@ export class FormComponent implements OnInit {
             sale_id: null,
             client_id: null,
             finance_id: null,
-            finance_payment_period:null,
+            finance_payment_period: null,
             finance_other: null,
             sale_price: 0,
             finance_price: 0,
@@ -147,74 +158,32 @@ export class FormComponent implements OnInit {
             remark: null,
             interview: null,
             product_id: null,
-            promotions: this._fb.array([]),
             engineer_id: null,
             customer_name: null,
             phone: null,
             idcard: null,
             address: null,
+            brand_id: null,
+            brand_model_id: null,
+            promotions: this._fb.array([]),
+            repairs: this._fb.array([]),
         });
 
         this._service.getClient().subscribe((resp: any) => {
             this.clientData = resp.data
         });
-        // this._service.getFinanace().subscribe((resp: any) => {
+        // this._service.getFinanace(.subscribe((resp: any) => {
         //     this.finanaceData = resp.data
         // });
 
         this._service.getBrand().subscribe((resp: any) => {
             this.brandData = resp.data
         });
+        this._service.getGarage().subscribe((resp: any) => {
+            this.garageData = resp.data
+        });
 
-        if (this._router.url !== '/admin/sales/form') {
-            this.activatedRoute.params.subscribe(params => {
-               
-                this.isForm = false;
-                const id = params.id;
-                this.Id = id
-                this._service.getById(id).subscribe((resp: any) => {
-                    this.itemData = resp.data;
-                    this.saleFilter.setValue(this.itemData.sale?.name)
-                    this.financeFilter.setValue(this.itemData.finance?.name)
-                    this.engineerFilter.setValue(this.itemData.engineer?.name)
-                    this._service.getBrandModel(this.itemData.orders.brand.id).subscribe((resp: any) => {
-                        this.brandModelData = resp.data
-                    });
 
-                    this._service.getProduct(this.itemData.orders.brand_model.id).subscribe((resp: any) => {
-                        this.productData = resp.data
-                        this.selectProduct(this.itemData.orders.product.code);
-                        this._changeDetectorRef.markForCheck();
-
-                    });
-
-                    this.paymentData = resp.data.orders.payments;
-                    this.claimId = resp.data.orders.product_id;
-                    this.total = this.paymentData.reduce((sum, current) => sum + (+current.price), 0);
-                    this.formData.patchValue({
-                        ...this.itemData,
-                    });
-                    this.formData.patchValue({
-                        brand_id: this.itemData.orders.product.brand_id,
-                        brand_model_id: this.itemData.orders.product.brand_model_id,
-                        product_code: this.itemData.orders.product.code,
-                        customer_name: this.itemData.client?.name,
-                        phone: this.itemData.client?.phone,
-                        idcard: this.itemData.client?.idcard,
-                        address: this.itemData.client?.address,
-
-                    });
-
-                    this._changeDetectorRef.markForCheck();
-                    this._service.getClaim(this.claimId).subscribe((res: any) => {
-                        this.claimData = res.data;
-                        this._changeDetectorRef.markForCheck();
-                    })
-                    
-                });
-
-            });
-        }
 
 
     }
@@ -224,13 +193,86 @@ export class FormComponent implements OnInit {
     }
 
     ngOnInit() {
-        const currentDateTime = DateTime.now();
-        this.formattedDateTime = currentDateTime.toFormat('dd/MM/yyyy');
-        this.formData.patchValue({
-            sale_id: this.user_login?.id,
-            date: currentDateTime.toFormat('yyyy-MM-dd')
-        })
-        this.saleFilter.setValue(this.user_login.name)
+
+        if (this._router.url !== '/admin/sales/form') {
+            this.activatedRoute.params.subscribe(params => {
+
+                this.isForm = false;
+                const id = params.id;
+                this.Id = id
+                this._service.getById(id).subscribe((resp: any) => {
+                    this.itemData = resp.data;
+                    this.saleFilter.setValue(this.itemData.sale?.name)
+                    this.financeFilter.setValue(this.itemData.finance?.name)
+                    this.engineerFilter.setValue(this.itemData.engineer?.name)
+                    this._service.getBrandModel(this.itemData.orders?.brand?.id).subscribe((resp: any) => {
+                        this.brandModelData = resp.data
+                        
+                    });
+
+                    this._service.getProduct(this.itemData.orders?.brand_model.id).subscribe((resp: any) => {
+                        this.productData = resp.data
+                        
+                        console.log('product 1',this.itemData.orders.product_id);
+                        let value = this.productData.find(item => item.id === +this.itemData.orders.product_id)
+                        console.log('product data',value);
+                        this.selectProduct(value);
+                        this._changeDetectorRef.markForCheck();
+
+                    });
+
+                    // this.paymentData = resp.data.orders.payments;
+                    // this.claimId = resp.data.orders.product_id;
+                    // this.total = this.paymentData.reduce((sum, current) => sum + (+current.price), 0);
+                    this.formData.patchValue({
+                        ...this.itemData,
+                    });
+                    this.formData.patchValue({
+                        brand_id: +this.itemData.orders?.brand?.id,
+                        brand_model_id: +this.itemData.orders?.brand_model.id,
+                        customer_name: this.itemData.client?.name,
+                        phone: this.itemData.client?.phone,
+                        idcard: this.itemData.client?.idcard,
+                        address: this.itemData.client?.address,
+                    });
+
+                    this._changeDetectorRef.markForCheck();
+                    this._service.getClaim(this.claimId).subscribe((res: any) => {
+                        this.claimData = res.data;
+                        this._changeDetectorRef.markForCheck();
+                    })
+
+                    const promotionFormArray = this.formData.get('promotions') as FormArray;
+                    this.itemData.promotions.forEach(promotion => {
+                        let promo = this._fb.group({
+                            promotion_id: [promotion.promotion.id || ''],
+                            name: promotion.promotion.name,
+                            amount: 0,
+                            paid: [promotion.paid || '1'],
+                            detail: '',
+                        });
+                        
+                        promotionFormArray.push(promo);
+                    });
+
+                });
+
+            });
+        } else {
+            const currentDateTime = DateTime.now();
+            this.formattedDateTime = currentDateTime.toFormat('dd/MM/yyyy');
+            this.formData.patchValue({
+                sale_id: this.user_login?.id,
+                date: currentDateTime.toFormat('yyyy-MM-dd')
+            })
+            this.saleFilter.setValue(this.user_login.name)
+
+
+            this._service.getPromotion().subscribe((data) => {
+                this.setPromotions(data.data);
+                this._changeDetectorRef.markForCheck();
+            });
+        }
         this.saleFilter.valueChanges
             .pipe(takeUntil(this._onDestroy))
             .subscribe(() => {
@@ -246,11 +288,6 @@ export class FormComponent implements OnInit {
             .subscribe(() => {
                 this._filterEngineer();
             });
-
-        this._service.getPromotion().subscribe((data) => {
-            this.setPromotions(data.data);
-            this._changeDetectorRef.markForCheck(); 
-        });
     }
         /**
      * On destroy
@@ -315,6 +352,27 @@ export class FormComponent implements OnInit {
         );
     }
 
+    repairs(): FormArray {
+        return this.formData.get('repairs') as FormArray;
+    }
+
+    createRepairsForm(): FormGroup {
+        return this._fb.group({
+            engineer_id: null,
+            type: 'IN',
+            detail: '',
+        });
+    }
+
+    addRepair(): void {
+        this.repairs().push(this.createRepairsForm());
+     
+    }
+
+    removeRepair(i: number): void {
+        this.repairs().removeAt(i);
+    }
+
     promotions(): FormArray {
         return this.formData.get('promotions') as FormArray;
     }
@@ -331,12 +389,12 @@ export class FormComponent implements OnInit {
     }
     setPromotions(promotions: any[]) {
 
-        console.log('promotion',promotions);
-        
+        console.log('promotion', promotions);
+
         const promotionFormArray = this.formData.get('promotions') as FormArray;
         promotions.forEach(promotion => {
             console.log(promotion);
-            
+
             promotionFormArray.push(this.createPromotionForm(promotion));
         });
     }
@@ -420,7 +478,8 @@ export class FormComponent implements OnInit {
     }
 
     selectProduct(item: any): void {
-
+        console.log(item);
+        
         this.formData.patchValue({
             product_id: item.id
         })
@@ -434,6 +493,9 @@ export class FormComponent implements OnInit {
             tank_no: item.tank_no,
         }
         this.productSelected = data
+        // console.log(this.productSelected);
+        this._changeDetectorRef.markForCheck();
+        
     }
 
     selectBrand(item: any): void {
@@ -549,12 +611,12 @@ export class FormComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             console.log(result);
-            
+
             if (result) {
                 this.formData.patchValue({
                     client_id: result.id,
                     customer_name: result.name ?? null,
-                    phone:  result.phone ?? null,
+                    phone: result.phone ?? null,
                     idcard: result.idcard ?? null,
                     address: result.address ?? null,
                 })
