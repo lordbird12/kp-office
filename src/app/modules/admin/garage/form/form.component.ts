@@ -122,7 +122,7 @@ export class FormComponent implements OnInit {
   }
 
   backTo() {
-    this._router.navigate(['admin/broker/list'])
+    this._router.navigate(['admin/garage/list'])
   }
 
   onSubmit(): void {
@@ -163,7 +163,7 @@ export class FormComponent implements OnInit {
           }
           this._Service.update(formData).subscribe({
             next: (resp: any) => {
-              this._router.navigate(['admin/broker/list'])
+              this._router.navigate(['admin/garage/list'])
             },
             error: (err: any) => {
               this.addForm.enable();
@@ -230,7 +230,7 @@ export class FormComponent implements OnInit {
           }
           this._Service.create(formData).subscribe({
             next: (resp: any) => {
-              this._router.navigate(['admin/broker/list'])
+              this._router.navigate(['admin/garage/list'])
             },
             error: (err: any) => {
               this.addForm.enable();

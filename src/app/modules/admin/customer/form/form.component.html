@@ -21,17 +21,24 @@
                     ข้อมูลลูกค้า
                 </span>
                 <div class="-mx-3 md:flex mb-6">
-                    <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                    <!-- <div class="md:w-1/2 px-3 mb-6 md:mb-0">
                         <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
                             <mat-label>รหัสลูกค้า</mat-label>
                             <input matInput [placeholder]="'กรอกรหัสลูกค้า'">
+                            <mat-hint>This is a hint text</mat-hint>
+                        </mat-form-field>
+                    </div> -->
+                    <div class="md:w-1/2 px-3">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>เลขประจำตัวผู้เสียภาษี</mat-label>
+                            <input matInput [placeholder]="'กรอกเลขประจำตัวผู้เสียภาษี'">
                             <!-- <mat-hint>This is a hint text</mat-hint> -->
                         </mat-form-field>
                     </div>
                     <div class="md:w-1/2 px-3">
                         <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
-                            <mat-label>เลขประจำตัวผู้เสียภาษี</mat-label>
-                            <input matInput [placeholder]="'กรอกเลขประจำตัวผู้เสียภาษี'" formControlName="idcard">
+                            <mat-label>ชื่อลูกค้า</mat-label>
+                            <input matInput [placeholder]="'กรอกชื่อลูกค้า'">
                             <!-- <mat-hint>This is a hint text</mat-hint> -->
                         </mat-form-field>
                     </div>
@@ -46,9 +53,18 @@
                     </div>
                     <div class="md:w-full px-3">
                         <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
-                            <mat-label>ชื่อลูกค้า</mat-label>
-                            <input matInput [placeholder]="'กรอกชื่อลูกค้า'" formControlName="name">
+                            <mat-label>อายุ</mat-label>
+                            <input matInput [placeholder]="'กรอกอายุ'">
                             <!-- <mat-hint>This is a hint text</mat-hint> -->
+                        </mat-form-field>
+                    </div>
+                    <div class="md:w-full px-3">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>เพศ</mat-label>
+                            <mat-select placeholder="กรอกเพศ">
+                                <mat-option value="M">ชาย</mat-option>
+                                <mat-option value="F">หญิง</mat-option>
+                            </mat-select>
                         </mat-form-field>
                     </div>
                 </div>

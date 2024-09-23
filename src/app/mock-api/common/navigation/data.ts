@@ -60,7 +60,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
             //     icon: 'heroicons_outline:clock',
             //     link: '/admin/time-attendance/list',
             // },
-            
+
         ],
     },
     // {
@@ -70,7 +70,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
     //     type: 'group',
     //     icon: 'heroicons_outline:home',
     //     children: [
-           
+
     //         {
     //             id: 'finance.payroll',
     //             title: 'เงินเดือน',
@@ -143,13 +143,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon: 'heroicons_outline:cube',
                 link: '/admin/product/list',
             },
-            {
-                id: 'products.product-attribute',
-                title: 'คลังอุปกรณ์เสริม',
-                type: 'basic',
-                icon: 'heroicons_outline:cube',
-                link: '/admin/product-attribute/list',
-            },
+            // {
+            //     id: 'products.product-attribute',
+            //     title: 'คลังอุปกรณ์เสริม',
+            //     type: 'basic',
+            //     icon: 'heroicons_outline:cube',
+            //     link: '/admin/product-attribute/list',
+            // },
             // {
             //     id: 'products.transfer',
             //     title: 'โอนย้ายสินค้า',
@@ -178,7 +178,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 title: 'ลูกค้าของเรา',
                 type: 'basic',
                 icon: 'heroicons_mini:user-group',
-                link: '/admin/customer/list',
+                link: '/admin/customers/list',
             },
             {
                 id: 'claim.list',
@@ -230,6 +230,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 type: 'basic',
                 icon: 'mat_outline:health_and_safety',
                 link: '/admin/insurance/list',
+            },
+            {
+                id: 'garage.list',
+                title: 'อู่นอก',
+                type: 'basic',
+                icon: 'mat_outline:home',
+                link: '/admin/garage/list',
             },
         ],
     },
@@ -323,13 +330,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
         type: 'group',
         icon: 'heroicons_outline:home',
         children: [
-            {
-                id: 'self.employee',
-                title: 'แก้ไขข้อมูลส่วนตัว',
-                type: 'basic',
-                icon: 'heroicons_outline:user',
-                link: '/admin/employee/list',
-            },
+            // {
+            //     id: 'self.employee',
+            //     title: 'แก้ไขข้อมูลส่วนตัว',
+            //     type: 'basic',
+            //     icon: 'heroicons_outline:user',
+            //     link: '/admin/employee/list',
+            // },
             {
                 id: 'admin.logout',
                 title: 'ออกจากระบบ',

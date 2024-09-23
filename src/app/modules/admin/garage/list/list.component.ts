@@ -1,17 +1,9 @@
+
+
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { CommonModule, NgClass } from '@angular/common';
-import {
-    AfterViewInit,
-    ChangeDetectorRef,
-    Component,
-    OnInit,
-    ViewChild,
-    ViewEncapsulation,
-} from '@angular/core';
-import {
-    FormsModule,
-    ReactiveFormsModule,
-} from '@angular/forms';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatChipsModule } from '@angular/material/chips';
@@ -25,13 +17,14 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { PageService } from '../page.service';
-import { EditDialogComponent } from '../edit-dialog/edit-dialog.component';
 import { DataTableDirective, DataTablesModule } from 'angular-datatables';
 import { Router } from '@angular/router';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
+import { PictureComponent } from '../../picture/picture.component';
+
 
 @Component({
-    selector: 'employee-list',
+    selector: 'list',
     templateUrl: './list.component.html',
     encapsulation: ViewEncapsulation.None,
     standalone: true,
@@ -55,12 +48,15 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
         DataTablesModule,
     ],
 })
+
 export class ListComponent implements OnInit, AfterViewInit {
+
+    @ViewChild(DataTableDirective)
+    dtElement!: DataTableDirective;
     isLoading: boolean = false;
     dtOptions: DataTables.Settings = {};
-    dtElement!: DataTableDirective;
     positions: any[];
-    public dataRow: any[];
+    dataRow: any[] = [];
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     constructor(
         private dialog: MatDialog,
@@ -68,8 +64,9 @@ export class ListComponent implements OnInit, AfterViewInit {
         private _service: PageService,
         private _router: Router,
         private _fuseConfirmationService: FuseConfirmationService,
-    ) {}
+    ) {
 
+    }
     ngOnInit() {
         this.loadTable();
     }
@@ -78,55 +75,23 @@ export class ListComponent implements OnInit, AfterViewInit {
         this._changeDetectorRef.detectChanges();
     }
 
-    // เพิ่มเมธอด editElement(element) และ deleteElement(element)
-    editElement(element: any) {
-        // const dialogRef = this.dialog.open(EditDialogComponent, {
-        //     width: '400px', // กำหนดความกว้างของ Dialog
-        //     data: {
-        //         data: element,
-        //         position: this.positions,
-        //     }, // ส่งข้อมูลเริ่มต้นไปยัง Dialog
-        // });
-
-        // dialogRef.afterClosed().subscribe((result) => {
-        //     if (result) {
-        //         // เมื่อ Dialog ถูกปิด ดำเนินการตามผลลัพธ์ที่คุณได้รับจาก Dialog
-        //     }
-        // });
-
-        this._router.navigate(['admin/employee/edit/' + element.id])
-    }
-    addElement() {
-        this._router.navigate(['admin/employee/form'])
-        // const dialogRef = this.dialog.open(FormDialogComponent, {
-        //     width: '860px', // กำหนดความกว้างของ Dialog
-        // });
-
-        // dialogRef.afterClosed().subscribe((result) => {
-        //     if (result) {
-        //         //    console.log(result,'result')
-        //     }
-        // });
-    }
-
     pages = { current_page: 1, last_page: 1, per_page: 10, begin: 0 };
     loadTable(): void {
         const that = this;
         this.dtOptions = {
-            pagingType: 'full_numbers',
+            pagingType: "full_numbers",
             pageLength: 25,
             serverSide: true,
             processing: true,
             language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.11.3/i18n/th.json',
+                url: "https://cdn.datatables.net/plug-ins/1.11.3/i18n/th.json",
             },
             ajax: (dataTablesParameters: any, callback) => {
                 dataTablesParameters.status = null;
-                that._service
-                    .getPage(dataTablesParameters)
-                    .subscribe((resp: any) => {
-                        this.dataRow = resp.data;
-                        this.pages.current_page = resp.current_page;
+                that._service.getPage(dataTablesParameters).subscribe((resp: any) => {
+                    this.dataRow = resp.data;
+                    console.log(this.dataRow)
+                    this.pages.current_page = resp.current_page;
                         this.pages.last_page = resp.last_page;
                         this.pages.per_page = resp.per_page;
                         if (resp.current_page > 1) {
@@ -142,21 +107,20 @@ export class ListComponent implements OnInit, AfterViewInit {
                             data: [],
                         });
                         this._changeDetectorRef.markForCheck();
-                    });
+                });
             },
             columns: [
                 { data: 'action', orderable: false },
                 { data: 'No' },
                 { data: 'name' },
-                { data: 'email' },
-                { data: 'tel' },
                 { data: 'create_by' },
                 { data: 'created_at' },
+
             ],
         };
     }
 
-    deleteElement(itemid: any) {
+    delete(itemid: any) {
         const confirmation = this._fuseConfirmationService.open({
             title: 'ลบข้อมูล',
             message: 'คุณต้องการลบข้อมูลใช่หรือไม่ ?',
@@ -187,14 +151,33 @@ export class ListComponent implements OnInit, AfterViewInit {
             error: (err: any) => {};
         });
     }
+    addElement() {
+        this._router.navigate(['/admin/garage/form'])
+    }
+    editElement(data: any) {
+        this._router.navigate(['/admin/garage/edit/' + data.id])
+    }
+
+    showPicture(imgObject: any): void {
+        this.dialog
+            .open(PictureComponent, {
+                autoFocus: false,
+                data: {
+                    imgSelected: imgObject,
+                },
+            })
+            .afterClosed()
+            .subscribe(() => {
+                // Go up twice because card routes are setup like this; "card/CARD_ID"
+                // this._router.navigate(['./../..'], {relativeTo: this._activatedRoute});
+            });
+    }
 
     rerender(): void {
         this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
             dtInstance.ajax.reload();
         });
     }
-
-    // handlePageEvent(event) {
-    //     this.loadData(event.pageIndex + 1, event.pageSize);
-    // }
 }
+
+

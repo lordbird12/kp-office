@@ -150,7 +150,7 @@ export const appRoutes: Route[] = [
             { path: '**', redirectTo: '404-not-found' },
             //Sales
             {
-              
+
                 path: 'admin',
                 children: [
                     { path: 'payroll', loadChildren: () => import('app/modules/admin/payroll/page.routes') },
@@ -210,14 +210,19 @@ export const appRoutes: Route[] = [
                             import('app/modules/admin/product-attribute/page.routes'),
                     },
                     {
-                        path: 'customer',
+                        path: 'customers',
                         loadChildren: () =>
-                            import('app/modules/admin/customer/page.routes'),
+                            import('app/modules/admin/customers/page.routes'),
                     },
                     {
                         path: 'finance',
                         loadChildren: () =>
                             import('app/modules/admin/finance/page.routes'),
+                    },
+                    {
+                        path: 'garage',
+                        loadChildren: () =>
+                            import('app/modules/admin/garage/page.routes'),
                     },
                     {
                         path: 'broker',

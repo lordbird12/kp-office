@@ -48,7 +48,7 @@ export class PageService {
 
     create(data: FormData): Observable<any> {
         return this._httpClient
-            .post<any>(environment.baseURL + '/api/insurance', data)
+            .post<any>(environment.baseURL + '/api/client', data)
             .pipe(
                 tap((result) => {
                     this._data.next(result);
@@ -68,7 +68,7 @@ export class PageService {
 
     update(data: FormData): Observable<any> {
         return this._httpClient
-            .post<any>(environment.baseURL + '/api/update_insurance' ,data)
+            .post<any>(environment.baseURL + '/api/update_client' ,data)
             .pipe(
                 tap((result) => {
                     this._data.next(result);
@@ -88,7 +88,7 @@ export class PageService {
 
     delete(id: any): Observable<any> {
         return this._httpClient.delete<any>(
-            environment.baseURL + '/api/insurance/' + id
+            environment.baseURL + '/api/client/' + id
         );
     }
 
@@ -130,7 +130,7 @@ export class PageService {
     getPage(dataTablesParameters: any): Observable<DataTablesResponse> {
         return this._httpClient
             .post(
-                environment.baseURL + '/api/insurance_page',
+                environment.baseURL + '/api/client_page',
                 dataTablesParameters,
                 this.httpOptionsFormdata
             )
@@ -157,7 +157,7 @@ export class PageService {
 
     getById(id: any): Observable<any> {
         return this._httpClient
-            .get<any>(environment.baseURL + '/api/insurance/' + id)
+            .get<any>(environment.baseURL + '/api/client/' + id)
             .pipe(
                 tap((result) => {
                     this._data.next(result);

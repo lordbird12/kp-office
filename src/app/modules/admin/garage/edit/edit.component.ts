@@ -23,8 +23,8 @@ import { Router } from '@angular/router';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 
 @Component({
-    selector: 'form-employee',
-    templateUrl: './form.component.html',
+    selector: 'edit-employee',
+    templateUrl: './edit.component.html',
     encapsulation: ViewEncapsulation.None,
     standalone: true,
     imports: [
@@ -49,19 +49,9 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
     ],
 
 })
-export class FormComponent implements OnInit {
-        addForm: FormGroup;
+export class EditComponent implements OnInit {
+    editForm: FormGroup;
     MenuList: any = [];
-    gender: any = [
-      {
-        key: 'M',
-        name: 'ผู้ชาย'
-      },
-      {
-        key: 'F',
-        name: 'ผู้หญิง'
-      }
-    ]
     formFieldHelpers: string[] = ['fuse-mat-dense'];
     fixedSubscriptInput: FormControl = new FormControl('', [Validators.required]);
     dynamicSubscriptInput: FormControl = new FormControl('', [Validators.required]);
@@ -78,17 +68,16 @@ export class FormComponent implements OnInit {
         private _router: Router,
         private _fuseConfirmationService: FuseConfirmationService,
     ) {
-        this.addForm = this._formBuilder.group({
+        this.editForm = this._formBuilder.group({
+            code: '',
             name: '',
-            email: '',
-            idcard: '',
-            company: '',
-            phone: '',
-            phone2: '',
+            tax: '',
+            contact: '',
+            tel1: '',
+            tel2: '',
             address : '',
-            age: '',
+            remark: '',
             status: '',
-            gender: '',
         })
     }
 
@@ -96,24 +85,7 @@ export class FormComponent implements OnInit {
 
     }
 
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Get the form field helpers as string
-     */
-    getFormFieldHelpersAsString(): string {
-        return this.formFieldHelpers.join(' ');
-    }
-
-    backTo() {
-        this._router.navigate(['admin/customer/list'])
-    }
-
     onSubmit() : void {
-
         const dialogRef = this._fuseConfirmationService.open({
             "title": "บันทึกข้อมูล",
             "message": "คุณต้องการบันทึกข้อมูลใช่หรือไม่ ?",
@@ -143,6 +115,20 @@ export class FormComponent implements OnInit {
                 console.log('cancel');
             }
           }))
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Public methods
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Get the form field helpers as string
+     */
+    getFormFieldHelpersAsString(): string {
+        return this.formFieldHelpers.join(' ');
+    }
+    backTo() {
+        this._router.navigate(['admin/customer/list'])
     }
 }
 
