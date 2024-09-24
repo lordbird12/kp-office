@@ -339,83 +339,142 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     New(): void {
-        if(this.Id) {
-            const confirmation = this._fuseConfirmationService.open({
-                title: 'แก้ไขข้อมูล',
-                message: 'คุณต้องการแก้ไขข้อมูลใช่หรือไม่ ',
-                icon: {
-                    show: false,
-                    name: 'heroicons_outline:exclamation',
-                    color: 'warning',
+        // Open the confirmation dialog
+        if (this.Id) {
+          const confirmation = this._fuseConfirmationService.open({
+            "title": "แก้ไขข้อมูล",
+            "message": "คุณต้องการแก้ไขข้อมูลใช่หรือไม่ ",
+            "icon": {
+              "show": false,
+              "name": "heroicons_outline:exclamation",
+              "color": "warning"
+            },
+            "actions": {
+              "confirm": {
+                "show": true,
+                "label": "ยืนยัน",
+                "color": "primary"
+              },
+              "cancel": {
+                "show": true,
+                "label": "ยกเลิก"
+              }
+            },
+            "dismissible": true
+          });
+
+          // Subscribe to the confirmation dialog closed action
+          confirmation.afterClosed().subscribe((result) => {
+            if (result === 'confirmed') {
+              const formData = new FormData();
+              Object.entries(this.formData.value).forEach(([key, value]: any[]) => {
+                formData.append(key, value);
+              });
+
+              for (var i = 0; i < this.files.length; i++) {
+                formData.append('image', this.files[i]);
+              }
+              this._Service.update(formData).subscribe({
+                next: (resp: any) => {
+                  this._router.navigate(['admin/finance/list'])
                 },
-                actions: {
-                    confirm: {
-                        show: true,
-                        label: 'ยืนยัน',
-                        color: 'primary',
+                error: (err: any) => {
+                  this.formData.enable();
+                  this._fuseConfirmationService.open({
+                    "title": "กรุณาระบุข้อมูล",
+                    "message": err.error.message,
+                    "icon": {
+                      "show": true,
+                      "name": "heroicons_outline:exclamation",
+                      "color": "warning"
                     },
-                    cancel: {
-                        show: true,
-                        label: 'ยกเลิก',
+                    "actions": {
+                      "confirm": {
+                        "show": false,
+                        "label": "ยืนยัน",
+                        "color": "primary"
+                      },
+                      "cancel": {
+                        "show": false,
+                        "label": "ยกเลิก",
+
+                      }
                     },
-                },
-                dismissible: true,
-            });
-
-            // Subscribe to the confirmation dialog closed action
-            confirmation.afterClosed().subscribe((result) => {
-                // If the confirm button pressed...
-                if (result === 'confirmed') {
-                    const formData = new FormData();
-                    Object.entries(this.formData.value).forEach(
-                        ([key, value]: any[]) => {
-                            formData.append(key, value);
-                        }
-                    );
-                    for (var i = 0; i < this.files.length; i++) {
-                        formData.append('image', this.files[i]);
-                    }
-
-                    for (var i = 0; i < this.files1.length; i++) {
-                        formData.append('images[]', this.files1[i]);
-                    }
-
-                    this._Service.update(formData).subscribe({
-                        next: (resp: any) => {
-                            this._router.navigate(['admin/product/list'])
-                        },
-                        error: (err: any) => {
-                            this._fuseConfirmationService.open({
-                                title: 'กรุณาระบุข้อมูล',
-                                message:
-                                    'ไม่สามารถบันทึกข้อมูลได้กรุณาตรวจสอบใหม่อีกครั้ง',
-                                icon: {
-                                    show: true,
-                                    name: 'heroicons_outline:exclamation',
-                                    color: 'warning',
-                                },
-                                actions: {
-                                    confirm: {
-                                        show: false,
-                                        label: 'ยืนยัน',
-                                        color: 'primary',
-                                    },
-                                    cancel: {
-                                        show: false,
-                                        label: 'ยกเลิก',
-                                    },
-                                },
-                                dismissible: true,
-                            });
-                        },
-                    });
+                    "dismissible": true
+                  });
                 }
-            });
+              })
+            }
+          })
         } else {
+          const confirmation = this._fuseConfirmationService.open({
+            "title": "เพิ่มข้อมูล",
+            "message": "คุณต้องการเพิ่มข้อมูลใช่หรือไม่ ",
+            "icon": {
+              "show": false,
+              "name": "heroicons_outline:exclamation",
+              "color": "warning"
+            },
+            "actions": {
+              "confirm": {
+                "show": true,
+                "label": "ยืนยัน",
+                "color": "primary"
+              },
+              "cancel": {
+                "show": true,
+                "label": "ยกเลิก"
+              }
+            },
+            "dismissible": true
+          });
 
+          // Subscribe to the confirmation dialog closed action
+          confirmation.afterClosed().subscribe((result) => {
+            if (result === 'confirmed') {
+
+              const formData = new FormData();
+              Object.entries(this.formData.value).forEach(([key, value]: any[]) => {
+                formData.append(key, value);
+              });
+
+              for (var i = 0; i < this.files.length; i++) {
+                formData.append('image', this.files[i]);
+              }
+              this._Service.create(formData).subscribe({
+                next: (resp: any) => {
+                  this._router.navigate(['admin/finance/list'])
+                },
+                error: (err: any) => {
+                  this.formData.enable();
+                  this._fuseConfirmationService.open({
+                    "title": "กรุณาระบุข้อมูล",
+                    "message": err.error.message,
+                    "icon": {
+                      "show": true,
+                      "name": "heroicons_outline:exclamation",
+                      "color": "warning"
+                    },
+                    "actions": {
+                      "confirm": {
+                        "show": false,
+                        "label": "ยืนยัน",
+                        "color": "primary"
+                      },
+                      "cancel": {
+                        "show": false,
+                        "label": "ยกเลิก",
+
+                      }
+                    },
+                    "dismissible": true
+                  });
+                }
+              })
+            }
+          })
         }
-
-    }
+      }
 
     backTo() {
         this._router.navigate(['admin/product/list'])
