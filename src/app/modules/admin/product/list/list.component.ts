@@ -28,6 +28,7 @@ import { DataTableDirective, DataTablesModule } from 'angular-datatables';
 import { Router } from '@angular/router';
 import { PictureComponent } from '../../picture/picture.component';
 import { FormReportComponent } from '../form-report/form-report.component';
+import { FuseConfirmationService } from '@fuse/services/confirmation';
 
 @Component({
     selector: 'employee-list',
@@ -65,7 +66,7 @@ export class ListComponent implements OnInit, AfterViewInit {
     itemSupplier: any
     item1Data: any
     itemBrand: any;
-    companie: any; 
+    companie: any;
     // public dataRow: any[];
     dataRow: any[] = [];
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -74,6 +75,7 @@ export class ListComponent implements OnInit, AfterViewInit {
         private _changeDetectorRef: ChangeDetectorRef,
         private _service: Service,
         private _router: Router,
+        private _fuseConfirmationService: FuseConfirmationService,
         private _fb: FormBuilder
     ) {
         this.form = this._fb.group({
@@ -103,7 +105,7 @@ export class ListComponent implements OnInit, AfterViewInit {
         this._service.getBrand().subscribe((resp) => {
             this.itemBrand = resp.data;
         });
-    
+
     }
 
     getCompanie(): void {
@@ -145,11 +147,10 @@ export class ListComponent implements OnInit, AfterViewInit {
     }
 
     // เพิ่มเมธอด editElement(element) และ deleteElement(element)
-    editElement(element: any) {
-        this._router.navigate([
-            'admin/product/edit/' + element
-        ])
+    editElement(data: any) {
+        this._router.navigate(['/admin/product/edit/' + data.id])
     }
+
     viewElement(element: any) {
         const dialogRef = this.dialog.open(EditDialogComponent, {
             width: '700px', // กำหนดความกว้างของ Dialog
@@ -162,11 +163,12 @@ export class ListComponent implements OnInit, AfterViewInit {
             }
         });
     }
+
     downloadReport() {
         const dialogRef = this.dialog.open(FormReportComponent, {
             width: '700px', // กำหนดความกว้างของ Dialog
             maxHeight: '900px'
-         
+
         });
 
         dialogRef.afterClosed().subscribe((result) => {
@@ -175,6 +177,7 @@ export class ListComponent implements OnInit, AfterViewInit {
             }
         });
     }
+
     addElement() {
         this._router.navigate(['admin/product/form']);
     }
@@ -231,8 +234,36 @@ export class ListComponent implements OnInit, AfterViewInit {
         };
     }
 
-    deleteElement() {
-        // เขียนโค้ดสำหรับการลบออกองคุณ
+    deleteElement(itemid: any) {
+        const confirmation = this._fuseConfirmationService.open({
+            title: 'ลบข้อมูล',
+            message: 'คุณต้องการลบข้อมูลใช่หรือไม่ ?',
+            icon: {
+                show: true,
+                name: 'heroicons_outline:exclamation-triangle',
+                color: 'warning',
+            },
+            actions: {
+                confirm: {
+                    show: true,
+                    label: 'ยืนยัน',
+                    color: 'warn',
+                },
+                cancel: {
+                    show: true,
+                    label: 'ยกเลิก',
+                },
+            },
+            dismissible: true,
+        });
+        confirmation.afterClosed().subscribe((result) => {
+            if (result === 'confirmed') {
+                this._service.delete(itemid).subscribe((resp) => {
+                    this.rerender();
+                });
+            }
+            error: (err: any) => {};
+        });
     }
 
     showPicture(imgObject: any): void {

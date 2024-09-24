@@ -141,16 +141,12 @@
                     <tr>
                         <th class="w-[100px]">จัดการ</th>
                         <th class="w-[10px]">ลำดับ</th>
-                        <th>สาขา</th>
-                        <th>ยี่ห้อ</th>
-                        <th>รุ่น</th>
+                        <th>รหัสอะไหล่</th>
                         <th>ชื่อ</th>
-                        <th>เลขถัง</th>
-                        <th>เลขเครือง</th>
-                        <th>สี</th>
-                        <th>ซีซี</th>
-                        <th>ประเภท</th>
-                        <th>สถานะ</th>
+                        <th>Serial No.</th>
+                        <th>ราคาขาย</th>
+                        <th>ต้นทุน</th>
+                        <!-- <th>ประเภทอะไหล่</th> -->
                         <th>รูป</th>
                         <th>สร้างโดย</th>
                         <th>วันที่สร้าง</th>
@@ -170,31 +166,21 @@
                             </button>
                         </td>
                         <td>{{ pages.begin + (i + 1) }}</td>
-                        <td>
-                            <span class="font-bold">
-                                {{ item.companie ? item.companie.name : ''}}
-                            </span>
-                            <br>
-                            <span>
-                                {{ item.area ? item.area.name : "-" }}
-                            </span>
-                        </td>
-                        <td>{{ item.brand ? item.brand.name : "-" }}</td>
-                        <td>{{ item.brand_model ? item.brand_model.name : "-" }}</td>
+
+                        <td>{{ item.code ? item.code : "-" }}</td>
                         <td>{{ item.name ? item.name : "-" }}</td>
-                        <td>{{ item.tank_no ? item.tank_no : "-" }}</td>
-                        <td>{{ item.engine_no ? item.engine_no : "-" }}</td>
-                        <td>{{ item.color ? item.color.name : "-" }}</td>
-                        <td>{{ item.cc ? item.cc.name : "-" }}</td>
-                        <td>
+                        <td>{{ item.serial ? item.serial : "-" }}</td>
+                        <td>{{ item.sale_price ? item.sale_price : "-" }}</td>
+                        <td>{{ item.cost ? item.cost : "-" }}</td>
+                        <!-- <td>
                             <div *ngIf="item.type === 'มือหนึ่ง'" class="bg-red-200 p-1 rounded-md text-red-500 font-bold">
                                 {{ item.type ? item.type : "-" }}
                             </div>
                             <div *ngIf="item.type === 'มือสอง'" class="bg-yellow-200 p-1 rounded-md text-yellow-500 font-bold">
                                 {{ item.type ? item.type : "-" }}
                             </div>
-                        </td>
-                        <td>
+                        </td> -->
+                        <!-- <td>
                             <div *ngIf="item.status === 'ขายแล้ว'" class="bg-red-200 p-1 rounded-md text-red-500 font-bold">
                                 {{ item.status ? item.status : "-" }}
                             </div>
@@ -204,7 +190,7 @@
                             <div *ngIf="item.status === 'ว่างอยู่'" class="bg-green-200 p-1 rounded-md text-green-500 font-bold text-center">
                                 {{ item.status ? item.status : "-" }}
                             </div>
-                        </td>
+                        </td> -->
                         <td>
                             <button mat-button (click)="showPicture(item.image)">
                                 <mat-icon>image</mat-icon>

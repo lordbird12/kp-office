@@ -27,6 +27,7 @@ import { EditDialogComponent } from '../edit-dialog/edit-dialog.component';
 import { DataTableDirective, DataTablesModule } from 'angular-datatables';
 import { Router } from '@angular/router';
 import { PictureComponent } from '../../picture/picture.component';
+import { FuseConfirmationService } from '@fuse/services/confirmation';
 
 @Component({
     selector: 'employee-list',
@@ -73,10 +74,11 @@ export class ListComponent implements OnInit, AfterViewInit {
         private _changeDetectorRef: ChangeDetectorRef,
         private _service: Service,
         private _router: Router,
+        private _fuseConfirmationService: FuseConfirmationService,
         private _fb: FormBuilder
     ) {
         this.form = this._fb.group({
-            category_product_id: '',
+            category_attribute_id: '',
             supplier_id: '',
             brand_id: '',
             type: '',
@@ -144,10 +146,8 @@ export class ListComponent implements OnInit, AfterViewInit {
     }
 
     // เพิ่มเมธอด editElement(element) และ deleteElement(element)
-    editElement(element: any) {
-        this._router.navigate([
-            'admin/product-attribute/edit/' + element
-        ])
+    editElement(data: any) {
+        this._router.navigate(['/admin/product-attribute/edit/' + data.id])
     }
     viewElement(element: any) {
         const dialogRef = this.dialog.open(EditDialogComponent, {
@@ -217,8 +217,36 @@ export class ListComponent implements OnInit, AfterViewInit {
         };
     }
 
-    deleteElement() {
-        // เขียนโค้ดสำหรับการลบออกองคุณ
+    deleteElement(itemid: any) {
+        const confirmation = this._fuseConfirmationService.open({
+            title: 'ลบข้อมูล',
+            message: 'คุณต้องการลบข้อมูลใช่หรือไม่ ?',
+            icon: {
+                show: true,
+                name: 'heroicons_outline:exclamation-triangle',
+                color: 'warning',
+            },
+            actions: {
+                confirm: {
+                    show: true,
+                    label: 'ยืนยัน',
+                    color: 'warn',
+                },
+                cancel: {
+                    show: true,
+                    label: 'ยกเลิก',
+                },
+            },
+            dismissible: true,
+        });
+        confirmation.afterClosed().subscribe((result) => {
+            if (result === 'confirmed') {
+                this._service.delete(itemid).subscribe((resp) => {
+                    this.rerender();
+                });
+            }
+            error: (err: any) => {};
+        });
     }
 
     showPicture(imgObject: any): void {
