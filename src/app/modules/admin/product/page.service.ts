@@ -74,6 +74,13 @@ export class Service {
                 })
             );
     }
+
+    deleteArea(id: any): Observable<any> {
+        return this._httpClient.delete<any>(
+            environment.baseURL + '/api/area/' + id
+        );
+    }
+
     getPermission(): Observable<any> {
         return this._httpClient
             .get<any>(environment.baseURL + '/api/get_permission')

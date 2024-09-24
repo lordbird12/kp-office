@@ -162,7 +162,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 title: 'อะไหล่',
                 type: 'basic',
                 icon: 'heroicons_outline:wrench',
-                link: '/admin/spare-part/list',
+                link: '/admin/product-attribute/list',
             },
         ],
     },
@@ -266,7 +266,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon: 'heroicons_outline:wrench-screwdriver',
                 link: '/admin/category-attribute/list',
             },
-        
+
         ],
     },
     // {
