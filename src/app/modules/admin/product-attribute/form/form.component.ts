@@ -176,6 +176,7 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
                         cost: [''],
                         image: [''],
                         images: [''],
+                        id:[''],
                     })
 
                     this.formData2.patchValue({
