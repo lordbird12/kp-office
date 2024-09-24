@@ -17,6 +17,7 @@
                         &nbsp;
                         เพิ่มคำสั่งซื้อ
                     </button>
+                
                 </div>
             </div>
         </div>
@@ -46,6 +47,9 @@
                             </button>
                             <button mat-icon-button color="accent" (click)="deleteElement(item)">
                                 <mat-icon>delete</mat-icon>
+                            </button>
+                            <button mat-icon-button color="accent" (click)="downloadReport(item)">
+                                <mat-icon>print</mat-icon>
                             </button>
                         </td>
                         <td>{{ pages.begin + (i + 1) }}</td>

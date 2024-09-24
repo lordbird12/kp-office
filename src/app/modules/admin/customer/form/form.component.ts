@@ -52,6 +52,16 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
 export class FormComponent implements OnInit {
         addForm: FormGroup;
     MenuList: any = [];
+    gender: any = [
+      {
+        key: 'M',
+        name: 'ผู้ชาย'
+      },
+      {
+        key: 'F',
+        name: 'ผู้หญิง'
+      }
+    ]
     formFieldHelpers: string[] = ['fuse-mat-dense'];
     fixedSubscriptInput: FormControl = new FormControl('', [Validators.required]);
     dynamicSubscriptInput: FormControl = new FormControl('', [Validators.required]);

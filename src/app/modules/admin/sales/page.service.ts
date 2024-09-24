@@ -32,7 +32,7 @@ export class PageService {
     /**
      * Constructor
      */
-    constructor(private _httpClient: HttpClient) {}
+    constructor(private _httpClient: HttpClient) { }
 
     httpOptionsFormdata = {
         headers: new HttpHeaders({ Authorization: `Bearer ${token}` }),
@@ -91,7 +91,7 @@ export class PageService {
         );
     }
 
-    getById(id:any): Observable<any> {
+    getById(id: any): Observable<any> {
         return this._httpClient
             .get<any>(environment.baseURL + '/api/orders/' + id)
             .pipe(
@@ -164,7 +164,7 @@ export class PageService {
     }
     getProduct($brand_model_id): Observable<any> {
         return this._httpClient
-            .get<any>(environment.baseURL + '/api/get_product/'+$brand_model_id)
+            .get<any>(environment.baseURL + '/api/get_product/' + $brand_model_id)
             .pipe(
                 tap((result) => {
                     this._data.next(result);
@@ -184,7 +184,7 @@ export class PageService {
 
     getBrandModel($brand_id): Observable<any> {
         return this._httpClient
-            .get<any>(environment.baseURL + '/api/get_brand_model/'+$brand_id)
+            .get<any>(environment.baseURL + '/api/get_brand_model/' + $brand_id)
             .pipe(
                 tap((result) => {
                     this._data.next(result);
@@ -202,4 +202,55 @@ export class PageService {
             );
     }
 
+    getUserByDepartment(id: any): Observable<any> {
+        return this._httpClient
+            .get<any>(environment.baseURL + '/api/get_user_by_department/' + id)
+            .pipe(
+                tap((result) => {
+                    this._data.next(result);
+                })
+            );
+    }
+
+    getPromotion(): Observable<any> {
+        return this._httpClient
+            .get<any>(environment.baseURL + '/api/get_promotion')
+            .pipe(
+                tap((result) => {
+                    this._data.next(result);
+                })
+            );
+    }
+    getGarage(): Observable<any> {
+        return this._httpClient
+            .get<any>(environment.baseURL + '/api/get_garage')
+            .pipe(
+                tap((result) => {
+                    this._data.next(result);
+                })
+            );
+    }
+
+   getPageCustomer(dataTablesParameters: any): Observable<DataTablesResponse> {
+       return this._httpClient
+           .post(
+               environment.baseURL + '/api/client_page',
+               dataTablesParameters,
+               this.httpOptionsFormdata
+           )
+           .pipe(
+               switchMap((response: any) => {
+                   return of(response.data);
+               })
+           );
+   }
+   customerCreate(data: FormData): Observable<any> {
+    return this._httpClient
+        .post<any>(environment.baseURL + '/api/client', data)
+        .pipe(
+            tap((result) => {
+                this._data.next(result);
+            })
+        );
+}
 }

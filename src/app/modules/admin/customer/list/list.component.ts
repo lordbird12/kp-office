@@ -23,7 +23,7 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
 
 
 @Component({
-    selector: 'list',
+    selector: 'customer-list',
     templateUrl: './list.component.html',
     encapsulation: ViewEncapsulation.None,
     standalone: true,

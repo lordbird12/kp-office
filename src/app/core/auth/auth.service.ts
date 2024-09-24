@@ -91,7 +91,7 @@ export class AuthService
                 //     'permission',
                 //     JSON.stringify(initialData[0])
                 // );
-                // localStorage.setItem('user', JSON.stringify(response.data));
+                localStorage.setItem('user', JSON.stringify(response.data));
 
                 // Set the authenticated flag to true
                 this._authenticated = true;

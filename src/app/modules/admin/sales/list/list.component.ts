@@ -27,6 +27,7 @@ import { EditDialogComponent } from '../edit-dialog/edit-dialog.component';
 import { DataTablesModule } from 'angular-datatables';
 import { Router } from '@angular/router';
 import { PictureComponent } from '../../picture/picture.component';
+import { FormReportComponent } from '../../product/form-report/form-report.component';
 
 @Component({
     selector: 'employee-list',
@@ -150,5 +151,20 @@ export class ListComponent implements OnInit, AfterViewInit {
                 // Go up twice because card routes are setup like this; "card/CARD_ID"
                 // this._router.navigate(['./../..'], {relativeTo: this._activatedRoute});
             });
+    }
+
+    downloadReport(item: any) {
+        const dialogRef = this.dialog.open(FormReportComponent, {
+            width: '700px', // กำหนดความกว้างของ Dialog
+            height: '700px',
+            data: item
+         
+        });
+
+        dialogRef.afterClosed().subscribe((result) => {
+            if (result) {
+                //    console.log(result,'result')
+            }
+        });
     }
 }
