@@ -48,7 +48,7 @@ export class Service {
 
     create(data: FormData): Observable<any> {
         return this._httpClient
-            .post<any>(environment.baseURL + '/api/user', data)
+            .post<any>(environment.baseURL + '/api/product', data)
             .pipe(
                 tap((result) => {
                     this._data.next(result);
@@ -60,7 +60,7 @@ export class Service {
 
     delete(id: any): Observable<any> {
         return this._httpClient.delete<any>(
-            environment.baseURL + '/api/employees/' + id,
+            environment.baseURL + '/api/product/' + id,
             { headers: this.httpOptionsFormdata.headers }
         );
     }
@@ -243,7 +243,7 @@ export class Service {
         // }
         return this._httpClient
             .post(
-                environment.baseURL + '/api/product',
+                environment.baseURL + '/api/update_product',
                 data,
             )
             .pipe(

@@ -75,6 +75,7 @@ isInputDisabled: boolean = true;
         this.editForm = this.formBuilder.group({
             id: [],
             name: [],
+            remark: [],
         });
      }
 

@@ -64,7 +64,7 @@ export class ListComponent implements OnInit, AfterViewInit {
     itemSupplier: any
     item1Data: any
     itemBrand: any;
-    companie: any; 
+    companie: any;
     // public dataRow: any[];
     dataRow: any[] = [];
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -102,7 +102,7 @@ export class ListComponent implements OnInit, AfterViewInit {
         this._service.getBrand().subscribe((resp) => {
             this.itemBrand = resp.data;
         });
-    
+
     }
 
     getCompanie(): void {
@@ -146,7 +146,7 @@ export class ListComponent implements OnInit, AfterViewInit {
     // เพิ่มเมธอด editElement(element) และ deleteElement(element)
     editElement(element: any) {
         this._router.navigate([
-            'admin/product/edit/' + element
+            'admin/product-attribute/edit/' + element
         ])
     }
     viewElement(element: any) {
@@ -162,7 +162,7 @@ export class ListComponent implements OnInit, AfterViewInit {
         });
     }
     addElement() {
-        this._router.navigate(['admin/product/form']);
+        this._router.navigate(['admin/product-attribute/form']);
     }
 
     pages = { current_page: 1, last_page: 1, per_page: 10, begin: 0 };

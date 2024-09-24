@@ -9,13 +9,13 @@
             <!-- Title -->
             <div class="flex flex-row mt-2 justify-between">
                 <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
-                    รายการโปรโมชั่น
+                    รายการโปรโมชัน
                 </h2>
                 <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
                     <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="addElement()">
                         <mat-icon>person_add</mat-icon>
                         &nbsp;
-                        เพิ่มโปรโมชั่น
+                        เพิ่มโปรโมชัน
                     </button>
                 </div>
             </div>
@@ -48,7 +48,7 @@
                         </td>
                         <td>{{ pages.begin + (i + 1) }}</td>
                         <td>{{ item.name ? item.name : "-" }}</td>
-                        <td>{{ item.detail ? item.detail : "-" }}</td>
+                        <td>{{ item.remark ? item.remark : "-" }}</td>
                         <td>{{ item.create_by ? item.create_by : "-" }}</td>
                         <td>{{ item.created_at !== null ? (item.created_at | date : "dd-MM-yy, HH:mm"): "-"}}</td>
                     </tr>
