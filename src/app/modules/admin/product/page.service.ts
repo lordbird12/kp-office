@@ -91,6 +91,20 @@ export class Service {
             );
     }
 
+    getArea(dataTablesParameters: any): Observable<DataTablesResponse> {
+        return this._httpClient
+            .post(
+                environment.baseURL + '/api/area_page',
+                dataTablesParameters,
+                this.httpOptionsFormdata
+            )
+            .pipe(
+                switchMap((response: any) => {
+                    return of(response.data);
+                })
+            );
+    }
+
     getCategories(): Observable<any> {
         return this._httpClient
             .get<any>(environment.baseURL + '/api/get_category_product')

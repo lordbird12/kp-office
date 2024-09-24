@@ -165,7 +165,7 @@ export class Service {
     }
     getById(id: any): Observable<any> {
         return this._httpClient
-            .get<any>(environment.baseURL + '/api/product/' + id)
+            .get<any>(environment.baseURL + '/api/product_attribute/' + id)
             .pipe(
                 tap((data) => {
                     this._data.next(data);
@@ -199,7 +199,7 @@ export class Service {
     }
     getWarehouse(id: any): Observable<any> {
         return this._httpClient
-            .get<any>(environment.baseURL + '/api/product/' + id)
+            .get<any>(environment.baseURL + '/api/product_attribute/' + id)
             .pipe(
                 tap((result) => {
                     this._data.next(result);
@@ -214,7 +214,7 @@ export class Service {
         // }
         return this._httpClient
             .post(
-                environment.baseURL + '/api/product',
+                environment.baseURL + '/api/product_attribute',
                 data,
                 this.httpOptionsFormdata
             )
