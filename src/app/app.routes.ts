@@ -305,6 +305,16 @@ export const appRoutes: Route[] = [
                         loadChildren: () =>
                             import('app/modules/admin/category-attribute/page.routes'),
                     },
+                    {
+                        path: 'spare-part',
+                        loadChildren: () =>
+                            import('app/modules/admin/spare-part/page.routes'),
+                    },
+                    {
+                        path: 'category-product',
+                        loadChildren: () =>
+                            import('app/modules/admin/category-product/page.routes'),
+                    },
                 ],
             },
         ],

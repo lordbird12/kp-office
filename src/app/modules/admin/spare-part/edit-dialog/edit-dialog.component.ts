@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, Inject, OnInit, ViewEncapsulation } from 
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { PageService } from '../page.service';
+import { Service } from '../page.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { CommonModule, NgClass } from '@angular/common';
@@ -11,14 +11,14 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule, ThemePalette } from '@angular/material/core';
+import { MatOptionModule } from '@angular/material/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatRadioModule } from '@angular/material/radio';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import {MatCardModule} from '@angular/material/card';
+import { ActivatedRoute } from '@angular/router';
+
 @Component({
     selector: 'app-edit-dialog',
     templateUrl: './edit-dialog.component.html',
@@ -42,55 +42,65 @@ import {MatCardModule} from '@angular/material/card';
         MatPaginatorModule,
         MatTableModule,
         MatRadioModule,
-        CommonModule,
-        MatSlideToggleModule,
-        MatCardModule
+        CommonModule
     ],
 })
 export class EditDialogComponent implements OnInit {
-    formFieldHelpers: string[] = ['fuse-mat-dense'];
     flashMessage: 'success' | 'error' | null = null;
     editForm: FormGroup;
     positions: any[];
-    status: any[] = [
+    taxType: any[] = [
         {
             id: 1,
-            name : 'เปิดใช้งาน'
-        },{
-        id: 0,
-        name : 'ไม่เปิดใช้งาน'
-    },
-];
-color: ThemePalette = 'primary';
-checked = false;
-disabled = false;
-isInputDisabled: boolean = true;
+            name: 'สินค้ามีภาษี',
+        },
+        {
+            id: 2,
+            name: 'สินค้าไม่มีภาษี',
+        },
+    ];
+    uniType: any[] = [
+        {
+            id: 1,
+            name: 'แท่ง',
+        },
+        {
+            id: 2,
+            name: 'ชิ้น',
+        },
+        {
+            id: 3,
+            name: 'กิโลกรัม',
+        },
+        {
+            id: 4,
+            name: 'กล่อง',
+        },
+    ];
+    Id: any;
+    warehouseData: any
     constructor(private dialogRef: MatDialogRef<EditDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: any,
+        @Inject(MAT_DIALOG_DATA) private data: any,
         private formBuilder: FormBuilder,
         private _fuseConfirmationService: FuseConfirmationService,
         private _changeDetectorRef: ChangeDetectorRef,
-        private _service: PageService
-    ) {
-        this.editForm = this.formBuilder.group({
-            id: [],
-            name: [],
-            code: [],
-        });
-     }
+        private _service: Service,
+        private _activatedRoute: ActivatedRoute,
+        private _formBuilder: FormBuilder,
+    ) { }
 
     ngOnInit(): void {
-        this.editForm.patchValue({
-            ...this.data.data
-        })
-        console.log(this.editForm.value)
+        // สร้าง Reactive Form
+        this._service.getWarehouse(this.data).subscribe((resp: any) => {
+            this.warehouseData = resp.data;
+            console.log('data',this.warehouseData.raws)
 
+            this._changeDetectorRef.detectChanges();
+        })
     }
 
     onSaveClick(): void {
         this.flashMessage = null;
-        // this.flashErrorMessage = null;
-        // Return if the form is invalid
         if (this.editForm.invalid) {
             this.editForm.enable();
             this._fuseConfirmationService.open({
@@ -119,8 +129,8 @@ isInputDisabled: boolean = true;
         }
         // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
-            "title": "แก้ไขข้อมูล",
-            "message": "คุณต้องการแก้ไขข้อมูลใช่หรือไม่ ",
+            "title": "เพิ่มข้อมูล",
+            "message": "คุณต้องการเพิ่มข้อมูลใช่หรือไม่ ",
             "icon": {
                 "show": false,
                 "name": "heroicons_outline:exclamation",
@@ -144,37 +154,37 @@ isInputDisabled: boolean = true;
         confirmation.afterClosed().subscribe((result) => {
             if (result === 'confirmed') {
                 const updatedData = this.editForm.value;
-                this._service.update(updatedData, updatedData.id).subscribe({
-                    next: (resp: any) => {
-                        this.showFlashMessage('success');
-                        this.dialogRef.close(resp);
-                    },
-                    error: (err: any) => {
-                        this.editForm.enable();
-                        this._fuseConfirmationService.open({
-                            "title": "กรุณาระบุข้อมูล",
-                            "message": err.error.message,
-                            "icon": {
-                                "show": true,
-                                "name": "heroicons_outline:exclamation",
-                                "color": "warning"
-                            },
-                            "actions": {
-                                "confirm": {
-                                    "show": false,
-                                    "label": "ยืนยัน",
-                                    "color": "primary"
-                                },
-                                "cancel": {
-                                    "show": false,
-                                    "label": "ยกเลิก",
+                // this._service.update(updatedData, this.data.id).subscribe({
+                //     next: (resp: any) => {
+                //         this.showFlashMessage('success');
+                //         this.dialogRef.close(resp);
+                //     },
+                //     error: (err: any) => {
+                //         this.editForm.enable();
+                //         this._fuseConfirmationService.open({
+                //             "title": "กรุณาระบุข้อมูล",
+                //             "message": err.error.message,
+                //             "icon": {
+                //                 "show": true,
+                //                 "name": "heroicons_outline:exclamation",
+                //                 "color": "warning"
+                //             },
+                //             "actions": {
+                //                 "confirm": {
+                //                     "show": false,
+                //                     "label": "ยืนยัน",
+                //                     "color": "primary"
+                //                 },
+                //                 "cancel": {
+                //                     "show": false,
+                //                     "label": "ยกเลิก",
 
-                                }
-                            },
-                            "dismissible": true
-                        });
-                    }
-                })
+                //                 }
+                //             },
+                //             "dismissible": true
+                //         });
+                //     }
+                // })
             }
         })
 

@@ -1,27 +1,28 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatOptionModule } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
-import { TextFieldModule } from '@angular/cdk/text-field';
-import { CommonModule, NgClass } from '@angular/common';
-import { MatRadioModule } from '@angular/material/radio';
-import { PageService } from '../page.service';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-
+import { PageService } from '../page.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { CommonModule, NgClass } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
+import { TextFieldModule } from '@angular/cdk/text-field';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule, ThemePalette } from '@angular/material/core';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import {MatCardModule} from '@angular/material/card';
 @Component({
-    selector: 'app-form-dialog',
-    templateUrl: './form-dialog.component.html',
-    styleUrls: ['./form-dialog.component.scss'],
+    selector: 'app-edit-dialog',
+    templateUrl: './edit-dialog.component.html',
+    styleUrls: ['./edit-dialog.component.scss'],
     encapsulation: ViewEncapsulation.None,
     standalone: true,
     imports: [
@@ -42,44 +43,84 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
         MatTableModule,
         MatRadioModule,
         CommonModule,
+        MatSlideToggleModule,
+        MatCardModule
     ],
 })
-export class FormDialogComponent implements OnInit{
+export class EditDialogComponent implements OnInit {
     formFieldHelpers: string[] = ['fuse-mat-dense'];
-    addForm: FormGroup;
-    isLoading: boolean = false;
-    positions: any[];
     flashMessage: 'success' | 'error' | null = null;
-    constructor(private dialogRef: MatDialogRef<FormDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) private data: any,
+    editForm: FormGroup;
+    positions: any[];
+    status: any[] = [
+        {
+            id: 1,
+            name : 'เปิดใช้งาน'
+        },{
+        id: 0,
+        name : 'ไม่เปิดใช้งาน'
+    },
+];
+color: ThemePalette = 'primary';
+checked = false;
+disabled = false;
+isInputDisabled: boolean = true;
+    constructor(private dialogRef: MatDialogRef<EditDialogComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: any,
         private formBuilder: FormBuilder,
-        private _service: PageService,
         private _fuseConfirmationService: FuseConfirmationService,
-        private _changeDetectorRef: ChangeDetectorRef
+        private _changeDetectorRef: ChangeDetectorRef,
+        private _service: PageService
     ) {
-        this._service.getPosition().subscribe((resp: any)=>{
-            this.positions = resp.data
-        })
-    }
+        this.editForm = this.formBuilder.group({
+            id: [],
+            name: [],
+            prefix: [],
+        });
+     }
 
     ngOnInit(): void {
-        this.addForm = this.formBuilder.group({
-            name: [],
-            code: [],
-
-        });
+        this.editForm.patchValue({
+            ...this.data.data
+        })
+        console.log(this.editForm.value)
 
     }
-
-
 
     onSaveClick(): void {
         this.flashMessage = null;
+        // this.flashErrorMessage = null;
+        // Return if the form is invalid
+        if (this.editForm.invalid) {
+            this.editForm.enable();
+            this._fuseConfirmationService.open({
+                "title": "กรุณาระบุข้อมูล",
+                "icon": {
+                    "show": true,
+                    "name": "heroicons_outline:exclamation",
+                    "color": "warning"
+                },
+                "actions": {
+                    "confirm": {
+                        "show": false,
+                        "label": "ยืนยัน",
+                        "color": "primary"
+                    },
+                    "cancel": {
+                        "show": false,
+                        "label": "ยกเลิก",
 
+                    }
+                },
+                "dismissible": true
+            });
+
+            return;
+        }
         // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
-            "title": "เพิ่มข้อมูล",
-            "message": "คุณต้องการเพิ่มข้อมูลใช่หรือไม่ ",
+            "title": "แก้ไขข้อมูล",
+            "message": "คุณต้องการแก้ไขข้อมูลใช่หรือไม่ ",
             "icon": {
                 "show": false,
                 "name": "heroicons_outline:exclamation",
@@ -102,14 +143,14 @@ export class FormDialogComponent implements OnInit{
         // Subscribe to the confirmation dialog closed action
         confirmation.afterClosed().subscribe((result) => {
             if (result === 'confirmed') {
-                const updatedData = this.addForm.value;
-                this._service.create(updatedData).subscribe({
+                const updatedData = this.editForm.value;
+                this._service.update(updatedData, updatedData.id).subscribe({
                     next: (resp: any) => {
                         this.showFlashMessage('success');
                         this.dialogRef.close(resp);
                     },
                     error: (err: any) => {
-                        this.addForm.enable();
+                        this.editForm.enable();
                         this._fuseConfirmationService.open({
                             "title": "กรุณาระบุข้อมูล",
                             "message": err.error.message,
@@ -142,8 +183,6 @@ export class FormDialogComponent implements OnInit{
 
     }
 
-
-
     onCancelClick(): void {
 
         this.dialogRef.close();
@@ -165,5 +204,4 @@ export class FormDialogComponent implements OnInit{
             this._changeDetectorRef.markForCheck();
         }, 3000);
     }
-
 }

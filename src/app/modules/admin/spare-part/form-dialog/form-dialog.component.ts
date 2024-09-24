@@ -1,22 +1,26 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
+import { MatSort, Sort } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { CommonModule, NgClass } from '@angular/common';
-import { MatRadioModule } from '@angular/material/radio';
-import { PageService } from '../page.service';
+import { MatRadioButton, MatRadioModule } from '@angular/material/radio';
+import { Service } from '../page.service';
+import { Employee } from '../page.types';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
+import { BrowserModule } from '@angular/platform-browser';
 
 @Component({
     selector: 'app-form-dialog',
@@ -41,41 +45,100 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
         MatPaginatorModule,
         MatTableModule,
         MatRadioModule,
-        CommonModule,
+        CommonModule
     ],
 })
-export class FormDialogComponent implements OnInit{
-    formFieldHelpers: string[] = ['fuse-mat-dense'];
+export class FormDialogComponent implements OnInit {
     addForm: FormGroup;
-    isLoading: boolean = false;
+    // flashErrorMessage: string;
     positions: any[];
     flashMessage: 'success' | 'error' | null = null;
+    taxType: any[] = [
+        {
+            id: 1,
+            name: 'สินค้ามีภาษี',
+        },
+        {
+            id: 2,
+            name: 'สินค้าไม่มีภาษี',
+        },
+    ];
+    uniType: any[] = [
+        {
+            id: 1,
+            name: 'แท่ง',
+        },
+        {
+            id: 2,
+            name: 'ชิ้น',
+        },
+        {
+            id: 3,
+            name: 'กิโลกรัม',
+        },
+        {
+            id: 4,
+            name: 'กล่อง',
+        },
+    ]
     constructor(private dialogRef: MatDialogRef<FormDialogComponent>,
         @Inject(MAT_DIALOG_DATA) private data: any,
         private formBuilder: FormBuilder,
-        private _service: PageService,
+        private _service: Service,
         private _fuseConfirmationService: FuseConfirmationService,
         private _changeDetectorRef: ChangeDetectorRef
-    ) {
+    ) { }
+
+    ngOnInit(): void {
+        // สร้าง Reactive Form
+        this.addForm = this.formBuilder.group({
+            no: [],
+            code: [],
+            name: [],
+            tax_type: [],
+            qty: '',
+            price: '',
+            cost: '',
+            description: '',
+            remark: '',
+            vendor_id: ''
+        });
+
         this._service.getPosition().subscribe((resp: any)=>{
             this.positions = resp.data
         })
     }
 
-    ngOnInit(): void {
-        this.addForm = this.formBuilder.group({
-            name: [],
-            code: [],
-
-        });
-
-    }
-
-
-
     onSaveClick(): void {
         this.flashMessage = null;
+        // this.flashErrorMessage = null;
+        // Return if the form is invalid
+        if (this.addForm.invalid) {
+            this.addForm.enable();
+            this._fuseConfirmationService.open({
+                "title": "กรุณาระบุข้อมูล",
+                "icon": {
+                    "show": true,
+                    "name": "heroicons_outline:exclamation",
+                    "color": "warning"
+                },
+                "actions": {
+                    "confirm": {
+                        "show": false,
+                        "label": "ยืนยัน",
+                        "color": "primary"
+                    },
+                    "cancel": {
+                        "show": false,
+                        "label": "ยกเลิก",
 
+                    }
+                },
+                "dismissible": true
+            });
+
+            return;
+        }
         // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
             "title": "เพิ่มข้อมูล",
