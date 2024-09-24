@@ -28,7 +28,6 @@ const token = localStorage.getItem('accessToken') || null;
 export class PageService {
     // Private
     private _data: BehaviorSubject<any | null> = new BehaviorSubject(null);
-
     /**
      * Constructor
      */
@@ -38,17 +37,9 @@ export class PageService {
         headers: new HttpHeaders({ Authorization: `Bearer ${token}` }),
     };
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Accessors
-    // -----------------------------------------------------------------------------------------------------
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
     create(data: any): Observable<any> {
         return this._httpClient
-            .post<any>(environment.baseURL + '/api/promotion', data)
+            .post<any>(environment.baseURL + '/api/category_product', data)
             .pipe(
                 tap((result) => {
                     this._data.next(result);
@@ -58,7 +49,7 @@ export class PageService {
 
     update(data: any, id: any): Observable<any> {
         return this._httpClient
-            .put<any>(environment.baseURL + '/api/promotion/' + id, data)
+            .put<any>(environment.baseURL + '/api/category_product/' + id, data)
             .pipe(
                 tap((result) => {
                     this._data.next(result);
@@ -68,7 +59,7 @@ export class PageService {
 
     delete(id: any): Observable<any> {
         return this._httpClient.delete<any>(
-            environment.baseURL + '/api/promotion/' + id,
+            environment.baseURL + '/api/category_product/' + id,
             { headers: this.httpOptionsFormdata.headers }
         );
     }
@@ -113,7 +104,7 @@ export class PageService {
     getPage(dataTablesParameters: any): Observable<DataTablesResponse> {
         return this._httpClient
             .post(
-                environment.baseURL + '/api/promotion_page',
+                environment.baseURL + '/api/category_product_page',
                 dataTablesParameters,
                 this.httpOptionsFormdata
             )
