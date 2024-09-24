@@ -295,6 +295,11 @@ export const appRoutes: Route[] = [
                                 'app/modules/admin/report-stock-card/page.routes'
                             ),
                     },
+                    {
+                        path: 'promotion',
+                        loadChildren: () =>
+                            import('app/modules/admin/promotion/page.routes'),
+                    },
                 ],
             },
         ],

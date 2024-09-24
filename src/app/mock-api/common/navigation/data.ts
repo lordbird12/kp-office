@@ -238,6 +238,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon: 'mat_outline:home',
                 link: '/admin/garage/list',
             },
+            {
+                id: 'promotion.list',
+                title: 'โปรโมชั่น',
+                type: 'basic',
+                icon: 'heroicons_outline:gift',
+                link: '/admin/promotion/list',
+            },
         ],
     },
     {
