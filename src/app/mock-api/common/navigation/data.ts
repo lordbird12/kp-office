@@ -253,13 +253,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon: 'heroicons_outline:wrench-screwdriver',
                 link: '/admin/category-attribute/list',
             },
-            // {
-            //     id: 'spare-part.list',
-            //     title: 'อะไหล่',
-            //     type: 'basic',
-            //     icon: 'heroicons_outline:wrench',
-            //     link: '/admin/spare-part/list',
-            // },
+        
         ],
     },
     // {
