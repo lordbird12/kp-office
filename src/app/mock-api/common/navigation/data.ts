@@ -150,14 +150,20 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon: 'heroicons_outline:cube',
                 link: '/admin/product/list',
             },
-           
-            // {
-            //     id: 'products.transfer',
-            //     title: 'โอนย้ายสินค้า',
-            //     type: 'basic',
-            //     icon: 'heroicons_outline:arrow-path-rounded-square',
-            //     link: '/admin/transfer/list',
-            // },
+            {
+                id: 'category-attribute.list',
+                title: 'ประเภทอะไหล่',
+                type: 'basic',
+                icon: 'heroicons_outline:wrench-screwdriver',
+                link: '/admin/category-attribute/list',
+            },
+            {
+                id: 'spare-part.list',
+                title: 'อะไหล่',
+                type: 'basic',
+                icon: 'heroicons_outline:wrench',
+                link: '/admin/spare-part/list',
+            },
         ],
     },
     {
@@ -246,20 +252,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon: 'heroicons_outline:gift',
                 link: '/admin/promotion/list',
             },
-            {
-                id: 'category-attribute.list',
-                title: 'ประเภทอะไหล่',
-                type: 'basic',
-                icon: 'heroicons_outline:wrench-screwdriver',
-                link: '/admin/category-attribute/list',
-            },
-            // {
-            //     id: 'spare-part.list',
-            //     title: 'อะไหล่',
-            //     type: 'basic',
-            //     icon: 'heroicons_outline:wrench',
-            //     link: '/admin/spare-part/list',
-            // },
+
         ],
     },
     // {
