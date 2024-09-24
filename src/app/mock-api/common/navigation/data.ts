@@ -245,6 +245,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 icon: 'heroicons_outline:gift',
                 link: '/admin/promotion/list',
             },
+            {
+                id: 'category-attribute.list',
+                title: 'ประเภทอะไหล่',
+                type: 'basic',
+                icon: 'heroicons_outline:cog',
+                link: '/admin/category-attribute/list',
+            },
         ],
     },
     {

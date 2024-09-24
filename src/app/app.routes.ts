@@ -300,6 +300,11 @@ export const appRoutes: Route[] = [
                         loadChildren: () =>
                             import('app/modules/admin/promotion/page.routes'),
                     },
+                    {
+                        path: 'category-attribute',
+                        loadChildren: () =>
+                            import('app/modules/admin/category-attribute/page.routes'),
+                    },
                 ],
             },
         ],
