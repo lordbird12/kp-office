@@ -4,7 +4,8 @@
     <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
         <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
     </div>
-    <div class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+    <div
+        class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
         <div class="flex-1 flemin-w-0">
             <!-- Title -->
             <div class="flex flex-row mt-2 justify-between">
@@ -27,6 +28,10 @@
             <table datatable [dtOptions]="dtOptions" class="table row-border hover w-full bg-white whitespace-nowrap">
                 <thead>
                     <tr>
+                        <th class="w-1">
+                            <mat-checkbox [checked]="checkAll" [indeterminate]="someCheck"
+                                (change)="setAll($event.checked)" color="primary"></mat-checkbox>
+                        </th>
                         <th class="w-[100px]">จัดการ</th>
                         <th class="w-[10px]">ลำดับ</th>
                         <th>ชื่อไฟแนนซ์</th>
@@ -39,6 +44,9 @@
                 <tbody *ngIf="dataRow?.length != 0">
                     <tr *ngFor="let item of dataRow; let i = index">
                         <td>
+                            <mat-checkbox color="primary" [(ngModel)]="item.checked"></mat-checkbox>
+                        </td>
+                        <td>
                             <button mat-icon-button color="accent" (click)="editElement(item)">
                                 <mat-icon>edit</mat-icon>
                             </button>
@@ -49,9 +57,9 @@
                         <td>{{ pages.begin + (i + 1) }}</td>
                         <td>{{ item.name ? item.name : "-" }}</td>
                         <td>{{ item.email ? item.email : "-" }}</td>
-                        <td>  <button mat-icon-button color="accent" (click)="showPicture(item.image)">
-                            <mat-icon>image</mat-icon>
-                        </button></td>
+                        <td> <button mat-icon-button color="accent" (click)="showPicture(item.image)">
+                                <mat-icon>image</mat-icon>
+                            </button></td>
                         <td>{{ item.create_by ? item.create_by : "-" }}</td>
                         <td>{{ item.created_at !== null ? (item.created_at | date : "dd-MM-yy, HH:mm"): "-"}}</td>
                     </tr>
@@ -63,5 +71,16 @@
                 </tbody>
             </table>
         </div>
+    </div>
+    <div *ngIf="someOneChecked?.length"
+        class="flex items-center justify-between w-full border-t mt-8 px-8 py-5 bg-white dark:bg-gray-700 sticky bottom-0 h-24">
+        <button class="rounded-md border-black border min-w-36" mat-stroked-button (click)="cancelCheck()">
+            ยกเลิก
+        </button>
+        <span class="text-lg font-bold mx-5">เลือกแล้ว {{someOneChecked.length}}</span>
+        <button class="inline-flex rounded-md min-w-36" mat-flat-button [color]="'primary'" (click)="confirmSubmit()">
+            <mat-icon svgIcon="feather:check-circle" class="icon-size-5"></mat-icon>
+            <span class="ml-2">ลบทั้งหมด</span>
+        </button>
     </div>
 </div>

@@ -21,6 +21,9 @@ import { DataTableDirective, DataTablesModule } from 'angular-datatables';
 import { Router } from '@angular/router';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { PictureComponent } from '../../picture/picture.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ToastrService } from 'ngx-toastr';
+import { forkJoin } from 'rxjs';
 
 
 @Component({
@@ -46,6 +49,7 @@ import { PictureComponent } from '../../picture/picture.component';
         MatPaginatorModule,
         MatTableModule,
         DataTablesModule,
+        MatCheckboxModule
     ],
 })
 
@@ -64,6 +68,7 @@ export class ListComponent implements OnInit, AfterViewInit {
         private _service: PageService,
         private _router: Router,
         private _fuseConfirmationService: FuseConfirmationService,
+        // private toastr: ToastrService,
     ) {
 
     }
@@ -179,6 +184,76 @@ export class ListComponent implements OnInit, AfterViewInit {
             dtInstance.ajax.reload();
         });
     }
+
+    get someOneChecked() {
+        return this.dataRow?.filter(e => e.checked);
+    }
+
+    get someCheck() {
+        if (this.someOneChecked?.length == 0) { return false; }
+
+        return this.someOneChecked?.length > 0 && !this.checkAll;
+    }
+
+    get checkAll() {
+        return this.dataRow?.every(e => e.checked);
+    }
+
+    setAll(checked: boolean) {
+        this.dataRow?.forEach(e => e.checked = checked);
+    }
+
+    confirmSubmit() {
+        const confirmation = this._fuseConfirmationService.open({
+            title: 'ลบข้อมูล',
+            message: 'คุณต้องการลบข้อมูลใช่หรือไม่ ?',
+            icon: {
+                show: true,
+                name: 'heroicons_outline:exclamation-triangle',
+                color: 'warning',
+            },
+            actions: {
+                confirm: {
+                    show: true,
+                    label: 'ยืนยัน',
+                    color: 'warn',
+                },
+                cancel: {
+                    show: true,
+                    label: 'ยกเลิก',
+                },
+            },
+            dismissible: true,
+        });
+
+        confirmation.afterClosed().subscribe((result) => {
+            // if (result == 'confirmed') {
+            //     this.toastr.success('รายการที่คุณเลือกไว้ได้ตรวจสอบและยืนยันแล้ว')
+            //     this.toastr.error('กรุณาตรวจสอบข้อมูล')
+
+            // }
+            if (result == 'confirmed') {
+                const data = {
+                    ids: []
+                };
+                const deleteOperations = this.dataRow
+                .filter(element => element.checked) 
+                .map(element => this._service.delete(element.id));
+              
+              forkJoin(deleteOperations).subscribe(
+                () => {
+                
+                  this.rerender();
+                },
+                (error) => {
+                  
+                  console.error('Error during deletion', error);
+                }
+            )
+            }
+        });
+    }
+
 }
 
 
