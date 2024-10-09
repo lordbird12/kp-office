@@ -138,14 +138,14 @@ export const defaultNavigation: FuseNavigationItem[] = [
             },
             {
                 id: 'products.category-product',
-                title: 'ประเภทสินค้า',
+                title: 'ประเภทรถยนต์',
                 type: 'basic',
                 icon: 'heroicons_outline:cube',
                 link: '/admin/category-product/list',
             },
             {
                 id: 'products.product',
-                title: 'คลังสินค้า',
+                title: 'รถยนต์',
                 type: 'basic',
                 icon: 'heroicons_outline:cube',
                 link: '/admin/product/list',

@@ -1,0 +1,94 @@
+<div class="flex flex-col" style="max-height: 90vh;">
+    <div class="flex flex-col p-6">
+        <div class="flex flex-row justify-between items-center">
+            <div class="flex flex-col items-start">
+                <div class="text-3xl font-bold mr-5">ปรับปรุงรวม</div>
+                <div class="text-base">เลือกรายการสินค้าที่ต้องการ</div>
+            </div>
+            <div class="flex flex-row items-center justify-center">
+                <button mat-icon-button [tabIndex]="-1" (click)="onClose()">
+                    <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
+                </button>
+            </div>
+        </div>
+        <div class="flex flex-col my-5">
+            <div class="grid grid-row-4 gap-4">
+                <form class="bg-card rounded-lg md:shadow px-8 pt-6 pb-8 mb-4 flex flex-col my-2" [formGroup]="form">
+
+                    <!-- <mat-form-field [ngClass]="formFieldHelpers" class="min-w-[405px] min-h-[40px]">
+                    <mat-icon svgIcon="search"></mat-icon>
+                    <input matInput [placeholder]="'ค้นหา'" [(ngModel)]="searchText"  (input)="updateSearchText(searchText)">
+                    <input matInput [placeholder]="'ค้นหา'" [(ngModel)]="searchTerm" (input)="filterCompanies(searchTerm)">
+                </mat-form-field> -->
+                    <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                        <mat-label>หมวดสินค้า</mat-label>
+                        <mat-select [formControlName]="'category_product_id'">
+                            <mat-option [value]="''">
+                                <span>เลือกหมวดสินค้า</span>
+                            </mat-option>
+                            <mat-option *ngFor="let item of categorys" [value]="item.id">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </form>
+            </div>
+            <div class="grid grid-row-4 gap-4">
+                <div class="inline-flex items-center">
+                    <label class="relative flex items-center p-3 rounded-full cursor-pointer" htmlFor="ripple-on">
+                        <input id="ripple-on" type="checkbox" [(ngModel)]="checkAll" (change)="checkAllItems()"
+                            class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900 checked:bg-gray-900 checked:before:bg-gray-900 hover:before:opacity-10" />
+                        <span
+                            class="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20"
+                                fill="currentColor" stroke="currentColor" stroke-width="1">
+                                <path fill-rule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </span>
+                    </label>
+                    <label class="ml-2 mt-px font-normal text-gray-700 cursor-pointer select-none" htmlFor="ripple-on">
+                        ทั้งหมด
+                    </label>
+                </div>
+            </div>
+            <mat-divider class="my-2"></mat-divider>
+            <div class="grid grid-row-4 gap-4">
+                <!-- <form [formGroup]="form"> -->
+                    <div class="flex flex-col space-y-4">
+                        <div class="inline-flex items-center" *ngFor="let item of filteredCompanys;">
+                            <label class="relative flex items-center p-3 rounded-full cursor-pointer"
+                                htmlFor="ripple-on">
+                                <input id="ripple-on" type="checkbox" [(ngModel)]="item.isSelected"
+                                    (change)="updateSelectedItems()"
+                                    class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900 checked:bg-gray-900 checked:before:bg-gray-900 hover:before:opacity-10" />
+                                <span
+                                    class="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20"
+                                        fill="currentColor" stroke="currentColor" stroke-width="1">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </span>
+                            </label>
+                            <mat-form-field class="ml-4 w-full">
+                                <mat-label>{{item.name ?? ''}}</mat-label>
+                                <input matInput placeholder="จำนวน" />
+                            </mat-form-field>
+                        </div>
+                    </div>
+                <!-- </form> -->
+
+            </div>
+        </div>
+        <div class="flex flex-row">
+            <button class="px-6 ml-3 rounded-md mt-5 w-1/4 bg-white hover:bg-slate-100" mat-stroked-button
+                (click)="uncheckAllItems()">รีเซ็ต</button>
+            <button class="px-6 ml-3 rounded-md mt-5 w-full" mat-flat-button [color]="'primary'"
+                (click)="onSaveClick()">บันทึก</button>
+        </div>
+
+    </div>
+</div>

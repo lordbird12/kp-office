@@ -29,6 +29,7 @@ import { Router } from '@angular/router';
 import { PictureComponent } from '../../picture/picture.component';
 import { FormReportComponent } from '../form-report/form-report.component';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
+import { CompanyDialogComponent } from '../adjust-dialog/dailog.component';
 
 @Component({
     selector: 'employee-list',
@@ -279,5 +280,19 @@ export class ListComponent implements OnInit, AfterViewInit {
                 // Go up twice because card routes are setup like this; "card/CARD_ID"
                 // this._router.navigate(['./../..'], {relativeTo: this._activatedRoute});
             });
+    }
+
+    adjustDialog() {
+        const dialogRef = this.dialog.open(CompanyDialogComponent, {
+            width: '100%',
+            height: '80%', // กำหนดความกว้างของ Dialog
+        });
+
+        dialogRef.afterClosed().subscribe((result) => {
+            if (result) {
+                // this.companyList = result.map((item) => item.id);
+                // this.rerender();
+            }
+        });
     }
 }

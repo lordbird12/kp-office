@@ -1,0 +1,45 @@
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--fuse-primary-500);
+}
+
+.checkbox-card {
+    // background: linear-gradient(0deg, #FF4849, #FF4849),
+    //     linear-gradient(0deg, #FFF9F9, #FFF9F9);
+    box-shadow: 0px 3.7333333492279053px 28px 0px #1B19560F;
+}
+
+input[type="checkbox"]:checked ~ * .checkbox-card {
+    border: 1px solid #FF4849 !important;
+    background-color: #fff9f9 !important;
+}
+
+mat-label {
+    font:bold;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.space-y-4 > :not(template) ~ :not(template) {
+    margin-top: 1rem; /* ใช้การเว้นช่องว่างที่เท่าๆ กัน */
+}
+
+.mat-form-field {
+    background-color: #f9f9f9; /* สีพื้นหลังที่นุ่มนวล */
+    border-radius: 8px; /* มุมโค้ง */
+}
+
+input[type="checkbox"] {
+    cursor: pointer; /* เปลี่ยนเคอร์เซอร์เมื่อชี้ไปที่ช่อง */
+}
+
+input[type="text"] {
+    padding: 10px; /* เพิ่ม padding เพื่อเพิ่มพื้นที่กด */
+}
