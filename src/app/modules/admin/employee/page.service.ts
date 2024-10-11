@@ -32,7 +32,7 @@ export class PageService {
     /**
      * Constructor
      */
-    constructor(private _httpClient: HttpClient) {}
+    constructor(private _httpClient: HttpClient) { }
 
     httpOptionsFormdata = {
         headers: new HttpHeaders({ Authorization: `Bearer ${token}` }),
@@ -101,7 +101,7 @@ export class PageService {
     }
     getById(id: any): Observable<any> {
         return this._httpClient
-            .get<any>(environment.baseURL + '/api/user/'+id)
+            .get<any>(environment.baseURL + '/api/user/' + id)
             .pipe(
                 tap((result) => {
                     this._data.next(result);
@@ -142,6 +142,18 @@ export class PageService {
             .pipe(
                 switchMap((response: any) => {
                     return of(response.data);
+                })
+            );
+    }
+
+    delete_all(data: any): Observable<any> {
+        return this._httpClient
+            .post<any>(environment.baseURL + '/api/user_delete_all', {
+                users: data,
+            })
+            .pipe(
+                tap((result) => {
+                    this._data.next(result);
                 })
             );
     }

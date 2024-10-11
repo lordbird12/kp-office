@@ -129,6 +129,8 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
             companie_id: [''],
             area_id: [''],
             mile: [''],
+            front_tire: [''],
+            back_tire: [''],
         });
         this.formData2 = this._formBuilder.group({
             category_product_id: ['', Validators.required],
@@ -147,6 +149,8 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
             brand_model_id: [''],
             cc_id: [''],
             color_id: [''],
+            front_tire: [''],
+            back_tire: [''],
             image: [''],
             images: [''],
         });
@@ -188,8 +192,9 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.itemData = resp.data
                 const item = this.companie.find(item => item.id === +this.itemData.area?.companie_id);
                 const brand = this.itemBrand.find(item => item.id === +this.itemData.area?.companie_id);
-                this.areas = item.areas
-                console.log(this.itemData);
+                if (item)
+                    this.areas = item.areas;
+                // console.log(this.itemData);
                 this._Service.getBrandModel(+this.itemData.brand_id).subscribe((resp) => {
                     this.itemBrandModel = resp.data;
                     this.formData.patchValue({
@@ -202,19 +207,6 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
                         cc_id: +this.itemData.cc_id,
                         companie_id: +this.itemData.area?.companie_id,
                         color_id: +this.itemData.color_id,
-                        image: [''],
-                        images: [''],
-                        pr_no: [''],
-                        name: [''],
-                        detail: [''],
-                        tank_no: [''],
-                        engine_no: [''],
-                        license_plate: [''],
-                        sale_price: [''],
-                        cost: [''],
-                        type: [''],
-                        year: [''],
-                        mile: ['']
                     })
 
                     this.formData2.patchValue({
@@ -325,44 +317,44 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
 
-     onSelect(event: any) {
+    onSelect(event: any) {
         this.files.push(...event.addedFiles);
         // Trigger Image Preview
         setTimeout(() => {
-          this._changeDetectorRef.detectChanges();
+            this._changeDetectorRef.detectChanges();
         }, 150);
-      }
+    }
 
-      onSelect1(event: any) {
+    onSelect1(event: any) {
         this.files1.push(...event.addedFiles);
         // Trigger Image Preview
         setTimeout(() => {
-          this._changeDetectorRef.detectChanges();
+            this._changeDetectorRef.detectChanges();
         }, 150);
-      }
+    }
 
-      onSelect2(event: any) {
+    onSelect2(event: any) {
         this.files2.push(...event.addedFiles);
         // Trigger Image Preview
         setTimeout(() => {
-          this._changeDetectorRef.detectChanges();
+            this._changeDetectorRef.detectChanges();
         }, 150);
-      }
+    }
 
-      onRemove(event: any) {
+    onRemove(event: any) {
         this.files.splice(this.files.indexOf(event), 1);
-      }
+    }
 
-      onRemove1(event: any) {
+    onRemove1(event: any) {
         this.files1.splice(this.files1.indexOf(event), 1);
-      }
+    }
 
-      onRemove2(event: any) {
+    onRemove2(event: any) {
         this.files2.splice(this.files2.indexOf(event), 1);
-      }
+    }
 
 
-      New(): void {
+    New(): void {
         // Function to prepare formData
         const prepareFormData = (): FormData => {
             const formData = new FormData();
@@ -377,7 +369,7 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
 
             // Append additional images
             this.files1.forEach((file) => {
-                formData.append('image', file);
+                formData.append('images', file);
             });
 
             // Append videos

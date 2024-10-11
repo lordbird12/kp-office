@@ -29,7 +29,7 @@ import { EditDialogComponent } from '../edit-dialog/edit-dialog.component';
 import { DataTableDirective, DataTablesModule } from 'angular-datatables';
 import { Router } from '@angular/router';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-
+import { MatCheckboxModule } from '@angular/material/checkbox';
 @Component({
     selector: 'employee-list',
     templateUrl: './list.component.html',
@@ -53,14 +53,18 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
         MatPaginatorModule,
         MatTableModule,
         DataTablesModule,
+        MatCheckboxModule
     ],
 })
 export class ListComponent implements OnInit, AfterViewInit {
     isLoading: boolean = false;
     dtOptions: DataTables.Settings = {};
-    dtElement!: DataTableDirective;
     positions: any[];
     public dataRow: any[];
+    flashMessage: 'success' | 'error' | null = null;
+
+    @ViewChild(DataTableDirective)
+    dtElement: DataTableDirective;
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     constructor(
         private dialog: MatDialog,
@@ -194,7 +198,109 @@ export class ListComponent implements OnInit, AfterViewInit {
         });
     }
 
-    // handlePageEvent(event) {
-    //     this.loadData(event.pageIndex + 1, event.pageSize);
-    // }
+    get someOneChecked() {
+        return this.dataRow?.filter((e) => e.checked);
+    }
+
+    get someCheck() {
+        if (this.someOneChecked?.length == 0) {
+            return false;
+        }
+
+        return this.someOneChecked?.length > 0 && !this.checkAll;
+    }
+
+    get checkAll() {
+        return this.dataRow?.every((e) => e.checked);
+    }
+
+    setAll(checked: boolean) {
+        this.dataRow?.forEach((e) => (e.checked = checked));
+    }
+
+    confirmDelete() {
+        const confirmation = this._fuseConfirmationService.open({
+            title: `ยืนยันการลบ ${this.someOneChecked.length} รายการ`,
+            message: 'รายชื่อพนักงานที่เลือกจะถูกลบออกจากระบบถาวร',
+            icon: {
+                show: true,
+                name: 'heroicons_asha:delete',
+                color: 'error',
+            },
+            actions: {
+                confirm: {
+                    label: 'ลบ',
+                },
+                cancel: {
+                    label: 'ยกเลิก',
+                },
+            },
+        });
+
+        confirmation.afterClosed().subscribe((result) => {
+            if (result == 'confirmed') {
+                const data_array = [];
+                this.dataRow.forEach((element) => {
+                    if (element.checked) {
+                        const data = {
+                            user_id: element.id,
+                            check: element.checked,
+                        };
+                        data_array.push(data);
+                    }
+                });
+
+
+                this._service.delete_all(data_array).subscribe({
+                    next: (resp: any) => {
+                        this.showFlashMessage('success');
+                        this.rerender();
+                    },
+                    error: (err: any) => {
+                        this._fuseConfirmationService.open({
+                            title: 'กรุณาระบุข้อมูล',
+                            message: err.error.message,
+                            icon: {
+                                show: true,
+                                name: 'heroicons_outline:exclamation',
+                                color: 'warning',
+                            },
+                            actions: {
+                                confirm: {
+                                    show: false,
+                                    label: 'ยืนยัน',
+                                    color: 'primary',
+                                },
+                                cancel: {
+                                    show: false,
+                                    label: 'ยกเลิก',
+                                },
+                            },
+                            dismissible: true,
+                        });
+                    },
+                });
+            }
+        });
+    }
+
+    showFlashMessage(type: 'success' | 'error'): void {
+        // Show the message
+        this.flashMessage = type;
+
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+
+        // Hide it after 3 seconds
+        setTimeout(() => {
+            this.flashMessage = null;
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        }, 3000);
+    }
+
+    cancelCheck() {
+        this.setAll(false);
+    }
 }

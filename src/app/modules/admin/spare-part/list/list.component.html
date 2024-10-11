@@ -147,6 +147,9 @@
             <table datatable [dtOptions]="dtOptions" class="table row-border hover w-full bg-white whitespace-nowrap">
                 <thead>
                     <tr>
+                        <th class="w-1">
+                            <mat-checkbox [checked]="checkAll" [indeterminate]="someCheck" (change)="setAll($event.checked)" color="primary"></mat-checkbox>
+                        </th>
                         <th class="w-[100px]">จัดการ</th>
                         <th class="w-[10px]">ลำดับ</th>
                         <th>รหัสอะไหล่</th>
@@ -162,6 +165,9 @@
                 </thead>
                 <tbody *ngIf="dataRow?.length != 0">
                     <tr *ngFor="let item of dataRow; let i = index">
+                        <td>
+                            <mat-checkbox color="primary" [(ngModel)]="item.checked"></mat-checkbox>
+                        </td>
                         <td>
                             <button mat-icon-button color="accent" (click)="editElement(item.id)">
                                 <mat-icon>edit</mat-icon>

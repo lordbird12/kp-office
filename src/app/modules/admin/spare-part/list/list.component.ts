@@ -28,6 +28,8 @@ import { DataTableDirective, DataTablesModule } from 'angular-datatables';
 import { Router } from '@angular/router';
 import { PictureComponent } from '../../picture/picture.component';
 import { FormReportComponent } from '../form-report/form-report.component';
+import { FuseConfirmationService } from '@fuse/services/confirmation';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
     selector: 'employee-list',
@@ -52,6 +54,7 @@ import { FormReportComponent } from '../form-report/form-report.component';
         MatPaginatorModule,
         MatTableModule,
         DataTablesModule,
+        MatCheckboxModule
     ],
 })
 export class ListComponent implements OnInit, AfterViewInit {
@@ -65,8 +68,8 @@ export class ListComponent implements OnInit, AfterViewInit {
     itemSupplier: any
     item1Data: any
     itemBrand: any;
-    companie: any; 
-    // public dataRow: any[];
+    companie: any;
+    flashMessage: 'success' | 'error' | null = null;
     dataRow: any[] = [];
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     constructor(
@@ -74,7 +77,9 @@ export class ListComponent implements OnInit, AfterViewInit {
         private _changeDetectorRef: ChangeDetectorRef,
         private _service: Service,
         private _router: Router,
-        private _fb: FormBuilder
+        private _fb: FormBuilder,
+        private _fuseConfirmationService: FuseConfirmationService,
+
     ) {
         this.form = this._fb.group({
             category_product_id: '',
@@ -85,9 +90,9 @@ export class ListComponent implements OnInit, AfterViewInit {
             companie_id: '',
             area_id: '',
         })
-     }
+    }
 
-     getSuppliers(): void {
+    getSuppliers(): void {
         this._service.getSuppliers().subscribe((resp) => {
             this.itemSupplier = resp.data;
         });
@@ -103,7 +108,7 @@ export class ListComponent implements OnInit, AfterViewInit {
         this._service.getBrand().subscribe((resp) => {
             this.itemBrand = resp.data;
         });
-    
+
     }
 
     getCompanie(): void {
@@ -166,7 +171,7 @@ export class ListComponent implements OnInit, AfterViewInit {
         const dialogRef = this.dialog.open(FormReportComponent, {
             width: '700px', // กำหนดความกว้างของ Dialog
             maxHeight: '900px'
-         
+
         });
 
         dialogRef.afterClosed().subscribe((result) => {
@@ -248,5 +253,111 @@ export class ListComponent implements OnInit, AfterViewInit {
                 // Go up twice because card routes are setup like this; "card/CARD_ID"
                 // this._router.navigate(['./../..'], {relativeTo: this._activatedRoute});
             });
+    }
+
+    get someOneChecked() {
+        return this.dataRow?.filter((e) => e.checked);
+    }
+
+    get someCheck() {
+        if (this.someOneChecked?.length == 0) {
+            return false;
+        }
+
+        return this.someOneChecked?.length > 0 && !this.checkAll;
+    }
+
+    get checkAll() {
+        return this.dataRow?.every((e) => e.checked);
+    }
+
+    setAll(checked: boolean) {
+        this.dataRow?.forEach((e) => (e.checked = checked));
+    }
+
+    confirmDelete() {
+        const confirmation = this._fuseConfirmationService.open({
+            title: `ยืนยันการลบ ${this.someOneChecked.length} รายการ`,
+            message: 'รายชื่อพนักงานที่เลือกจะถูกลบออกจากระบบถาวร',
+            icon: {
+                show: true,
+                name: 'heroicons_asha:delete2',
+                color: 'error',
+            },
+            actions: {
+                confirm: {
+                    label: 'ลบ',
+                },
+                cancel: {
+                    label: 'ยกเลิก',
+                },
+            },
+        });
+
+        confirmation.afterClosed().subscribe((result) => {
+            if (result == 'confirmed') {
+                const data_array = [];
+                this.dataRow.forEach((element) => {
+                    if (element.checked) {
+                        const data = {
+                            user_id: element.id,
+                            check: element.checked,
+                        };
+                        data_array.push(data);
+                    }
+                });
+
+
+                // this._service.delete_all(data_array).subscribe({
+                //     next: (resp: any) => {
+                //         this.showFlashMessage('success');
+                //         this.rerender();
+                //     },
+                //     error: (err: any) => {
+                //         this._fuseConfirmationService.open({
+                //             title: 'กรุณาระบุข้อมูล',
+                //             message: err.error.message,
+                //             icon: {
+                //                 show: true,
+                //                 name: 'heroicons_outline:exclamation',
+                //                 color: 'warning',
+                //             },
+                //             actions: {
+                //                 confirm: {
+                //                     show: false,
+                //                     label: 'ยืนยัน',
+                //                     color: 'primary',
+                //                 },
+                //                 cancel: {
+                //                     show: false,
+                //                     label: 'ยกเลิก',
+                //                 },
+                //             },
+                //             dismissible: true,
+                //         });
+                //     },
+                // });
+            }
+        });
+    }
+
+    showFlashMessage(type: 'success' | 'error'): void {
+        // Show the message
+        this.flashMessage = type;
+
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+
+        // Hide it after 3 seconds
+        setTimeout(() => {
+            this.flashMessage = null;
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        }, 3000);
+    }
+
+    cancelCheck() {
+        this.setAll(false);
     }
 }
