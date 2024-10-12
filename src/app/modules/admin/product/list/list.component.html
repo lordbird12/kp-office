@@ -211,7 +211,16 @@
                         <td>{{ item.province ? item.province : "-" }}</td>
                         <td>{{ item.year ? item.year : "-" }}</td>
                         <td>{{ item.sale_price ? item.sale_price : "-" }}</td>
-                        <td>{{ item.vat_status ? item.vat_status : "-" }}</td>
+                         <td>
+                            <div *ngIf="item.vat_status === 0"
+                                class="bg-blue-200 p-1 rounded-md text-blue-500 font-bold">
+                                ไม่เสีย VAT
+                            </div>
+                            <div *ngIf="item.vat_status === 1"
+                                class="bg-red-200 p-1 rounded-md text-red-500 font-bold">
+                                เสีย VAT
+                            </div>
+                        </td>
                         <td>{{ item.engine_no ? item.engine_no : "-" }}</td>
                         <td>{{ item.tank_no ? item.tank_no : "-" }}</td>
                         <td>{{ item.color ? item.color.name : "-" }}</td>
