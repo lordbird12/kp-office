@@ -74,6 +74,15 @@ export class Service {
                 })
             );
     }
+    getSubCategory(): Observable<any> {
+        return this._httpClient
+            .get<any>(environment.baseURL + '/api/get_sub_category_product')
+            .pipe(
+                tap((result) => {
+                    this._data.next(result);
+                })
+            );
+    }
 
     deleteArea(id: any): Observable<any> {
         return this._httpClient.delete<any>(

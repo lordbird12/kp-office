@@ -33,6 +33,7 @@ import { Service } from '../page.service';
 import { CommonModule } from '@angular/common';
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { forkJoin, lastValueFrom } from 'rxjs';
+import { MatRadioModule } from '@angular/material/radio';
 
 @Component({
     selector: 'form-product',
@@ -55,6 +56,7 @@ import { forkJoin, lastValueFrom } from 'rxjs';
         MatDatepickerModule,
         CommonModule,
         NgxDropzoneModule,
+        MatRadioModule
     ],
 })
 export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -74,6 +76,7 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
 
     item1Data: any = [];
     item2Data: any = [];
+    subCategory: any = [];
     itemSupplier: any = [];
 
     itemBrand: any = [];
@@ -87,6 +90,16 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
     files: File[] = [];
     files1: File[] = [];
     files2: File[] = [];
+    status: any[] = [
+        {
+            id: 0,
+            name: 'ไม่มี VAT'
+        },
+        {
+            id: 1,
+            name: 'มี VAT'
+        },
+    ];
     warehouseData: any;
     companie: any;
     Id: any
@@ -108,6 +121,7 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
         this.Id = this._activatedRoute.snapshot.paramMap.get('id');
 
         this.formData = this._formBuilder.group({
+            id: null,
             category_product_id: ['', Validators.required],
             pr_no: [''],
             name: [''],
@@ -126,11 +140,13 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
             color_id: [''],
             image: [''],
             images: [''],
-            companie_id: [''],
+            companie_id: null,
             area_id: [''],
             mile: [''],
             front_tire: [''],
             back_tire: [''],
+            sub_category_product_id: null,
+            vat_status: 0
         });
         this.formData2 = this._formBuilder.group({
             category_product_id: ['', Validators.required],
@@ -153,6 +169,9 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
             back_tire: [''],
             image: [''],
             images: [''],
+            sub_category_product_id: '',
+            vat_status: 0,
+            province: '',
         });
     }
 
@@ -167,6 +186,7 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
         // this.getCompanie();
         // this.getCC();
         // this.getColor();
+        this.getSubCategories()
         let response = await lastValueFrom(
             forkJoin({
                 category: this._Service.getCategories(),
@@ -205,8 +225,10 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
                         brand_id: +this.itemData.brand_id,
                         brand_model_id: +this.itemData.brand_model_id,
                         cc_id: +this.itemData.cc_id,
-                        companie_id: +this.itemData.area?.companie_id,
+                        companie_id: +this.itemData?.companie_id,
                         color_id: +this.itemData.color_id,
+                        image: [''],
+                        images: [],
                     })
 
                     this.formData2.patchValue({
@@ -241,6 +263,13 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
     getCategories(): void {
         this._Service.getCategories().subscribe((resp) => {
             this.item1Data = resp.data;
+        });
+    }
+    getSubCategories(): void {
+        this._Service.getSubCategory().subscribe((resp) => {
+            this.subCategory = resp.data;
+            console.log();
+            
         });
     }
 
@@ -369,7 +398,7 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
 
             // Append additional images
             this.files1.forEach((file) => {
-                formData.append('images', file);
+                formData.append('images[]', file);
             });
 
             // Append videos
@@ -409,7 +438,7 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
                     const formData = prepareFormData();
                     this._Service.update(formData).subscribe({
                         next: (resp: any) => {
-                            this._router.navigate(['admin/finance/list']);
+                            this._router.navigate(['admin/product/list']);
                         },
                         error: (err: any) => {
                             this.formData.enable();

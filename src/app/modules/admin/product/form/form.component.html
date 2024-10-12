@@ -71,8 +71,7 @@
                     <div class="md:w-1/2 px-3 mb-6 md:mb-0">
                         <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
                             <mat-label>บริษัท</mat-label>
-                            <mat-select [formControlName]="'companie_id'"
-                                (selectionChange)="somethingCompanie($event)">
+                            <mat-select [formControlName]="'companie_id'" (selectionChange)="somethingCompanie($event)">
                                 <mat-option [value]="''">
                                     <span>เลือกบริษัท</span>
                                 </mat-option>
@@ -119,6 +118,18 @@
                             <input matInput [placeholder]="'ราคาขาย'" [formControlName]="'sale_price'">
                             <!-- <mat-hint>This is a hint text</mat-hint> -->
                         </mat-form-field>
+                    </div>
+                </div>
+                <div class="-mx-3 md:flex mb-6">
+                    <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                        <mat-label class="font-bold">สถานะ VAT</mat-label>
+                        <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group"
+                            formControlName="vat_status">
+                            <mat-radio-button class="example-radio-button" *ngFor="let item of status"
+                                [color]="'primary'" [value]="item.id">
+                                {{item.name}}
+                            </mat-radio-button>
+                        </mat-radio-group>
                     </div>
                 </div>
                 <div class="-mx-3 md:flex mb-6" *ngIf="this.formData.value.type === 'Secound'">
@@ -184,6 +195,22 @@
                         </mat-form-field>
                     </div>
 
+                </div>
+                <div class="-mx-3 md:flex mb-6">
+                    <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>เลขทะเบียนรถ</mat-label>
+                            <input matInput [placeholder]="'เลขทะเบียนรถ'" [formControlName]="'license_plate'">
+                            <!-- <mat-hint>This is a hint text</mat-hint> -->
+                        </mat-form-field>
+                    </div>
+                    <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>จังหวัด</mat-label>
+                            <input matInput [placeholder]="'จังหวัด'" [formControlName]="'province'">
+                            <!-- <mat-hint>This is a hint text</mat-hint> -->
+                        </mat-form-field>
+                    </div>
                 </div>
                 <div class="-mx-3 md:flex mb-6">
                     <div class="md:min-w-full px-3 mb-6 md:mb-0">
@@ -257,51 +284,57 @@
                 </div>
                 <div class="-mx-3 md:flex mb-6">
                     <div class="md:min-w-full px-3 mb-6 md:mb-0">
-                      <div class="border-t border-gray-200">
-                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                          <div class="flex flex-wrap justify-start">
-                            <ngx-dropzone style="width: 100%; height: 150px; justify-content: center;" (change)="onSelect($event)">
-                              <ngx-dropzone-label>รูปหลัก</ngx-dropzone-label>
-                              <ngx-dropzone-image-preview *ngFor="let f of files" [removable]="true" [file]="f" (removed)="onRemove(f)">
-                              </ngx-dropzone-image-preview>
-                            </ngx-dropzone>
-                          </div>
-                        </dd>
-                      </div>
+                        <div class="border-t border-gray-200">
+                            <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                                <div class="flex flex-wrap justify-start">
+                                    <ngx-dropzone style="width: 100%; height: 150px; justify-content: center;"
+                                        (change)="onSelect($event)">
+                                        <ngx-dropzone-label>รูปหลัก</ngx-dropzone-label>
+                                        <ngx-dropzone-image-preview *ngFor="let f of files" [removable]="true"
+                                            [file]="f" (removed)="onRemove(f)">
+                                        </ngx-dropzone-image-preview>
+                                    </ngx-dropzone>
+                                </div>
+                            </dd>
+                        </div>
                     </div>
-                  </div>
+                </div>
 
-                  <div class="-mx-3 md:flex mb-6">
+                <div class="-mx-3 md:flex mb-6">
                     <div class="md:min-w-full px-3 mb-6 md:mb-0">
-                      <div class="border-t border-gray-200">
-                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                          <div class="flex flex-wrap justify-start">
-                            <ngx-dropzone style="width: 100%; height: 150px; justify-content: center;" (change)="onSelect1($event)">
-                              <ngx-dropzone-label>รูปภาพเสริม</ngx-dropzone-label>
-                              <ngx-dropzone-image-preview *ngFor="let f of files1" [removable]="true" [file]="f" (removed)="onRemove1(f)">
-                              </ngx-dropzone-image-preview>
-                            </ngx-dropzone>
-                          </div>
-                        </dd>
-                      </div>
+                        <div class="border-t border-gray-200">
+                            <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                                <div class="flex flex-wrap justify-start">
+                                    <ngx-dropzone style="width: 100%; height: 150px; justify-content: center;"
+                                        (change)="onSelect1($event)">
+                                        <ngx-dropzone-label>รูปภาพเสริม</ngx-dropzone-label>
+                                        <ngx-dropzone-image-preview *ngFor="let f of files1" [removable]="true"
+                                            [file]="f" (removed)="onRemove1(f)">
+                                        </ngx-dropzone-image-preview>
+                                    </ngx-dropzone>
+                                </div>
+                            </dd>
+                        </div>
                     </div>
-                  </div>
+                </div>
 
-                  <div class="-mx-3 md:flex mb-6">
+                <div class="-mx-3 md:flex mb-6">
                     <div class="md:min-w-full px-3 mb-6 md:mb-0">
-                      <div class="border-t border-gray-200">
-                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                          <div class="flex flex-wrap justify-start">
-                            <ngx-dropzone style="width: 100%; height: 150px; justify-content: center;" (change)="onSelect2($event)">
-                              <ngx-dropzone-label>วิดีโอ</ngx-dropzone-label>
-                              <ngx-dropzone-image-preview *ngFor="let f of files2" [removable]="true" [file]="f" (removed)="onRemove2(f)">
-                              </ngx-dropzone-image-preview>
-                            </ngx-dropzone>
-                          </div>
-                        </dd>
-                      </div>
+                        <div class="border-t border-gray-200">
+                            <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                                <div class="flex flex-wrap justify-start">
+                                    <ngx-dropzone style="width: 100%; height: 150px; justify-content: center;"
+                                        (change)="onSelect2($event)">
+                                        <ngx-dropzone-label>วิดีโอ</ngx-dropzone-label>
+                                        <ngx-dropzone-image-preview *ngFor="let f of files2" [removable]="true"
+                                            [file]="f" (removed)="onRemove2(f)">
+                                        </ngx-dropzone-image-preview>
+                                    </ngx-dropzone>
+                                </div>
+                            </dd>
+                        </div>
                     </div>
-                  </div>
+                </div>
                 <div class="flex flex-row mt-2 justify-end">
                     <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
                         <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="New();">

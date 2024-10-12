@@ -18,11 +18,6 @@
                         &nbsp;
                         เพิ่มสินค้า
                     </button>
-                    <!-- <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="downloadReport()">
-                        <mat-icon svgIcon="heroicons_outline:document-arrow-down"></mat-icon>
-                        &nbsp;
-                        Download
-                    </button> -->
                 </div>
             </div>
         </div>
@@ -166,10 +161,11 @@
                         <th>วันที่จอง</th>
                         <th>ยี่ห้อ</th>
                         <th>รุ่น</th>
-                        <th>จังหวัด</th>
                         <th>ทะเบียน</th>
+                        <th>จังหวัด</th>
                         <th>ปี</th>
                         <th>ราคาขาย</th>
+                        <th>สถานะ VAT</th>
                         <th>หมายเลขตัวถัง</th>
                         <th>หมายเลขเครื่อง</th>
                         <th>สี</th>
@@ -211,10 +207,11 @@
                         <td>{{ item.created_at !== null ? item.created_at: "-"}}</td>
                         <td>{{ item.brand ? item.brand.name : "-" }}</td>
                         <td>{{ item.brand_model ? item.brand_model.name : "-" }}</td>
-                        <td>{{ item.province ? item.province : "-" }}</td>
                         <td>{{ item.license_plate ? item.license_plate : "-" }}</td>
+                        <td>{{ item.province ? item.province : "-" }}</td>
                         <td>{{ item.year ? item.year : "-" }}</td>
                         <td>{{ item.sale_price ? item.sale_price : "-" }}</td>
+                        <td>{{ item.vat_status ? item.vat_status : "-" }}</td>
                         <td>{{ item.engine_no ? item.engine_no : "-" }}</td>
                         <td>{{ item.tank_no ? item.tank_no : "-" }}</td>
                         <td>{{ item.color ? item.color.name : "-" }}</td>
