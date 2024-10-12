@@ -92,11 +92,11 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
     files2: File[] = [];
     status: any[] = [
         {
-            id: 0,
+            id: "0",
             name: 'ไม่มี VAT'
         },
         {
-            id: 1,
+            id: "1",
             name: 'มี VAT'
         },
     ];
