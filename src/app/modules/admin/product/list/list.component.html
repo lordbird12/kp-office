@@ -161,23 +161,24 @@
                     <tr>
                         <th class="w-[100px]">จัดการ</th>
                         <th class="w-[10px]">ลำดับ</th>
+                        <th>สถานะ</th>
+                        <th>จองโดย</th>
+                        <th>วันที่จอง</th>
                         <th>ยี่ห้อ</th>
                         <th>รุ่น</th>
+                        <th>จังหวัด</th>
                         <th>ทะเบียน</th>
                         <th>ปี</th>
+                        <th>ราคาขาย</th>
                         <th>หมายเลขตัวถัง</th>
                         <th>หมายเลขเครื่อง</th>
                         <th>สี</th>
-                        <th>เกียร์</th>
+                        <!-- <th>เกียร์</th> -->
                         <th>เลขไมล์</th>
-                        <th>ราคาของแถม</th>
+                        <!-- <th>ราคาของแถม</th> -->
                         <th>โปรโมชั่น</th>
                         <th>ราคาทุน</th>
-                        <th>ราคาขาย</th>
-                        <th>สถานะ</th>
                         <th>รูป</th>
-                        <th>สร้างโดย</th>
-                        <th>วันที่สร้าง</th>
                     </tr>
                 </thead>
                 <tbody *ngIf="dataRow?.length != 0">
@@ -192,28 +193,6 @@
                             </button>
                         </td>
                         <td>{{ pages.begin + (i + 1) }}</td>
-
-                        <td>{{ item.brand ? item.brand.name : "-" }}</td>
-                        <td>{{ item.brand_model ? item.brand_model.name : "-" }}</td>
-                        <td>{{ item.license_plate ? item.license_plate : "-" }}</td>
-                        <td>{{ item.year ? item.year : "-" }}</td>
-                        <td>{{ item.tank_no ? item.tank_no : "-" }}</td>
-                        <td>{{ item.color ? item.color.name : "-" }}</td>
-                        <td>{{ item.mile ? item.mile : "-" }}</td>
-                        <td>{{ item.gift_price ? item.gift_price : "-" }}</td>
-                        <td>{{ item.promotion_discount ? item.promotion_discount : "-" }}</td>
-                        <td>{{ item.cost ? item.cost : "-" }}</td>
-                        <td>{{ item.sale_price ? item.sale_price : "-" }}</td>
-                        <td>
-                            <div *ngIf="item.type === 'มือหนึ่ง'"
-                                class="bg-red-200 p-1 rounded-md text-red-500 font-bold">
-                                {{ item.type ? item.type : "-" }}
-                            </div>
-                            <div *ngIf="item.type === 'มือสอง'"
-                                class="bg-yellow-200 p-1 rounded-md text-yellow-500 font-bold">
-                                {{ item.type ? item.type : "-" }}
-                            </div>
-                        </td>
                         <td>
                             <div *ngIf="item.status === 'ขายแล้ว'"
                                 class="bg-red-200 p-1 rounded-md text-red-500 font-bold">
@@ -228,13 +207,37 @@
                                 {{ item.status ? item.status : "-" }}
                             </div>
                         </td>
+                        <td>{{ item.create_by ? item.create_by : "-" }}</td>
+                        <td>{{ item.created_at !== null ? item.created_at: "-"}}</td>
+                        <td>{{ item.brand ? item.brand.name : "-" }}</td>
+                        <td>{{ item.brand_model ? item.brand_model.name : "-" }}</td>
+                        <td>{{ item.province ? item.province : "-" }}</td>
+                        <td>{{ item.license_plate ? item.license_plate : "-" }}</td>
+                        <td>{{ item.year ? item.year : "-" }}</td>
+                        <td>{{ item.sale_price ? item.sale_price : "-" }}</td>
+                        <td>{{ item.engine_no ? item.engine_no : "-" }}</td>
+                        <td>{{ item.tank_no ? item.tank_no : "-" }}</td>
+                        <td>{{ item.color ? item.color.name : "-" }}</td>
+                        <td>{{ item.mile ? item.mile : "-" }}</td>
+                        
+                        <!-- <td>{{ item.promotion_discount ? item.promotion_discount : "-" }}</td> -->
+                        <!-- <td>
+                            <div *ngIf="item.type === 'มือหนึ่ง'"
+                                class="bg-red-200 p-1 rounded-md text-red-500 font-bold">
+                                {{ item.type ? item.type : "-" }}
+                            </div>
+                            <div *ngIf="item.type === 'มือสอง'"
+                                class="bg-yellow-200 p-1 rounded-md text-yellow-500 font-bold">
+                                {{ item.type ? item.type : "-" }}
+                            </div>
+                        </td> -->
+                        <td>{{ item.gift_price ? item.gift_price : "-" }}</td>
+                        <td>{{ item.cost ? item.cost : "-" }}</td>
                         <td>
                             <button mat-button (click)="showPicture(item.image)">
                                 <mat-icon>image</mat-icon>
                             </button>
                         </td>
-                        <td>{{ item.create_by ? item.create_by : "-" }}</td>
-                        <td>{{ item.created_at !== null ? item.created_at: "-"}}</td>
                     </tr>
                 </tbody>
                 <tbody *ngIf="dataRow?.length == 0">
