@@ -146,7 +146,8 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
             front_tire: [''],
             back_tire: [''],
             sub_category_product_id: null,
-            vat_status: 0
+            vat_status: 0,
+            province: ''
         });
         this.formData2 = this._formBuilder.group({
             category_product_id: ['', Validators.required],
