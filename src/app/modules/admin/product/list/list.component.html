@@ -212,12 +212,12 @@
                         <td>{{ item.year ? item.year : "-" }}</td>
                         <td>{{ item.sale_price ? item.sale_price : "-" }}</td>
                          <td>
-                            <div *ngIf="item.vat_status === 0"
+                            <div *ngIf="item.vat_status === '0'"
                                 class="bg-blue-200 p-1 rounded-md text-blue-500 font-bold">
                                 ไม่เสีย VAT
                             </div>
-                            <div *ngIf="item.vat_status === 1"
-                                class="bg-red-200 p-1 rounded-md text-red-500 font-bold">
+                            <div *ngIf="item.vat_status === '1'"
+                                class="bg-red-200 p-1 rounded-md text-red-500 font-bold text-center">
                                 เสีย VAT
                             </div>
                         </td>
