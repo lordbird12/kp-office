@@ -326,10 +326,18 @@ export class FormComponent implements OnInit {
             formValues.gps_fee +
             formValues.insurance_price;
 
+        // คำนวณ final_price
+        const finalPrice =
+            this.total1 -
+            formValues.first_payment -
+            formValues.discount +
+            formValues.other_price;
+
         this.formData.patchValue(
             {
                 finance_price: validFinanceAmount,  // อัปเดตยอดจัดไฟแนนซ์
-                total_price: this.total1             // อัปเดตผลรวมทั้งหมด
+                total_price: this.total1,             // อัปเดตผลรวมทั้งหมด
+                final_price: finalPrice              // ราคาไฟนอล
             },
             { emitEvent: false }
         );
