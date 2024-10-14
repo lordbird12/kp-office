@@ -24,7 +24,7 @@ import { PictureComponent } from '../picture/picture.component';
 import { environment } from 'environments/environment.development';
 import { ClaimDialogComponent } from '../claim-dialog/claim-dialog.component';
 import { DateTime } from 'luxon';
-import { ReplaySubject, Subject, takeUntil } from 'rxjs';
+import { distinctUntilChanged, ReplaySubject, Subject, takeUntil } from 'rxjs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { NgxMaskDirective } from 'ngx-mask';
 import { MatRadioModule } from '@angular/material/radio';
@@ -55,6 +55,7 @@ export class FormComponent implements OnInit {
 
     itemData: any;
     total: number;
+    total1: number;
     Id: number;
     claimId: number;
     product_select: any;
@@ -303,7 +304,38 @@ export class FormComponent implements OnInit {
             .subscribe(() => {
                 this._filterEngineer();
             });
+        this.formData.valueChanges.pipe(distinctUntilChanged())
+            .subscribe(() => this.calculateTotal());
     }
+
+
+    calculateTotal(): void {
+        const formValues = this.formData.value;
+        // let financePrice = formValues.sale_price - formValues.down_price
+        // console.log(financePrice, 'financePrice');
+        // คำนวณยอดจัดไฟแนนซ์ (ราคาขาย - เงินดาวน์)
+        const financeAmount = formValues.sale_price - formValues.down_price;
+
+        // ตรวจสอบว่าผลลัพธ์ไม่ต่ำกว่า 0 (กรณีที่กรอกเกิน)
+        const validFinanceAmount = Math.max(financeAmount, 0);
+        this.total1 =
+            formValues.down_price +
+            formValues.tax_and_plo +
+            formValues.finance_fee +
+            formValues.assemble_fee +
+            formValues.gps_fee +
+            formValues.insurance_price;
+
+        this.formData.patchValue(
+            {
+                finance_price: validFinanceAmount,  // อัปเดตยอดจัดไฟแนนซ์
+                total_price: this.total1             // อัปเดตผลรวมทั้งหมด
+            },
+            { emitEvent: false }
+        );
+    }
+
+
         /**
      * On destroy
      */  protected _onDestroy = new Subject<void>();
@@ -703,8 +735,8 @@ export class FormComponent implements OnInit {
             promotionFormArray.push(promo);
         });
         console.log(this.formData.value);
-
     }
+
 }
 
 
