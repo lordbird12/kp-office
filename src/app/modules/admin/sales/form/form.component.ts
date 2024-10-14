@@ -73,6 +73,7 @@ export class FormComponent implements OnInit {
         },
 
     ];
+    promotionData: any[] = [];
     repairType: any[] = [
         {
             code: 'IN',
@@ -121,20 +122,20 @@ export class FormComponent implements OnInit {
         
     ) {
 
+        this._service.getPromotion().subscribe((resp: any) => {
+            this.promotionData = resp.data
+        })
         this._service.getUserByDepartment(2).subscribe((resp: any) => {
             this.saleData = resp.data
             this.filterSale.next(this.saleData.slice());
-
         })
         this._service.getUserByDepartment(1).subscribe((resp: any) => {
             this.engineerData = resp.data
             this.filterEngineer.next(this.engineerData.slice());
-
         })
         this._service.getFinanace().subscribe((resp: any) => {
             this.financeData = resp.data
             this.filterFinance.next(this.financeData.slice());
-
         })
         this.formData = this._fb.group({
             date: null,
@@ -148,6 +149,7 @@ export class FormComponent implements OnInit {
             down_price: 0,
             sale_type: null,
             tax_and_plo: 0,
+            type: null,
             finance_fee: 0,
             assemble_fee: 0,
             gps_fee: 0,
@@ -239,6 +241,7 @@ export class FormComponent implements OnInit {
                         phone: this.itemData.client?.phone,
                         idcard: this.itemData.client?.idcard,
                         address: this.itemData.client?.address,
+                        type: this.itemData.client?.type,
                     });
 
                     this._changeDetectorRef.markForCheck();
@@ -632,6 +635,7 @@ export class FormComponent implements OnInit {
                     phone: result.phone ?? null,
                     idcard: result.idcard ?? null,
                     address: result.address ?? null,
+                    type: result.type ?? null,
                 })
             }
         });

@@ -24,6 +24,18 @@
                     ข้อมูลลูกค้า
                 </span>
                 <div class="-mx-3 md:flex mb-6">
+                    <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                        <!-- <mat-label class="font-bold">สถานะ VAT</mat-label> -->
+                        <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group"
+                            formControlName="type">
+                            <mat-radio-button class="example-radio-button" *ngFor="let item of status"
+                                [color]="'primary'" [value]="item">
+                                {{item}}
+                            </mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+                <div class="-mx-3 md:flex mb-6">
                     <div class="md:w-full px-3">
                         <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
                             <mat-label>ชื่อ</mat-label>
@@ -31,58 +43,19 @@
                             <!-- <mat-hint>This is a hint text</mat-hint> -->
                         </mat-form-field>
                     </div>
-                    <div class="md:w-full px-3">
-                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
-                            <mat-label>อายุ</mat-label>
-                            <input matInput [placeholder]="'กรอกอายุ'" formControlName="age">
-                            <!-- <mat-hint>This is a hint text</mat-hint> -->
-                        </mat-form-field>
-                    </div>
-                    <div class="md:w-full px-3">
-                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
-                            <mat-label>เพศ</mat-label>
-                            <mat-select placeholder="กรอกเพศ" formControlName="gender">
-                                <mat-option value="M">ชาย</mat-option>
-                                <mat-option value="F">หญิง</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-                    <!-- <div class="md:w-1/2 px-3">
-                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
-                            <mat-label>เลขประจำตัวผู้เสียภาษี</mat-label>
-                            <input matInput [placeholder]="'กรอกเลขประจำตัวผู้เสียภาษี'" formControlName="tax">
-                            <mat-hint>This is a hint text</mat-hint>
-                        </mat-form-field>
-                    </div> -->
                 </div>
                 <div class="-mx-3 md:flex mb-6">
                     <div class="md:w-1/2 px-3">
                         <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
-                            <mat-label>เบอร์ติดต่อ</mat-label>
-                            <input matInput [placeholder]="'กรุณากรอกเบอร์ติดต่อ'" formControlName="phone">
-                            <!-- <mat-hint>This is a hint text</mat-hint> -->
-                        </mat-form-field>
-                    </div>
-                    <div class="md:w-1/2 px-3 mb-6 md:mb-0">
-                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
-                            <mat-label>เบอร์ติดต่อสำรอง</mat-label>
-                            <input matInput [placeholder]="'กรุณากรอกเบอร์ติดต่อสำรอง'" formControlName="phone2">
-                            <!-- <mat-hint>This is a hint text</mat-hint> -->
-                        </mat-form-field>
-                    </div>
-                </div>
-                <div class="-mx-3 md:flex mb-6">
-                    <div class="md:w-1/2 px-3">
-                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
-                            <mat-label>เลขบัตรประชาชน</mat-label>
+                            <mat-label>เลขบัตรประชาชน/เลขประจำตัวผู้เสียภาษี</mat-label>
                             <input matInput [placeholder]="'กรุณากรอกเลขบัตรประชาชน'" formControlName="idcard">
                             <!-- <mat-hint>This is a hint text</mat-hint> -->
                         </mat-form-field>
                     </div>
-                    <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                    <div class="md:w-1/2 px-3">
                         <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
-                            <mat-label>Email</mat-label>
-                            <input matInput [placeholder]="'กรุณากรอก Email'" formControlName="email">
+                            <mat-label>เบอร์ติดต่อ</mat-label>
+                            <input matInput [placeholder]="'กรุณากรอกเบอร์ติดต่อ'" formControlName="phone">
                             <!-- <mat-hint>This is a hint text</mat-hint> -->
                         </mat-form-field>
                     </div>

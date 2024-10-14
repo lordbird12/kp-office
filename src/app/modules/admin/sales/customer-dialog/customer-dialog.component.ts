@@ -66,7 +66,11 @@ export class CustomerDialogComponent implements OnInit {
             id: 'F',
             name: 'หญิง'
         }
-    ]
+    ];
+    status: any[] = [
+        'บุคคลธรรมดา',
+        'นิติบุคคล',
+      ]
 
     constructor(private dialogRef: MatDialogRef<CustomerDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any,
@@ -90,6 +94,7 @@ export class CustomerDialogComponent implements OnInit {
             age: '',
             status: '',
             gender: '',
+            type: '',
         })
 
     }

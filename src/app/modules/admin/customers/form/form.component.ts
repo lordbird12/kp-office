@@ -23,6 +23,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { FormDialogComponent } from '../form-dialog/form-dialog.component';
+import { MatRadioModule } from '@angular/material/radio';
 
 @Component({
   selector: 'form-employee',
@@ -48,7 +49,8 @@ import { FormDialogComponent } from '../form-dialog/form-dialog.component';
     MatTableModule,
     DataTablesModule,
     MatCheckboxModule,
-    NgxDropzoneModule
+    NgxDropzoneModule,
+    MatRadioModule
   ],
 
 })
@@ -67,6 +69,10 @@ export class FormComponent implements OnInit {
   @ViewChild(DataTableDirective)
   dtElement!: DataTableDirective;
   dataRow: any[] = [];
+  status: any[] = [
+    'บุคคลธรรมดา',
+    'นิติบุคคล',
+  ]
   /**
    * Constructor
    */
@@ -92,6 +98,7 @@ export class FormComponent implements OnInit {
         address : '',
         age: '',
         gender: '',
+        type: '',
     })
   }
 
@@ -156,7 +163,7 @@ export class FormComponent implements OnInit {
         if (result === 'confirmed') {
           const formData = new FormData();
           Object.entries(this.addForm.value).forEach(([key, value]: any[]) => {
-            formData.append(key, value);
+            formData.append(key, value === null ? '' : value);
           });
 
           for (var i = 0; i < this.files.length; i++) {
