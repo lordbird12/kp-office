@@ -188,6 +188,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 link: '/admin/promotion/list',
             },
             {
+                id: 'discount.list',
+                title: 'ส่วนลดโปรโมชั่น',
+                type: 'basic',
+                icon: 'heroicons_mini:scale',
+                link: '/admin/discount/list',
+            },
+            {
                 id: 'client.list',
                 title: 'ลูกค้าของเรา',
                 type: 'basic',

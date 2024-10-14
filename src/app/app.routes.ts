@@ -287,6 +287,11 @@ export const appRoutes: Route[] = [
                             import('app/modules/admin/promotion/page.routes'),
                     },
                     {
+                        path: 'discount',
+                        loadChildren: () =>
+                            import('app/modules/admin/discount/page.routes'),
+                    },
+                    {
                         path: 'report-stock-vat',
                         loadChildren: () =>
                             import(
