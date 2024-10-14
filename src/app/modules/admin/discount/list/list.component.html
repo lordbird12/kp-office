@@ -32,6 +32,7 @@
                         <th class="w-[10px]">ลำดับ</th>
                         <th>ชื่อ</th>
                         <th>รายละเอียด</th>
+                        <th>ยอดเงิน</th>
                         <th>สร้างโดย</th>
                         <th>วันที่สร้าง</th>
                     </tr>
@@ -48,7 +49,8 @@
                         </td>
                         <td>{{ pages.begin + (i + 1) }}</td>
                         <td>{{ item.name ? item.name : "-" }}</td>
-                        <td>{{ item.remark ? item.remark : "-" }}</td>
+                        <td>{{ item.detail ? item.detail : "-" }}</td>
+                        <td>{{ item.amount ? item.amount : "-" }}</td>
                         <td>{{ item.create_by ? item.create_by : "-" }}</td>
                         <td>{{ item.created_at !== null ? (item.created_at | date : "dd-MM-yy, HH:mm"): "-"}}</td>
                     </tr>
