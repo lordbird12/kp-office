@@ -256,8 +256,7 @@ export class FormComponent implements OnInit {
                             promotion_id: [promotion.promotion.id || ''],
                             name: promotion.promotion.name,
                             amount: 0,
-                            paid: [promotion.paid || '1'],
-                            detail: '',
+                            status: [promotion.status || 'Y'],
                         });
 
                         promotionFormArray.push(promo);
@@ -687,10 +686,13 @@ export class FormComponent implements OnInit {
     }
 
     onSelectedPromotion(event: any) {
-        
+
         let data = this.promotionData.find(item => item.id === event)
         const promotionFormArray = this.formData.get('promotion_lists') as FormArray;
-        console.log(data);
+        // เคลียร์ข้อมูลใน FormArray
+        while (promotionFormArray.length !== 0) {
+            promotionFormArray.removeAt(0);
+        }
         data.promotion_lists.forEach(promotion => {
             let promo = this._fb.group({
                 discount_id: [promotion.discount.id || ''],
@@ -698,12 +700,9 @@ export class FormComponent implements OnInit {
                 amount: promotion.discount.amount,
                 status: 'Y'
             });
-
             promotionFormArray.push(promo);
         });
-
         console.log(this.formData.value);
-        
 
     }
 }
