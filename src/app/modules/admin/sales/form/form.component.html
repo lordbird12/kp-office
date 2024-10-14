@@ -511,7 +511,7 @@
                                 <div class="w-full mb-6 md:mb-0">
                                     <mat-form-field class="w-full" [ngClass]="formFieldHelpers">
                                         <mat-label>เลือกโปรโมชั่น</mat-label>
-                                        <mat-select formControlName="sale_type">
+                                        <mat-select formControlName="promotion_id" (selectionChange)="onSelectedPromotion($event.value)">
                                             <mat-option *ngFor="let item of promotionData;" [value]="item.id">
                                                 {{item.name ?? '-'}}
                                             </mat-option>
@@ -526,13 +526,16 @@
                                 </p> -->
                             </div>
                         </span>
-                        <div class="relative overflow-x-auto shadow-md m-4 border-2" formArrayName="promotions">
+                        <div class="relative overflow-x-auto shadow-md m-4 border-2" formArrayName="promotion_lists">
                             <table class="w-full text-md text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                 <thead
                                     class="text-md text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
-                                        <th scope="col" class="px-6 py-3 w-2/4 h-full">
+                                        <th scope="col" class="px-6 py-3 w-1/4 h-full">
                                             รายการ
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 w-1/4 h-full">
+                                            จำนวนเงิน
                                         </th>
                                         <th scope="col" class="px-6 py-3 w2/4 text-center h-full">
                                             รายละเอียด
@@ -544,12 +547,20 @@
                                     <tr *ngFor="let depo; of: promotions().controls; let i = index" [formGroupName]="i"
                                         class="bg-white border-b dark:bg-gray-800 h-15 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                         <td class="px-6 py-1">
-                                            {{this.formData.value.promotions[i].name}}
+                                            {{this.formData.value.promotion_lists[i].name}}
+                                        </td>
+                                        <td class="px-6 text-right">
+                                            <mat-form-field class="w-full mt-4" [ngClass]="formFieldHelpers">
+                                                <input matInput mask="separator.2" thousandSeparator=","
+                                                    separatorLimit="999999999" [allowNegativeNumbers]="false"
+                                                    [formControlName]="'amount'" [placeholder]="'ระบุราคา'"
+                                                    class="text-right">
+                                            </mat-form-field>
                                         </td>
                                         <td class="px-6 py-1 text-center">
                                             <mat-radio-group aria-label="Select an option" formControlName="paid">
-                                                <mat-radio-button value="1">เคพีดำเนินการ </mat-radio-button>
-                                                <mat-radio-button value="2">ลูกค้าดำเนินการ </mat-radio-button>
+                                                <mat-radio-button value="Y">เคพีดำเนินการ </mat-radio-button>
+                                                <mat-radio-button value="N">ลูกค้าดำเนินการ </mat-radio-button>
                                             </mat-radio-group>
                                         </td>
                                     </tr>

@@ -119,7 +119,7 @@ export class FormComponent implements OnInit {
         public activatedRoute: ActivatedRoute,
         private dialog: MatDialog,
         private _changeDetectorRef: ChangeDetectorRef,
-        
+
     ) {
 
         this._service.getPromotion().subscribe((resp: any) => {
@@ -170,7 +170,7 @@ export class FormComponent implements OnInit {
             address: null,
             brand_id: null,
             brand_model_id: null,
-            promotions: this._fb.array([]),
+            promotion_lists: this._fb.array([]),
             repairs: this._fb.array([]),
         });
 
@@ -214,7 +214,7 @@ export class FormComponent implements OnInit {
                     this.engineerFilter.setValue(this.itemData.engineer?.name)
                     this._service.getBrandModel(this.itemData.orders?.brand?.id).subscribe((resp: any) => {
                         this.brandModelData = resp.data
-                        
+
                     });
 
                     this._service.getProduct(this.itemData.orders?.brand_model.id).subscribe((resp: any) => {
@@ -259,7 +259,7 @@ export class FormComponent implements OnInit {
                             paid: [promotion.paid || '1'],
                             detail: '',
                         });
-                        
+
                         promotionFormArray.push(promo);
                     });
                     const repairFormArray = this.formData.get('repairs') as FormArray;
@@ -269,7 +269,7 @@ export class FormComponent implements OnInit {
                             type: [repair.type || 'IN'],
                             detail: repair.detail,
                         });
-                        
+
                         repairFormArray.push(promo);
                     })
                 });
@@ -284,10 +284,10 @@ export class FormComponent implements OnInit {
             this.saleFilter.setValue(this.user_login.name)
 
 
-            this._service.getPromotion().subscribe((data) => {
-                this.setPromotions(data.data);
-                this._changeDetectorRef.markForCheck();
-            });
+            // this._service.getPromotion().subscribe((data) => {
+            //     // this.setPromotions(data.data);
+            //     this._changeDetectorRef.markForCheck();
+            // });
         }
         this.saleFilter.valueChanges
             .pipe(takeUntil(this._onDestroy))
@@ -382,7 +382,7 @@ export class FormComponent implements OnInit {
 
     addRepair(): void {
         this.repairs().push(this.createRepairsForm());
-     
+
     }
 
     removeRepair(i: number): void {
@@ -390,24 +390,27 @@ export class FormComponent implements OnInit {
     }
 
     promotions(): FormArray {
-        return this.formData.get('promotions') as FormArray;
+        return this.formData.get('promotion_lists') as FormArray;
     }
 
     createPromotionForm(promotion: any): FormGroup {
         return this._fb.group({
-            promotion_id: [promotion.id || ''],
-            name: promotion.name,
-            amount: 0,
-            paid: '1',
-            detail: '',
-            checked: false
+            discount_id: '',
+            name: promotion?.discount?.name,
+            amount: promotion?.discount?.amount
+            // promotion_id: [promotion.id || ''],
+            // name: promotion.name,
+            // amount: 0,
+            // paid: '1',
+            // detail: '',
+            // checked: false
         });
     }
     setPromotions(promotions: any[]) {
 
         console.log('promotion', promotions);
 
-        const promotionFormArray = this.formData.get('promotions') as FormArray;
+        const promotionFormArray = this.formData.get('promotion_lists') as FormArray;
         promotions.forEach(promotion => {
             console.log(promotion);
 
@@ -494,8 +497,8 @@ export class FormComponent implements OnInit {
     }
 
     selectProduct(item: any): void {
-       
-        
+
+
         this.formData.patchValue({
             product_id: item.id,
             sale_price: item.sale_price
@@ -513,11 +516,11 @@ export class FormComponent implements OnInit {
         this.productFilter.setValue(item)
         // console.log(this.productSelected);
         this._changeDetectorRef.markForCheck();
-        
+
     }
 
     selectBrand(item: any): void {
-    
+
 
         this._service.getBrandModel(item).subscribe((resp: any) => {
             this.brandModelData = resp.data
@@ -620,11 +623,11 @@ export class FormComponent implements OnInit {
     }
     customer(value: any) {
         const dialogRef = this.dialog.open(CustomerDialogComponent, {
-            width: '800px', 
+            width: '800px',
             height: '800px',
             data: {
                 type: value
-            } 
+            }
         });
 
         dialogRef.afterClosed().subscribe(result => {
@@ -680,6 +683,27 @@ export class FormComponent implements OnInit {
 
         this.formData.get('sale_price')?.setValue(formattedValue);
         // console.log(this.formData.value.sale_price);
+
+    }
+
+    onSelectedPromotion(event: any) {
+        
+        let data = this.promotionData.find(item => item.id === event)
+        const promotionFormArray = this.formData.get('promotion_lists') as FormArray;
+        console.log(data);
+        data.promotion_lists.forEach(promotion => {
+            let promo = this._fb.group({
+                discount_id: [promotion.discount.id || ''],
+                name: promotion.discount.name,
+                amount: promotion.discount.amount,
+                status: 'Y'
+            });
+
+            promotionFormArray.push(promo);
+        });
+
+        console.log(this.formData.value);
+        
 
     }
 }
