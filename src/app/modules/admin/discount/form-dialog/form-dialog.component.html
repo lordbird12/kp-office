@@ -13,8 +13,14 @@
                     <div class="md:w-full px-3">
                         <mat-form-field class="w-full">
                             <mat-label>รายละเอียด</mat-label>
-                            <textarea matInput [placeholder]="'กรอกรายละเอียด'" [formControlName]="'remark'"
+                            <textarea matInput [placeholder]="'กรอกรายละเอียด'" [formControlName]="'detail'"
                                 [rows]="6"></textarea>
+                        </mat-form-field>
+                    </div>
+                    <div class="md:w-full px-3">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>ยอดเงิน</mat-label>
+                            <input matInput [placeholder]="'กรุณาระบุยอดเงิน'" formControlName="amount">
                         </mat-form-field>
                     </div>
                 </div>

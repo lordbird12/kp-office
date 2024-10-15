@@ -75,7 +75,8 @@ isInputDisabled: boolean = true;
         this.editForm = this.formBuilder.group({
             id: [],
             name: [],
-            remark: [],
+            detail: [],
+            amount: [],
         });
      }
 
@@ -83,8 +84,6 @@ isInputDisabled: boolean = true;
         this.editForm.patchValue({
             ...this.data.data
         })
-        console.log(this.editForm.value)
-
     }
 
     onSaveClick(): void {
