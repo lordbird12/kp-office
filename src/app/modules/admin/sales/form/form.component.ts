@@ -180,6 +180,7 @@ export class FormComponent implements OnInit {
             brand_model_id: null,
             promotion_lists: this._fb.array([]),
             repairs: this._fb.array([]),
+            promotion_id: null
         });
 
         this._service.getClient().subscribe((resp: any) => {
@@ -250,6 +251,7 @@ export class FormComponent implements OnInit {
                         idcard: this.itemData.client?.idcard,
                         address: this.itemData.client?.address,
                         type: this.itemData.client?.type,
+                        promotion_id: +this.itemData.promotion_id
                     });
 
                     this._changeDetectorRef.markForCheck();
@@ -258,7 +260,7 @@ export class FormComponent implements OnInit {
                     //     this._changeDetectorRef.markForCheck();
                     // })
 
-                    const promotionFormArray = this.formData.get('promotions') as FormArray;
+                    const promotionFormArray = this.formData.get('promotion_lists') as FormArray;
                     this.itemData.promotions.forEach(promotion => {
                         let promo = this._fb.group({
                             promotion_id: [promotion.promotion.id || ''],
@@ -764,7 +766,9 @@ export class FormComponent implements OnInit {
             });
             promotionFormArray.push(promo);
         });
-        console.log(this.formData.value);
+        this.formData.patchValue({
+            promotion_id: event
+        })
     }
     zoomedImage: { url: string; alt: string } | null = null;
     zoomImage(image: { url: string; alt: string }) {
