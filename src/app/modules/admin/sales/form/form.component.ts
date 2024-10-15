@@ -35,7 +35,10 @@ import { CustomerDialogComponent } from '../customer-dialog/customer-dialog.comp
     encapsulation: ViewEncapsulation.None,
     standalone: true,
     imports: [
-        MatRadioModule, NgxMaskDirective, MatAutocompleteModule, CommonModule, MatIconModule, FormsModule, MatFormFieldModule, NgClass, MatInputModule, TextFieldModule, ReactiveFormsModule, MatButtonToggleModule, MatButtonModule, MatSelectModule, MatOptionModule, MatChipsModule, MatDatepickerModule],
+        MatRadioModule, 
+        NgxMaskDirective,
+         MatAutocompleteModule, 
+         CommonModule, MatIconModule, FormsModule, MatFormFieldModule, NgClass, MatInputModule, TextFieldModule, ReactiveFormsModule, MatButtonToggleModule, MatButtonModule, MatSelectModule, MatOptionModule, MatChipsModule, MatDatepickerModule],
 })
 export class FormComponent implements OnInit {
     formFieldHelpers: string[] = ['fuse-mat-dense'];
@@ -537,7 +540,8 @@ export class FormComponent implements OnInit {
 
     selectProduct(item: any): void {
 
-
+        console.log(item,'item');
+        
         this.formData.patchValue({
             product_id: item.id,
             sale_price: item.sale_price
