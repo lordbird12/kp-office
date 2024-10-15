@@ -182,7 +182,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
             },
             {
                 id: 'promotion.list',
-                title: 'โปรโมชัน',
+                title: 'โปรโมชั่น',
                 type: 'basic',
                 icon: 'heroicons_mini:bolt',
                 link: '/admin/promotion/list',
@@ -258,22 +258,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 type: 'basic',
                 icon: 'mat_outline:home',
                 link: '/admin/garage/list',
-            },
-            // {
-            //     id: 'promotion.list',
-            //     title: 'โปรโมชั่น',
-            //     type: 'basic',
-            //     icon: 'heroicons_outline:gift',
-            //     link: '/admin/promotion/list',
-            // },
-            // {
-            //     id: 'category-attribute.list',
-            //     title: 'ประเภทอะไหล่',
-            //     type: 'basic',
-            //     icon: 'heroicons_outline:wrench-screwdriver',
-            //     link: '/admin/category-attribute/list',
-            // },
-
+            }
         ],
     },
     // {

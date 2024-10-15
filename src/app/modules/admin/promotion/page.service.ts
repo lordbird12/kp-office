@@ -99,6 +99,24 @@ export class PageService {
                 })
             );
     }
+    getDiscount(): Observable<any> {
+        return this._httpClient
+            .get<any>(environment.baseURL + '/api/get_discount')
+            .pipe(
+                tap((result) => {
+                    this._data.next(result);
+                })
+            );
+    }
+    getById(id:number): Observable<any> {
+        return this._httpClient
+            .get<any>(environment.baseURL + '/api/promotion/' + id)
+            .pipe(
+                tap((result) => {
+                    this._data.next(result);
+                })
+            );
+    }
     /**
      * Get products
      *
