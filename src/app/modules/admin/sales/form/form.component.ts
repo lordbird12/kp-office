@@ -29,12 +29,15 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { NgxMaskDirective } from 'ngx-mask';
 import { MatRadioModule } from '@angular/material/radio';
 import { CustomerDialogComponent } from '../customer-dialog/customer-dialog.component';
+import { CarouselComponent } from '../image-slide/carousel.component';
 @Component({
     selector: 'form-product',
     templateUrl: './form.component.html',
+    styleUrls: ['./form.component.scss'],
     encapsulation: ViewEncapsulation.None,
     standalone: true,
     imports: [
+        CarouselComponent,
         MatRadioModule, 
         NgxMaskDirective,
          MatAutocompleteModule, 
@@ -55,7 +58,8 @@ export class FormComponent implements OnInit {
     paymentData: any[] = [];
     claimData: any[] = [];
     userData: any[] = [];
-
+    images: any[] = [];
+    image: string = '';
     itemData: any;
     total: number;
     total1: number;
@@ -540,7 +544,7 @@ export class FormComponent implements OnInit {
 
     selectProduct(item: any): void {
 
-        console.log(item,'item');
+        // console.log(item,'item');
         
         this.formData.patchValue({
             product_id: item.id,
@@ -555,6 +559,20 @@ export class FormComponent implements OnInit {
             engine_no: item.engine_no,
             tank_no: item.tank_no,
         }
+        
+        if (item.images) {
+            item.images.forEach(element => {
+                let _images = {
+                    url: element.image,
+                    alt: element.id
+                }
+                this.images.push(_images)
+            })
+           
+        }
+        this.image = item.image
+        
+        // this.images = item.images
         this.productSelected = data
         this.productFilter.setValue(item)
         // console.log(this.productSelected);
@@ -748,6 +766,14 @@ export class FormComponent implements OnInit {
         });
         console.log(this.formData.value);
     }
+    zoomedImage: { url: string; alt: string } | null = null;
+    zoomImage(image: { url: string; alt: string }) {
+        this.zoomedImage = image;
+      }
+    
+      closeZoom() {
+        this.zoomedImage = null;
+      }
 
 }
 
