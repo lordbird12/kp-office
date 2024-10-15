@@ -146,6 +146,7 @@ export class FormComponent implements OnInit {
             this.filterFinance.next(this.financeData.slice());
         })
         this.formData = this._fb.group({
+            id: null,
             date: null,
             sale_id: null,
             client_id: null,
@@ -244,6 +245,7 @@ export class FormComponent implements OnInit {
                         ...this.itemData,
                     });
                     this.formData.patchValue({
+                        id: +this.itemData.id,
                         brand_id: +this.itemData.orders?.brand?.id,
                         brand_model_id: +this.itemData.orders?.brand_model.id,
                         customer_name: this.itemData.client?.name,
@@ -261,11 +263,12 @@ export class FormComponent implements OnInit {
                     // })
 
                     const promotionFormArray = this.formData.get('promotion_lists') as FormArray;
-                    this.itemData.promotions.forEach(promotion => {
+                    this.itemData.promotion_lists.forEach(promotion => {
                         let promo = this._fb.group({
-                            promotion_id: [promotion.promotion.id || ''],
-                            name: promotion.promotion.name,
-                            amount: 0,
+                            id: promotion.id,
+                            discount_id: [promotion.discount.id || ''],
+                            name: promotion.discount.name,
+                            amount: promotion.discount.amount,
                             status: [promotion.status || 'Y'],
                         });
 
@@ -658,7 +661,65 @@ export class FormComponent implements OnInit {
                 }
             }))
         } else {
-            return;
+            const dialogRef = this._fuseConfirmationService.open({
+                "title": "บันทึกข้อมูล",
+                "message": "คุณต้องการบันทึกข้อมูลใช่หรือไม่ ?",
+                "icon": {
+                    "show": true,
+                    "name": "heroicons_outline:exclamation-triangle",
+                    "color": "accent"
+                },
+                "actions": {
+                    "confirm": {
+                        "show": true,
+                        "label": "ตกลง",
+                        "color": "primary"
+                    },
+                    "cancel": {
+                        "show": true,
+                        "label": "ยกเลิก"
+                    }
+                },
+                "dismissible": true
+            })
+
+            dialogRef.afterClosed().subscribe((result => {
+                if (result === 'confirmed') {
+                    let formValue = this.formData.value;
+                    formValue.date = moment(formValue.date).format('YYYY-MM-DD')
+                    this._service.update(formValue, this.Id).subscribe({
+                        next: (resp: any) => {
+                            this._router.navigate(['admin/sales/list'])
+                        },
+                        error: (err: any) => {
+                            this._fuseConfirmationService.open({
+                                "title": "กรุณาระบุข้อมูล",
+                                "message": err.error.message,
+                                "icon": {
+                                    "show": true,
+                                    "name": "heroicons_outline:exclamation",
+                                    "color": "warning"
+                                },
+                                "actions": {
+                                    "confirm": {
+                                        "show": false,
+                                        "label": "ยืนยัน",
+                                        "color": "primary"
+                                    },
+                                    "cancel": {
+                                        "show": false,
+                                        "label": "ยกเลิก",
+
+                                    }
+                                },
+                                "dismissible": true
+                            });
+                        }
+                    })
+                } else {
+
+                }
+            }))
         }
 
     }
