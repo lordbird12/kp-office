@@ -78,7 +78,6 @@ export class FormComponent implements OnInit {
         })
 
         this.Id = this._activated.snapshot.params.id
-        console.log(this.Id);
 
     }
 
@@ -124,9 +123,9 @@ export class FormComponent implements OnInit {
                 });
 
                 // แจ้งให้ Angular รู้ว่ามีการเปลี่ยนแปลง
-                this._changeDetectorRef.detectChanges();
             });
         }
+        this._changeDetectorRef.markForCheck();
 
 
     }
