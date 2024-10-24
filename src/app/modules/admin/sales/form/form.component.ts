@@ -38,10 +38,10 @@ import { CarouselComponent } from '../image-slide/carousel.component';
     standalone: true,
     imports: [
         CarouselComponent,
-        MatRadioModule, 
+        MatRadioModule,
         NgxMaskDirective,
-         MatAutocompleteModule, 
-         CommonModule, MatIconModule, FormsModule, MatFormFieldModule, NgClass, MatInputModule, TextFieldModule, ReactiveFormsModule, MatButtonToggleModule, MatButtonModule, MatSelectModule, MatOptionModule, MatChipsModule, MatDatepickerModule],
+        MatAutocompleteModule,
+        CommonModule, MatIconModule, FormsModule, MatFormFieldModule, NgClass, MatInputModule, TextFieldModule, ReactiveFormsModule, MatButtonToggleModule, MatButtonModule, MatSelectModule, MatOptionModule, MatChipsModule, MatDatepickerModule],
 })
 export class FormComponent implements OnInit {
     formFieldHelpers: string[] = ['fuse-mat-dense'];
@@ -53,8 +53,7 @@ export class FormComponent implements OnInit {
     clientData: any[] = [];
     finanaceData: any[] = [];
     productData: any[] = [];
-    brandData: any[] = [];
-    brandModelData: any[] = [];
+
     paymentData: any[] = [];
     claimData: any[] = [];
     userData: any[] = [];
@@ -111,6 +110,17 @@ export class FormComponent implements OnInit {
     engineerFilter = new FormControl('');
     filterEngineer: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
     engineerData: any[] = [];
+
+    ///brandModelFilter
+    brandModelFilter = new FormControl('');
+    filterBrandModel: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+    brandModelData: any[] = [];
+
+    ///brandFilterlFilter
+    brandFilter = new FormControl('');
+    filterBrand: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+    brandData: any[] = [];
+
 
     garageData: any[] = []
     user_login: any = JSON.parse(localStorage.getItem('user'));
@@ -183,14 +193,14 @@ export class FormComponent implements OnInit {
             repairs: this._fb.array([]),
             promotion_id: null,
 
-            text_1: 'ราคาขาย', 
-            text_2:'ยอดจัดไฟแนนซ์', 
-            text_3: 'เงินดาวน์', 
-            text_4: 'ค่าโอนภาษี พรบ. (ถ้า Free ใส่ 0)', 
-            text_5: 'ค่าจัดไฟแนนซ์ (ถ้า Free ใส่ 0)', 
-            text_6: 'ค่าบรรจุประกอบการ (ถ้า Free ใส่ 0)', 
-            text_7: 'ค่าติด GPS (ถ้า Free ใส่ 0)', 
-            text_8: 'ค่าประกัน ประมาณ', 
+            text_1: 'ราคาขาย',
+            text_2: 'ยอดจัดไฟแนนซ์',
+            text_3: 'เงินดาวน์',
+            text_4: 'ค่าโอนภาษี พรบ. (ถ้า Free ใส่ 0)',
+            text_5: 'ค่าจัดไฟแนนซ์ (ถ้า Free ใส่ 0)',
+            text_6: 'ค่าบรรจุประกอบการ (ถ้า Free ใส่ 0)',
+            text_7: 'ค่าติด GPS (ถ้า Free ใส่ 0)',
+            text_8: 'ค่าประกัน ประมาณ',
         });
 
         this._service.getClient().subscribe((resp: any) => {
@@ -202,6 +212,7 @@ export class FormComponent implements OnInit {
 
         this._service.getBrand().subscribe((resp: any) => {
             this.brandData = resp.data
+            this.filterBrand.next(this.brandData.slice());
         });
         this._service.getGarage().subscribe((resp: any) => {
             this.garageData = resp.data
@@ -233,6 +244,7 @@ export class FormComponent implements OnInit {
                     this.engineerFilter.setValue(this.itemData.engineer?.name)
                     this._service.getBrandModel(this.itemData.orders?.brand?.id).subscribe((resp: any) => {
                         this.brandModelData = resp.data
+                        this.filterBrandModel.next(this.brandModelData.slice());
 
                     });
 
@@ -302,7 +314,7 @@ export class FormComponent implements OnInit {
                 sale_id: this.user_login?.id,
                 date: currentDateTime.toFormat('yyyy-MM-dd')
             })
-            this.saleFilter.setValue(this.user_login.name)
+            this.saleFilter.setValue(this.user_login?.name)
 
 
             // this._service.getPromotion().subscribe((data) => {
@@ -324,6 +336,18 @@ export class FormComponent implements OnInit {
             .pipe(takeUntil(this._onDestroy))
             .subscribe(() => {
                 this._filterEngineer();
+            });
+
+        this.brandFilter.valueChanges
+            .pipe(takeUntil(this._onDestroy))
+            .subscribe(() => {
+                this._filterBrand();
+            });
+
+        this.brandModelFilter.valueChanges
+            .pipe(takeUntil(this._onDestroy))
+            .subscribe(() => {
+                this._filterBrandModel();
             });
         this.formData.valueChanges.pipe(distinctUntilChanged())
             .subscribe(() => this.calculateTotal());
@@ -393,6 +417,45 @@ export class FormComponent implements OnInit {
             this.engineerData.filter(item => item.name.toLowerCase().indexOf(search) > -1)
         );
     }
+
+    protected _filterBrand() {
+        if (!this.brandData) {
+            return;
+        }
+        let search = this.brandFilter.value;
+        if (!search) {
+            this.filterBrand.next(this.brandData.slice());
+            return;
+        } else {
+            search = search.toLowerCase();
+
+            console.log(1);
+
+        }
+        this.filterBrand.next(
+            this.brandData.filter(item => item.name.toLowerCase().indexOf(search) > -1)
+        );
+    }
+
+    protected _filterBrandModel() {
+        if (!this.brandModelData) {
+            return;
+        }
+        let search = this.brandModelFilter.value;
+        if (!search) {
+            this.filterBrandModel.next(this.brandModelData.slice());
+            return;
+        } else {
+            search = search.toLowerCase();
+
+            console.log(1);
+
+        }
+        this.filterBrandModel.next(
+            this.brandModelData.filter(item => item.name.toLowerCase().indexOf(search) > -1)
+        );
+    }
+
 
     protected _filterSale() {
 
@@ -548,6 +611,59 @@ export class FormComponent implements OnInit {
         }
     }
 
+    onSelectBrand(event: any, type: any) {
+        if (!event) {
+            if (this.brandFilter.invalid) {
+
+                this.brandFilter.markAsTouched(); // กำหนดสถานะ touched เพื่อแสดง mat-error
+            }
+            console.log('No Brand');
+            return;
+        }
+        const _value = event;
+        const selectedData = this.brandData.find(item => item.name === _value);
+        if (selectedData) {
+            this.formData.patchValue({
+                brand_id: selectedData.id,
+            });
+            this.brandFilter.setValue(selectedData?.name)
+            this.selectBrand(selectedData.id)
+        } else {
+            if (this.brandFilter.invalid) {
+                this.brandFilter.markAsTouched(); // กำหนดสถานะ touched เพื่อแสดง mat-error
+            }
+            console.log('No Brand');
+            return;
+        }
+    }
+
+    onSelectBrandModel(event: any, type: any) {
+        if (!event) {
+            if (this.brandModelFilter.invalid) {
+
+                this.brandModelFilter.markAsTouched(); // กำหนดสถานะ touched เพื่อแสดง mat-error
+            }
+            console.log('No Brand Model');
+            return;
+        }
+        const _value = event;
+        const selectedData = this.brandModelData.find(item => item.name === _value);
+        if (selectedData) {
+            this.formData.patchValue({
+                brand_model_id: selectedData.id,
+            });
+            this.brandModelFilter.setValue(selectedData?.name)
+            this.selectBrandModel(selectedData.id)
+        } else {
+            if (this.brandModelFilter.invalid) {
+
+                this.brandModelFilter.markAsTouched(); // กำหนดสถานะ touched เพื่อแสดง mat-error
+            }
+            console.log('No Brand Model');
+            return;
+        }
+    }
+
     getFormFieldHelpersAsString(): string {
         return this.formFieldHelpers.join(' ');
     }
@@ -559,7 +675,7 @@ export class FormComponent implements OnInit {
     selectProduct(item: any): void {
 
         // console.log(item,'item');
-        
+
         this.formData.patchValue({
             product_id: item.id,
             sale_price: item.sale_price
@@ -573,7 +689,7 @@ export class FormComponent implements OnInit {
             engine_no: item.engine_no,
             tank_no: item.tank_no,
         }
-        
+
         if (item.images) {
             item.images.forEach(element => {
                 let _images = {
@@ -582,10 +698,10 @@ export class FormComponent implements OnInit {
                 }
                 this.images.push(_images)
             })
-           
+
         }
         this.image = item.image
-        
+
         // this.images = item.images
         this.productSelected = data
         this.productFilter.setValue(item)
@@ -596,15 +712,39 @@ export class FormComponent implements OnInit {
 
     selectBrand(item: any): void {
 
-
         this._service.getBrandModel(item).subscribe((resp: any) => {
             this.brandModelData = resp.data
+            this.filterBrandModel.next(this.brandModelData.slice());
         });
     }
 
     selectBrandModel(item: any): void {
         this._service.getProduct(item).subscribe((resp: any) => {
             this.productData = resp.data
+            if (!this.productData || (Array.isArray(this.productData) && this.productData.length === 0)) {
+                this._fuseConfirmationService.open({
+                    "title": "ไม่มีข้อมูลรถในรุ่นนี้",
+                    "message": 'กรุณาเลือกรุ่นอื่น',
+                    "icon": {
+                        "show": true,
+                        "name": "heroicons_outline:exclamation-circle",
+                        "color": "warning"
+                    },
+                    "actions": {
+                        "confirm": {
+                            "show": false,
+                            "label": "ยืนยัน",
+                            "color": "primary"
+                        },
+                        "cancel": {
+                            "show": false,
+                            "label": "ยกเลิก",
+
+                        }
+                    },
+                    "dismissible": true
+                });
+            }
         });
     }
 
@@ -843,11 +983,11 @@ export class FormComponent implements OnInit {
     zoomedImage: { url: string; alt: string } | null = null;
     zoomImage(image: { url: string; alt: string }) {
         this.zoomedImage = image;
-      }
-    
-      closeZoom() {
+    }
+
+    closeZoom() {
         this.zoomedImage = null;
-      }
+    }
 
 }
 

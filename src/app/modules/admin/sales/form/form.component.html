@@ -133,15 +133,26 @@
                             </mat-form-field>
                         </div>
                         <div class="flex md:flex-row flex-col w-full px-3 mb-6 md:mb-0 gap-2">
-                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full md:w-2/4">
+                            <!-- <mat-form-field [ngClass]="formFieldHelpers" class="w-full md:w-2/4">
                                 <mat-label>เลือกยี่ห้อ</mat-label>
                                 <mat-select formControlName="brand_id" (selectionChange)="selectBrand($event.value)">
                                     <mat-option *ngFor="let item of brandData;" [value]="item.id">
                                         {{item.name}}
                                     </mat-option>
                                 </mat-select>
-                            </mat-form-field>
+                            </mat-form-field> -->
                             <mat-form-field [ngClass]="formFieldHelpers" class="w-full md:w-2/4">
+                                <mat-label>เลือกยี่ห้อ</mat-label>
+                                <input matInput [formControl]="brandFilter" [matAutocomplete]="brandAutoComplete"
+                                    placeholder="ค้นหายี่ห้อรถ" />
+                                <mat-autocomplete #brandAutoComplete="matAutocomplete"
+                                    (optionSelected)="onSelectBrand($event.option.value, 'manual')">
+                                    <mat-option *ngFor="let item of filterBrand | async" [value]="item.name">
+                                        {{item.name}}
+                                    </mat-option>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                            <!-- <mat-form-field [ngClass]="formFieldHelpers" class="w-full md:w-2/4">
                                 <mat-label>เลือกรุ่น</mat-label>
                                 <mat-select formControlName="brand_model_id"
                                     (selectionChange)="selectBrandModel($event.value)">
@@ -149,6 +160,17 @@
                                         {{item.name}}
                                     </mat-option>
                                 </mat-select>
+                            </mat-form-field> -->
+                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full md:w-2/4">
+                                <mat-label>เลือกรุ่น</mat-label>
+                                <input matInput [formControl]="brandModelFilter" [matAutocomplete]="brandModelAutoComplete"
+                                    placeholder="ค้นหารุ่นรถ" />
+                                <mat-autocomplete #brandModelAutoComplete="matAutocomplete"
+                                    (optionSelected)="onSelectBrandModel($event.option.value, 'manual')">
+                                    <mat-option *ngFor="let item of filterBrandModel | async" [value]="item.name">
+                                        {{item.name}}
+                                    </mat-option>
+                                </mat-autocomplete>
                             </mat-form-field>
                         </div>
                         <div class="w-full px-3 mb-6 md:mb-0">
