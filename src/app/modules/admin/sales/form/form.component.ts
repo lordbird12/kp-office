@@ -181,7 +181,16 @@ export class FormComponent implements OnInit {
             brand_model_id: null,
             promotion_lists: this._fb.array([]),
             repairs: this._fb.array([]),
-            promotion_id: null
+            promotion_id: null,
+
+            text_1: 'ราคาขาย', 
+            text_2:'ยอดจัดไฟแนนซ์', 
+            text_3: 'เงินดาวน์', 
+            text_4: 'ค่าโอนภาษี พรบ. (ถ้า Free ใส่ 0)', 
+            text_5: 'ค่าจัดไฟแนนซ์ (ถ้า Free ใส่ 0)', 
+            text_6: 'ค่าบรรจุประกอบการ (ถ้า Free ใส่ 0)', 
+            text_7: 'ค่าติด GPS (ถ้า Free ใส่ 0)', 
+            text_8: 'ค่าประกัน ประมาณ', 
         });
 
         this._service.getClient().subscribe((resp: any) => {
