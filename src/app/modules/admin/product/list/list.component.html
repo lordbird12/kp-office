@@ -191,15 +191,15 @@
                         <td>{{ pages.begin + (i + 1) }}</td>
                         <td>
                             <div *ngIf="item.status === 'ขายแล้ว'"
-                                class="bg-red-200 p-1 rounded-md text-red-500 font-bold">
+                                class="bg-red-200 p-1 rounded-md text-red-800 font-bold">
                                 {{ item.status ? item.status : "-" }}
                             </div>
                             <div *ngIf="item.status === 'จองแล้ว'"
-                                class="bg-yellow-200 p-1 rounded-md text-yellow-500 font-bold">
+                                class="bg-yellow-200 p-1 rounded-md text-yellow-800 font-bold">
                                 {{ item.status ? item.status : "-" }}
                             </div>
                             <div *ngIf="item.status === 'ว่างอยู่'"
-                                class="bg-green-200 p-1 rounded-md text-green-500 font-bold text-center">
+                                class="bg-green-200 p-1 rounded-md text-green-800 font-bold text-center">
                                 {{ item.status ? item.status : "-" }}
                             </div>
                         </td>
