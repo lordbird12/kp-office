@@ -709,7 +709,8 @@ export class FormComponent implements OnInit {
     selectProduct(item: any): void {
         this.formData.patchValue({
             product_id: item.id,
-            sale_price: item.sale_price
+            sale_price: item.sale_price,
+            brand_model_id: item.brand_model_id
         })
         let data = {
             brand_model: item.brand?.name + '/' + item.brand_model?.name,
