@@ -480,13 +480,13 @@ export class FormComponent implements OnInit {
             this.filterCar.next(this.carData.slice());
             return;
         } else {
-            search = search.toLowerCase();
-
-            console.log(1);
-
+            search = search.toString().toLowerCase();
         }
         this.filterCar.next(
-            this.carData.filter(item => item.name.toLowerCase().indexOf(search) > -1)
+            this.carData.filter(item => 
+                item.name.toLowerCase().includes(search) ||
+                item.license_plate.toLowerCase().includes(search)
+            )
         );
     }
 
