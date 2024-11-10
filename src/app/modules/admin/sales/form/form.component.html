@@ -174,7 +174,7 @@
                             </mat-form-field>
                         </div>
                         <div class="w-full px-3 mb-6 md:mb-0">
-                            <mat-form-field class="w-full" [ngClass]="formFieldHelpers">
+                            <!-- <mat-form-field class="w-full" [ngClass]="formFieldHelpers">
                                 <mat-label>เลือกรถ</mat-label>
                                 <mat-select [formControl]="productFilter"
                                     (selectionChange)="selectProduct($event.value)">
@@ -183,6 +183,17 @@
                                         {{item.license_plate ?? '-'}} ,เลขทะเบียน : {{item.license_plate ?? '-'}}
                                     </mat-option>
                                 </mat-select>
+                            </mat-form-field> -->
+                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full md:w-4/4">
+                                <mat-label>เลือกรถ</mat-label>
+                                <input matInput [formControl]="carFilter" [matAutocomplete]="carAutoComplete"
+                                    placeholder="ค้นหารถ" />
+                                <mat-autocomplete #carAutoComplete="matAutocomplete"
+                                    (optionSelected)="selectProduct($event.option.value)">
+                                    <mat-option *ngFor="let item of filterCar | async" [value]="item">
+                                    ทะเบียน :  {{item.license_plate}} , {{item.name}}
+                                    </mat-option>
+                                </mat-autocomplete>
                             </mat-form-field>
                         </div>
 
@@ -243,7 +254,8 @@
                                                 หมายเลขทะเบียน
                                             </td>
                                             <td class="px-6 text-center">
-                                                {{productSelected?.license_plete ?? '-'}}-{{productSelected?.province ?? '-'}}
+                                                {{productSelected?.license_plete ?? '-'}}-{{productSelected?.province ??
+                                                '-'}}
                                             </td>
                                         </tr>
                                         <tr
@@ -358,8 +370,7 @@
                                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                         <td class="px-6 py-1">
                                             <mat-form-field class="w-full mt-4" [ngClass]="formFieldHelpers">
-                                                <input matInput placeholder=""
-                                                    [formControlName]="'text_1'">
+                                                <input matInput placeholder="" [formControlName]="'text_1'">
                                             </mat-form-field>
                                         </td>
                                         <td class="px-6 text-right">
@@ -375,8 +386,7 @@
                                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                         <td class="px-6 py-1">
                                             <mat-form-field class="w-full mt-4" [ngClass]="formFieldHelpers">
-                                                <input matInput placeholder=""
-                                                    [formControlName]="'text_2'">
+                                                <input matInput placeholder="" [formControlName]="'text_2'">
                                             </mat-form-field>
                                         </td>
                                         <td class="px-6 text-right w-full">
@@ -392,8 +402,7 @@
                                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                         <td class="px-6 py-1">
                                             <mat-form-field class="w-full mt-4" [ngClass]="formFieldHelpers">
-                                                <input matInput placeholder=""
-                                                    [formControlName]="'text_3'">
+                                                <input matInput placeholder="" [formControlName]="'text_3'">
                                             </mat-form-field>
                                         </td>
                                         <td class="px-6 text-right w-full">
@@ -409,8 +418,7 @@
                                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                         <td class="px-6 py-1">
                                             <mat-form-field class="w-full mt-4" [ngClass]="formFieldHelpers">
-                                                <input matInput placeholder=""
-                                                    [formControlName]="'text_4'">
+                                                <input matInput placeholder="" [formControlName]="'text_4'">
                                             </mat-form-field>
                                         </td>
                                         <td class="px-6 text-right w-full">
@@ -426,8 +434,7 @@
                                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                         <td class="px-6 py-1">
                                             <mat-form-field class="w-full mt-4" [ngClass]="formFieldHelpers">
-                                                <input matInput placeholder=""
-                                                    [formControlName]="'text_5'">
+                                                <input matInput placeholder="" [formControlName]="'text_5'">
                                             </mat-form-field>
                                         </td>
                                         <td class="px-6 text-right w-full">
@@ -443,8 +450,7 @@
                                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                         <td class="px-6 py-1">
                                             <mat-form-field class="w-full mt-4" [ngClass]="formFieldHelpers">
-                                                <input matInput placeholder=""
-                                                    [formControlName]="'text_6'">
+                                                <input matInput placeholder="" [formControlName]="'text_6'">
                                             </mat-form-field>
                                         </td>
                                         <td class="px-6 text-right w-full">
@@ -460,8 +466,7 @@
                                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                         <td class="px-6 py-1">
                                             <mat-form-field class="w-full mt-4" [ngClass]="formFieldHelpers">
-                                                <input matInput placeholder=""
-                                                    [formControlName]="'text_7'">
+                                                <input matInput placeholder="" [formControlName]="'text_7'">
                                             </mat-form-field>
                                         </td>
                                         <td class="px-6 text-right w-full">
@@ -477,8 +482,7 @@
                                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                         <td class="px-6 py-1">
                                             <mat-form-field class="w-full mt-4" [ngClass]="formFieldHelpers">
-                                                <input matInput placeholder=""
-                                                    [formControlName]="'text_8'">
+                                                <input matInput placeholder="" [formControlName]="'text_8'">
                                             </mat-form-field>
                                         </td>
                                         <td class="px-6 text-right w-full">

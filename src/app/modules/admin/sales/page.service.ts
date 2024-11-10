@@ -181,6 +181,15 @@ export class PageService {
                 })
             );
     }
+    getCar(): Observable<any> {
+        return this._httpClient
+            .get<any>(environment.baseURL + '/api/get_product_all')
+            .pipe(
+                tap((result) => {
+                    this._data.next(result);
+                })
+            );
+    }
 
     getBrandModel($brand_id): Observable<any> {
         return this._httpClient
@@ -231,28 +240,28 @@ export class PageService {
             );
     }
 
-   getPageCustomer(dataTablesParameters: any): Observable<DataTablesResponse> {
-       return this._httpClient
-           .post(
-               environment.baseURL + '/api/client_page',
-               dataTablesParameters,
-               this.httpOptionsFormdata
-           )
-           .pipe(
-               switchMap((response: any) => {
-                   return of(response.data);
-               })
-           );
-   }
-   customerCreate(data: FormData): Observable<any> {
-    return this._httpClient
-        .post<any>(environment.baseURL + '/api/client', data)
-        .pipe(
-            tap((result) => {
-                this._data.next(result);
-            })
-        );
-}
+    getPageCustomer(dataTablesParameters: any): Observable<DataTablesResponse> {
+        return this._httpClient
+            .post(
+                environment.baseURL + '/api/client_page',
+                dataTablesParameters,
+                this.httpOptionsFormdata
+            )
+            .pipe(
+                switchMap((response: any) => {
+                    return of(response.data);
+                })
+            );
+    }
+    customerCreate(data: FormData): Observable<any> {
+        return this._httpClient
+            .post<any>(environment.baseURL + '/api/client', data)
+            .pipe(
+                tap((result) => {
+                    this._data.next(result);
+                })
+            );
+    }
 
 
 }

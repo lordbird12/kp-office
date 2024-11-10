@@ -126,6 +126,12 @@ export class FormComponent implements OnInit {
     user_login: any = JSON.parse(localStorage.getItem('user'));
 
     productFilter = new FormControl(Object);
+
+
+    ///CarFilter
+    carFilter = new FormControl('');
+    filterCar: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+    carData: any[] = [];
     /**
      * Constructor
      */
@@ -216,6 +222,10 @@ export class FormComponent implements OnInit {
         });
         this._service.getGarage().subscribe((resp: any) => {
             this.garageData = resp.data
+        });
+        this._service.getCar().subscribe((resp: any) => {
+            this.carData = resp.data
+            this.filterCar.next(this.carData.slice());
         });
 
 
@@ -349,6 +359,11 @@ export class FormComponent implements OnInit {
             .subscribe(() => {
                 this._filterBrandModel();
             });
+        this.carFilter.valueChanges
+            .pipe(takeUntil(this._onDestroy))
+            .subscribe(() => {
+                this._filterCar();
+            });
         this.formData.valueChanges.pipe(distinctUntilChanged())
             .subscribe(() => this.calculateTotal());
     }
@@ -453,6 +468,25 @@ export class FormComponent implements OnInit {
         }
         this.filterBrandModel.next(
             this.brandModelData.filter(item => item.name.toLowerCase().indexOf(search) > -1)
+        );
+    }
+
+    protected _filterCar() {
+        if (!this.carData) {
+            return;
+        }
+        let search = this.carFilter.value;
+        if (!search) {
+            this.filterCar.next(this.carData.slice());
+            return;
+        } else {
+            search = search.toLowerCase();
+
+            console.log(1);
+
+        }
+        this.filterCar.next(
+            this.carData.filter(item => item.name.toLowerCase().indexOf(search) > -1)
         );
     }
 
@@ -653,7 +687,7 @@ export class FormComponent implements OnInit {
                 brand_model_id: selectedData.id,
             });
             this.brandModelFilter.setValue(selectedData?.name)
-            this.selectBrandModel(selectedData.id)
+            // this.selectBrandModel(selectedData.id)
         } else {
             if (this.brandModelFilter.invalid) {
 
@@ -673,9 +707,6 @@ export class FormComponent implements OnInit {
     }
 
     selectProduct(item: any): void {
-
-        // console.log(item,'item');
-
         this.formData.patchValue({
             product_id: item.id,
             sale_price: item.sale_price
@@ -700,12 +731,9 @@ export class FormComponent implements OnInit {
             })
 
         }
-        this.image = item.image
-
-        // this.images = item.images
+        this.image = item._images
         this.productSelected = data
-        this.productFilter.setValue(item)
-        // console.log(this.productSelected);
+        this.carFilter.setValue(item.license_plate + ',' +item.name)
         this._changeDetectorRef.markForCheck();
 
     }
