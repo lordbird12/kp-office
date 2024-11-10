@@ -255,23 +255,22 @@ export class FormComponent implements OnInit {
                     this._service.getBrandModel(this.itemData.orders?.brand?.id).subscribe((resp: any) => {
                         this.brandModelData = resp.data
                         this.filterBrandModel.next(this.brandModelData.slice());
-
                     });
-
-                    this._service.getProduct(this.itemData.orders?.brand_model.id).subscribe((resp: any) => {
-                        this.productData = resp.data
-                        // console.log('product 1',this.itemData.orders.product_id);
-                        let value = this.productData.find(item => item.id === +this.itemData.orders.product_id)
-                        this.productFilter.setValue(value)
-                        // console.log('product data',value);
+                    this._service.getBrand().subscribe((resp: any) => {
+                        this.brandData = resp.data
+                        let value = this.brandData.find(item => item.id === +this.itemData.orders?.brand?.id)
+                        this.brandFilter.setValue(value.name)
+                        this.selectBrand(value);
+                        this._changeDetectorRef.markForCheck();
+                    });
+                    this._service.getCar().subscribe((resp: any) => {
+                        this.carData = resp.data
+                        let value = this.carData.find(item => item.id === +this.itemData.orders?.product_id)
+                        this.carFilter.setValue(value.license_plate + ',' +value.name)
                         this.selectProduct(value);
                         this._changeDetectorRef.markForCheck();
-
                     });
 
-                    // this.paymentData = resp.data.orders.payments;
-                    // this.claimId = resp.data.orders.product_id;
-                    // this.total = this.paymentData.reduce((sum, current) => sum + (+current.price), 0);
                     this.formData.patchValue({
                         ...this.itemData,
                     });
@@ -284,7 +283,7 @@ export class FormComponent implements OnInit {
                         idcard: this.itemData.client?.idcard,
                         address: this.itemData.client?.address,
                         type: this.itemData.client?.type,
-                        promotion_id: +this.itemData.promotion_id
+                        promotion_id: +this.itemData?.promotion_id
                     });
 
                     this._changeDetectorRef.markForCheck();
