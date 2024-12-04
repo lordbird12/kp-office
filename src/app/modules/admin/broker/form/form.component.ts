@@ -23,6 +23,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { FormDialogComponent } from '../form-dialog/form-dialog.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { ReplaySubject, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'form-employee',
@@ -48,7 +50,8 @@ import { FormDialogComponent } from '../form-dialog/form-dialog.component';
     MatTableModule,
     DataTablesModule,
     MatCheckboxModule,
-    NgxDropzoneModule
+    NgxDropzoneModule,
+    MatAutocompleteModule
   ],
 
 })
@@ -67,6 +70,10 @@ export class FormComponent implements OnInit {
   @ViewChild(DataTableDirective)
   dtElement!: DataTableDirective;
   dataRow: any[] = [];
+    ///item
+    itemFilter = new FormControl('');
+    filterItem: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+    carData: any = [];
   /**
    * Constructor
    */
@@ -83,15 +90,21 @@ export class FormComponent implements OnInit {
 
     this.addForm = this._formBuilder.group({
       id: '',
+      code: '',
       name: '',
       tax: '',
       phone: '',
       email: '',
       detail: '',
       address: '',
-      image: '',
+      // image: '',
       status: '',
+      license_plates: this._formBuilder.array([])
     })
+    this._Service.getCar().subscribe((resp: any) => {
+      this.carData = resp.data
+      this.filterItem.next(this.carData.slice());
+  });
   }
 
   ngOnInit(): void {
@@ -107,9 +120,36 @@ export class FormComponent implements OnInit {
       })
       this.loadTable()
     }
+
+    this.itemFilter.valueChanges
+    .pipe(takeUntil(this._onDestroy))
+    .subscribe(() => {
+        this._filterItem();
+    });
   }
 
+  protected _filterItem() {
+    if (!this.carData) {
+        return;
+    }
+    let search = this.itemFilter.value;
+    if (!search) {
+        this.filterItem.next(this.carData.slice());
+        return;
+    } else {
+        search = search.toLowerCase();
+    }
+    this.filterItem.next(
+        this.carData.filter(item =>
+            item.license_plate.toLowerCase().indexOf(search) > -1 ||
+            item.name.toLowerCase().indexOf(search) > -1
+        )
+    );
+}
 
+    /**
+     * On destroy
+     */  protected _onDestroy = new Subject<void>();
   // -----------------------------------------------------------------------------------------------------
   // @ Public methods
   // -----------------------------------------------------------------------------------------------------
@@ -119,6 +159,25 @@ export class FormComponent implements OnInit {
    */
   getFormFieldHelpersAsString(): string {
     return this.formFieldHelpers.join(' ');
+  }
+
+  get license_plates(): FormArray {
+    return this.addForm.get('license_plates') as FormArray;
+  }
+
+  crateArray(): FormGroup {
+    return this._formBuilder.group({
+      product_id: '' //ผูกกับรถ
+    });
+  }
+
+  addArray(): void {
+    this.license_plates.push(this.crateArray());
+
+  }
+
+  removeRepair(i: number): void {
+    this.license_plates.removeAt(i);
   }
 
   backTo() {
@@ -383,6 +442,24 @@ export class FormComponent implements OnInit {
       }
       error: (err: any) => { };
     });
+  }
+
+  selectProduct(event: any): void {
+    const selectedId = event.option.value;
+    const selected = this.carData.find(item => item.id === selectedId);
+    let data = this._formBuilder.group({
+      product_id: selectedId,
+      license_plate: selected.license_plate,
+      item_name: selected.name,
+      commision: 0
+    })
+
+    this.license_plates.push(data)
+    this.itemFilter.setValue(null); // ล้างค่าในช่อง input
+    // this.productSelected = data
+    // this.carFilter.setValue(item.license_plate + ',' +item.name)
+    this._changeDetectorRef.markForCheck();
+
   }
 
 }

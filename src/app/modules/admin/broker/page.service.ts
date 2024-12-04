@@ -164,4 +164,14 @@ export class PageService {
                 })
             );
     }
+
+    getCar(): Observable<any> {
+        return this._httpClient
+            .get<any>(environment.baseURL + '/api/get_product_all')
+            .pipe(
+                tap((result) => {
+                    this._data.next(result);
+                })
+            );
+    }
 }
