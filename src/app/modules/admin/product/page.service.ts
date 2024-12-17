@@ -274,4 +274,14 @@ export class Service {
             responseType: 'blob'
         })
     }
+
+    image(formData: FormData): Observable<any> {
+        return this._httpClient
+            .post(environment.baseURL + '/api/upload_file', formData)
+            .pipe(
+                switchMap((response: any) => {
+                    return of(response);
+                })
+            );
+    }
 }
