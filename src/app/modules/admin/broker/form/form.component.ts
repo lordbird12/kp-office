@@ -70,10 +70,10 @@ export class FormComponent implements OnInit {
   @ViewChild(DataTableDirective)
   dtElement!: DataTableDirective;
   dataRow: any[] = [];
-    ///item
-    itemFilter = new FormControl('');
-    filterItem: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
-    carData: any = [];
+  ///item
+  itemFilter = new FormControl('');
+  filterItem: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+  carData: any = [];
   /**
    * Constructor
    */
@@ -104,7 +104,7 @@ export class FormComponent implements OnInit {
     this._Service.getCar().subscribe((resp: any) => {
       this.carData = resp.data
       this.filterItem.next(this.carData.slice());
-  });
+    });
   }
 
   ngOnInit(): void {
@@ -117,35 +117,49 @@ export class FormComponent implements OnInit {
           image: '',
         })
         this.url_image = this.itemData?.image;
-      })
+
+        // Add license_plates data to the FormArray
+        if (this.itemData.license_plates && Array.isArray(this.itemData.license_plates)) {
+          this.itemData.license_plates.forEach((plate: any) => {
+            const formGroup = this._formBuilder.group({
+              product_id: plate.product.id || '',
+              license_plate: plate.product.license_plate || '',
+              item_name: plate.product.name || '',
+              commision: plate.product.comission || 0
+            });
+            this.license_plates.push(formGroup);
+          });
+        }
+
+      });
       this.loadTable()
     }
 
     this.itemFilter.valueChanges
-    .pipe(takeUntil(this._onDestroy))
-    .subscribe(() => {
+      .pipe(takeUntil(this._onDestroy))
+      .subscribe(() => {
         this._filterItem();
-    });
+      });
   }
 
   protected _filterItem() {
     if (!this.carData) {
-        return;
+      return;
     }
     let search = this.itemFilter.value;
     if (!search) {
-        this.filterItem.next(this.carData.slice());
-        return;
+      this.filterItem.next(this.carData.slice());
+      return;
     } else {
-        search = search.toLowerCase();
+      search = search.toLowerCase();
     }
     this.filterItem.next(
-        this.carData.filter(item =>
-            item.license_plate.toLowerCase().indexOf(search) > -1 ||
-            item.name.toLowerCase().indexOf(search) > -1
-        )
+      this.carData.filter(item =>
+        item.license_plate.toLowerCase().indexOf(search) > -1 ||
+        item.name.toLowerCase().indexOf(search) > -1
+      )
     );
-}
+  }
 
     /**
      * On destroy
@@ -176,7 +190,7 @@ export class FormComponent implements OnInit {
 
   }
 
-  removeRepair(i: number): void {
+  removeArray(i: number): void {
     this.license_plates.removeAt(i);
   }
 
@@ -185,6 +199,7 @@ export class FormComponent implements OnInit {
   }
 
   onSubmit(): void {
+    console.log(this.addForm.value);
     // Open the confirmation dialog
     if (this.Id) {
       const confirmation = this._fuseConfirmationService.open({
@@ -212,15 +227,15 @@ export class FormComponent implements OnInit {
       // Subscribe to the confirmation dialog closed action
       confirmation.afterClosed().subscribe((result) => {
         if (result === 'confirmed') {
-          const formData = new FormData();
-          Object.entries(this.addForm.value).forEach(([key, value]: any[]) => {
-            formData.append(key, value);
-          });
+          // const formData = new FormData();
+          // Object.entries(this.addForm.value).forEach(([key, value]: any[]) => {
+          //   formData.append(key, value);
+          // });
 
-          for (var i = 0; i < this.files.length; i++) {
-            formData.append('image', this.files[i]);
-          }
-          this._Service.update(formData).subscribe({
+          // for (var i = 0; i < this.files.length; i++) {
+          //   formData.append('image', this.files[i]);
+          // }
+          this._Service.update(this.addForm.value).subscribe({
             next: (resp: any) => {
               this._router.navigate(['admin/broker/list'])
             },
