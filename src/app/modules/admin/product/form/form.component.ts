@@ -35,6 +35,7 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
 import { forkJoin, lastValueFrom } from 'rxjs';
 import { MatRadioModule } from '@angular/material/radio';
 import { PictureComponent } from '../picture/picture.component';
+import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
     selector: 'form-product',
@@ -42,6 +43,7 @@ import { PictureComponent } from '../picture/picture.component';
     encapsulation: ViewEncapsulation.None,
     standalone: true,
     imports: [
+        
         MatIconModule,
         FormsModule,
         MatFormFieldModule,
@@ -57,7 +59,8 @@ import { PictureComponent } from '../picture/picture.component';
         MatDatepickerModule,
         CommonModule,
         NgxDropzoneModule,
-        MatRadioModule
+        MatRadioModule,
+        MatCheckboxModule
     ],
 })
 export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -87,6 +90,7 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
 
     formData: FormGroup;
     formData2: FormGroup;
+    form: FormGroup;
 
     files: File[] = [];
     files1: File[] = [];
@@ -105,6 +109,7 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
     companie: any;
     Id: any
     itemData: any
+    images: any[] = []
     /**
      * Constructor
      */
@@ -119,7 +124,12 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
         private _authService: AuthService,
 
     ) {
-
+        
+        this.form = this._formBuilder.group({
+            file: null,
+            file_name: null,
+            path: ''
+        })
         this.Id = this._activatedRoute.snapshot.paramMap.get('id');
 
         this.formData = this._formBuilder.group({
@@ -150,7 +160,8 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
             sub_category_product_id: null,
             vat_status: 0,
             province: '',
-            video: ''
+            video_url: '',
+            file_name: '',
         });
         this.formData2 = this._formBuilder.group({
             category_product_id: ['', Validators.required],
@@ -176,7 +187,8 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
             sub_category_product_id: '',
             vat_status: 0,
             province: '',
-            video: ''
+            video_url: '',
+            file_name: '',
         });
     }
 
@@ -243,6 +255,17 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
                     })
                 });
 
+                if(this.itemData) {
+                    this.itemData.images.forEach(element => {
+                        let formValue = {
+                            image: element.image,
+                            selected: false 
+                        }
+                        this.images.push(formValue)
+                        
+                    });
+                }
+
             })
         }
 
@@ -252,7 +275,74 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
     }
+    selectedImages: any[] = []; // ตัวแปรสำหรับเก็บรายการที่เลือก
 
+    onCheckboxChange(event: Event, item: any): void {
+      const checkbox = event.target as HTMLInputElement;
+    
+      if (checkbox.checked) {
+        // เพิ่ม item เข้าไปใน selectedImages ถ้ายังไม่มี
+        if (!this.selectedImages.includes(item)) {
+          this.selectedImages.push(item);
+        }
+      } else {
+        // เอา item ออกจาก selectedImages
+        this.selectedImages = this.selectedImages.filter(selectedItem => selectedItem !== item);
+      }
+    
+      console.log('Selected Images:', this.selectedImages);
+    }
+    
+    downloadSelectedImages(): void {
+      // ตรวจสอบว่ามีภาพถูกเลือกหรือไม่
+      if (this.selectedImages.length === 0) {
+        console.warn('No images selected for download.');
+        return;
+      }
+    
+      // ทำการดาวน์โหลดไฟล์แต่ละไฟล์ที่ถูกเลือก
+      this.selectedImages.forEach(image => {
+        fetch(image.image) // image.url ควรเป็น URL ของไฟล์
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`Failed to fetch ${image.name}`);
+            }
+            return response.blob();
+          })
+          .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = image.name; // ตั้งชื่อไฟล์ตามที่ต้องการ
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+          })
+          .catch(err => console.error('Error downloading:', err));
+      });
+    }
+    allSelected: boolean = false;
+    toggleAllSelection(event: MatCheckboxChange): void {
+        this.allSelected = event.checked;
+      
+        // เคลียร์ selectedImages ก่อน
+        this.selectedImages = [];
+      
+        if (this.allSelected) {
+          // ถ้าเลือกทั้งหมด ให้ push item เข้าไปใน selectedImages
+          this.images.forEach((item) => {
+            item.selected = true; // กำหนดสถานะ checkbox
+            this.selectedImages.push(item);
+          });
+        } else {
+          // ถ้ายกเลิกเลือกทั้งหมด
+          this.images.forEach((item) => (item.selected = false));
+        }
+      
+        console.log('Selected Images:', this.selectedImages);
+        this._changeDetectorRef.markForCheck();
+      }
     /**
      * After view init
      */
@@ -367,12 +457,37 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
         }, 150);
     }
 
-    onSelect2(event: any) {
-        this.files2.push(...event.addedFiles);
-        // Trigger Image Preview
-        setTimeout(() => {
-            this._changeDetectorRef.detectChanges();
-        }, 150);
+    onSelect2(event: any, input: any, index: number) {
+        if (input === 'addfile') {
+            const file = event[0];
+            const fileName = file.name;
+
+            this.form.patchValue({
+                file: file,
+                file_name: fileName,
+                path: 'files/asset/'
+            });
+            this.formData.patchValue({
+                file_name : fileName
+            })
+
+            const formData = new FormData();
+            Object.entries(this.form.value).forEach(
+                ([key, value]: any[]) => {
+                    formData.append(key, value);
+                }
+            );
+            this._Service.image(formData).subscribe((resp: any) => {
+                console.log(resp);
+                
+                // this.file1 = resp
+                // console.log("ดู profiles ชื่อ บัตร", this.file1);
+                this.formData.patchValue({
+                    video_url: resp.path,
+                });
+                // console.log(this.addForm.value)
+            });
+        }
     }
 
     onRemove(event: any) {
@@ -406,10 +521,10 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
                 formData.append('images[]', file);
             });
 
-            // Append videos
-            this.files2.forEach((file) => {
-                formData.append('video', file);
-            });
+            // // Append videos
+            // this.files2.forEach((file) => {
+            //     formData.append('video', file);
+            // });
 
             return formData;
         };
