@@ -669,6 +669,8 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     downloadImage(image: any): void {
+        console.log(image);
+        
         const imageUrl = image; // URL หรือ Path ของรูปภาพ
         const fileName = 'downloaded-image.jpg'; // ชื่อไฟล์ที่ต้องการให้ดาวน์โหลด
 
@@ -694,6 +696,25 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
             })
             .catch(err => console.error('Error downloading the image', err));
     }
+
+    downloadVideo(image: any): void {
+        const imageUrl = image; // URL หรือ Path ของรูปภาพ
+        fetch(imageUrl)
+          .then(response => response.blob()) // แปลงไฟล์วิดีโอเป็น Blob
+          .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'downloaded-video.mp4'; // ชื่อไฟล์สำหรับดาวน์โหลด
+            document.body.appendChild(link);
+            link.click();
+    
+            // ทำความสะอาด URL และ DOM
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+          })
+          .catch(error => console.error('Error downloading video:', error));
+      }
 }
 
 
