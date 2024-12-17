@@ -34,6 +34,7 @@ import { CommonModule } from '@angular/common';
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { forkJoin, lastValueFrom } from 'rxjs';
 import { MatRadioModule } from '@angular/material/radio';
+import { PictureComponent } from '../picture/picture.component';
 
 @Component({
     selector: 'form-product',
@@ -115,7 +116,8 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
         private _matDialog: MatDialog,
         private _router: Router,
         private _activatedRoute: ActivatedRoute,
-        private _authService: AuthService
+        private _authService: AuthService,
+
     ) {
 
         this.Id = this._activatedRoute.snapshot.paramMap.get('id');
@@ -147,7 +149,8 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
             back_tire: [''],
             sub_category_product_id: null,
             vat_status: 0,
-            province: ''
+            province: '',
+            video: ''
         });
         this.formData2 = this._formBuilder.group({
             category_product_id: ['', Validators.required],
@@ -173,6 +176,7 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
             sub_category_product_id: '',
             vat_status: 0,
             province: '',
+            video: ''
         });
     }
 
@@ -270,7 +274,7 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
         this._Service.getSubCategory().subscribe((resp) => {
             this.subCategory = resp.data;
             console.log();
-            
+
         });
     }
 
@@ -534,4 +538,47 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
         this._router.navigate(['admin/product/list'])
     }
 
+    showPicture(imgObject: any): void {
+        this._matDialog
+            .open(PictureComponent, {
+                autoFocus: false,
+                data: {
+                    imgSelected: imgObject,
+                },
+            })
+            .afterClosed()
+            .subscribe(() => {
+                // Go up twice because card routes are setup like this; "card/CARD_ID"
+                // this._router.navigate(['./../..'], {relativeTo: this._activatedRoute});
+            });
+    }
+
+    downloadImage(image: any): void {
+        const imageUrl = image; // URL หรือ Path ของรูปภาพ
+        const fileName = 'downloaded-image.jpg'; // ชื่อไฟล์ที่ต้องการให้ดาวน์โหลด
+
+        // ดึงไฟล์รูปภาพเป็น Blob
+        fetch(imageUrl)
+            .then(response => response.blob()) // แปลง response เป็น Blob
+            .then(blob => {
+                // สร้าง URL ชั่วคราวจาก Blob
+                const url = window.URL.createObjectURL(blob);
+
+                // สร้าง <a> element สำหรับดาวน์โหลด
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = fileName; // ชื่อไฟล์ที่จะบันทึก
+                document.body.appendChild(link);
+
+                // คลิก <a> element จำลองการดาวน์โหลด
+                link.click();
+
+                // ทำความสะอาด (Cleanup)
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(err => console.error('Error downloading the image', err));
+    }
 }
+
+

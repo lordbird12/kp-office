@@ -166,6 +166,82 @@
                         </mat-form-field>
                     </div>
                 </div>
+                <div class="w-full mb-6 md:mb-0" *ngIf="this.Id">
+                    <div class="relative overflow-x-auto shadow-md m-0 border-2">
+                        <table class="w-full text-md text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                            <thead
+                                class="text-md text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 w-1/6 h-full">
+                                        ลำดับ
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 w-3/6 text-center h-full">
+                                        รูป
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 w-2/6 text-center h-full">
+                                        Download
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    class="bg-white border-b dark:bg-gray-800 h-15 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                    <td class="px-6 py-1">
+                                        ภาพหลัก
+                                    </td>
+                                    <td class="px-6 text-center">
+                                        <div class="grid h-auto w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible cursor-pointer"
+                                            (click)="showPicture(itemData?.image)">
+                                            <img class="object-cover object-center w-full rounded-lg h-auto"
+                                                [src]="itemData?.image" alt="nature image" />
+                                        </div>
+
+                                    </td>
+                                    <td class="px-6 text-center">
+                                        <button class="cursor-pointer" (click)="downloadImage(itemData?.image)">
+                                            <mat-icon svgIcon="heroicons_outline:cloud-arrow-down" class="icon-size-10"></mat-icon>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="bg-white border-b dark:bg-gray-800 h-15 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                                    *ngIf="itemData?.vidio_url">
+                                    <td class="px-6 py-1">
+                                        VDO
+                                    </td>
+                                    <td class="px-6 text-center">
+                                        -
+                                    </td>
+                                    <td class="px-6 text-center">
+                                        <button class="cursor-pointer" (click)="downloadImage(itemData?.vidio_url)">
+                                            <mat-icon svgIcon="heroicons_outline:cloud-arrow-down" class="icon-size-10"></mat-icon>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <ng-container *ngFor="let item of this.itemData?.images; let i = index">
+                                    <tr
+                                        class="bg-white border-b dark:bg-gray-800 h-15 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                        <td class="px-6 py-1">
+                                            {{i + 1}}
+                                        </td>
+                                        <td class="px-6 text-center">
+                                            <div class="grid h-auto w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible cursor-pointer"
+                                                (click)="showPicture(item.image)">
+                                                <img class="object-cover object-center w-full rounded-lg h-auto"
+                                                    [src]="item.image" alt="nature image" />
+                                            </div>
+
+                                        </td>
+                                        <td class="px-6 text-center">
+                                            <button class="cursor-pointer" (click)="downloadImage(item?.image)">
+                                                <mat-icon svgIcon="heroicons_outline:cloud-arrow-down" class="icon-size-10"></mat-icon>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </form>
             <form class="bg-card rounded-2xl md:shadow overflow-hidden px-8 pt-6 pb-8 mb-4 flex flex-col my-2"
                 [formGroup]="formData"> <span
@@ -273,7 +349,6 @@
                             </mat-select>
                         </mat-form-field>
                     </div>
-
                 </div>
                 <div class="-mx-3 md:flex mb-6">
                     <div class="md:min-w-full px-3 mb-6 md:mb-0">
