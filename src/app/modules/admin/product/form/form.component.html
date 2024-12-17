@@ -259,13 +259,15 @@
                                                     (change)="onCheckboxChange($event, item)"></mat-checkbox>
                                             </label>
                                         </td>
-                                        <td class="px-6 text-center" colspan="2">
+                                        <td class="px-6 text-center" >
                                             <div class="grid h-auto w-full place-items-center overflow-x-scroll rounded-lg p-0 md:p-6 lg:overflow-visible cursor-pointer"
                                                 (click)="showPicture(item.image)">
                                                 <img class="object-cover object-center w-full rounded-lg h-auto"
                                                     [src]="item.image" alt="nature image" />
                                             </div>
 
+                                        </td>
+                                        <td class="px-6 text-center" >
                                         </td>
                                     </tr>
                                 </ng-container>
