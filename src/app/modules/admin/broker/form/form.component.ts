@@ -294,15 +294,15 @@ export class FormComponent implements OnInit {
       confirmation.afterClosed().subscribe((result) => {
         if (result === 'confirmed') {
 
-          const formData = new FormData();
-          Object.entries(this.addForm.value).forEach(([key, value]: any[]) => {
-            formData.append(key, value);
-          });
+          // const formData = new FormData();
+          // Object.entries(this.addForm.value).forEach(([key, value]: any[]) => {
+          //   formData.append(key, value);
+          // });
 
-          for (var i = 0; i < this.files.length; i++) {
-            formData.append('image', this.files[i]);
-          }
-          this._Service.create(formData).subscribe({
+          // for (var i = 0; i < this.files.length; i++) {
+          //   formData.append('image', this.files[i]);
+          // }
+          this._Service.create(this.addForm.value).subscribe({
             next: (resp: any) => {
               this._router.navigate(['admin/broker/list'])
             },
