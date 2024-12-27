@@ -383,7 +383,7 @@
                         </mat-form-field>
                     </div>
                 </div>
-                <div class="-mx-3 md:flex mb-6">
+                <!-- <div class="-mx-3 md:flex mb-6">
                     <div class="md:min-w-full px-3 mb-6 md:mb-0">
                         <div class="border-t border-gray-200">
                             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
@@ -399,20 +399,22 @@
                             </dd>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <div class="-mx-3 md:flex mb-6">
                     <div class="md:min-w-full px-3 mb-6 md:mb-0">
                         <div class="border-t border-gray-200">
                             <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                                <div class="flex flex-wrap justify-start">
-                                    <ngx-dropzone style="width: 100%; height: 150px; justify-content: center;"
-                                        (change)="onSelect1($event)">
-                                        <ngx-dropzone-label>รูปภาพเสริม</ngx-dropzone-label>
+                                <div class="flex flex-wrap justify-start custom-dropzone">
+                                    <!-- <ngx-dropzone (change)="onSelect1($event)" [accept]="'image/*'">
+                  
+                                        <ngx-dropzone-label>รูปภาพ</ngx-dropzone-label>
                                         <ngx-dropzone-image-preview *ngFor="let f of files1" [removable]="true"
                                             [file]="f" (removed)="onRemove1(f)">
                                         </ngx-dropzone-image-preview>
-                                    </ngx-dropzone>
+                                    </ngx-dropzone> -->
+                                    <dropzone [config]="DEFAULT_DROPZONE_CONFIG" class="custom-dropzone" [message]="'Click or drag images here to upload'" (error)="onUploadError($event)" (success)="onUploadSuccess($event)"></dropzone>
+
                                 </div>
                             </dd>
                         </div>

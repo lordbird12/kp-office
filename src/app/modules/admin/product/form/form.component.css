@@ -1,0 +1,74 @@
+/* Custom Dropzone Styling */
+.custom-dropzone {
+    border: 2px dashed #4CAF50; /* Green border */
+    background-color: #f9f9f9; /* Light gray background */
+    border-radius: 10px; /* Rounded corners */
+    padding: 20px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    color: #4CAF50;
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+  
+  .custom-dropzone:hover {
+    background-color: #e8f5e9; /* Light green on hover */
+    border-color: #388E3C; /* Darker green border */
+  }
+  
+  .custom-dropzone.dropzone-drag-hover {
+    background-color: #d0f0c0; /* Pale green when dragging files */
+    border-color: #2e7d32;
+  }
+  
+  .custom-dropzone .dz-message {
+    margin: 0;
+    color: #4CAF50;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  
+  .custom-dropzone .dz-preview {
+    display: inline-block;
+    margin: 10px;
+    border: 2px solid #4CAF50;
+    border-radius: 5px;
+    background: #fff;
+    padding: 5px;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .custom-dropzone .dz-preview:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .custom-dropzone .dz-preview img {
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 5px;
+  }
+  
+  .custom-dropzone .dz-error-message {
+    color: #ff5722; /* Red for errors */
+    font-size: 14px;
+    margin-top: 5px;
+  }
+  
+  .custom-dropzone .dz-remove {
+    display: inline-block;
+    margin-top: 10px;
+    background-color: #f44336; /* Red remove button */
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 12px;
+    transition: background-color 0.3s;
+  }
+  
+  .custom-dropzone .dz-remove:hover {
+    background-color: #d32f2f; /* Darker red */
+  }
+  
