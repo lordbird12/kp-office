@@ -297,11 +297,9 @@ DEFAULT_DROPZONE_CONFIG: any;
     }
     selectedImages: any[] = []; // ตัวแปรสำหรับเก็บรายการที่เลือก
 
-    onCheckboxChange(event: Event, item: any): void {
-        const checkbox = event.target as HTMLInputElement;
+    onCheckboxChange(event: any, item: any): void {
 
-        if (checkbox.checked) {
-            // เพิ่ม item เข้าไปใน selectedImages ถ้ายังไม่มี
+        if (event.checked === true) {            // เพิ่ม item เข้าไปใน selectedImages ถ้ายังไม่มี
             if (!this.selectedImages.includes(item)) {
                 this.selectedImages.push(item);
             }
