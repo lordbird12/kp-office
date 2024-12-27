@@ -277,10 +277,10 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     selectedImages: any[] = []; // ตัวแปรสำหรับเก็บรายการที่เลือก
 
-    onCheckboxChange(event: Event, item: any): void {
-      const checkbox = event.target as HTMLInputElement;
-    
-      if (checkbox.checked) {
+    onCheckboxChange(event: any, item: any): void {
+        console.log(event);
+        
+      if (event.checked === true) {
         // เพิ่ม item เข้าไปใน selectedImages ถ้ายังไม่มี
         if (!this.selectedImages.includes(item)) {
           this.selectedImages.push(item);
