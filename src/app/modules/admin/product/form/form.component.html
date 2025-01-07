@@ -196,10 +196,9 @@
                                     <td class="px-6 text-center">
                                         <div class="grid h-auto w-full place-items-center overflow-x-scroll rounded-lg p-0 md:p-6 lg:overflow-visible cursor-pointer"
                                             (click)="showPicture(itemData?.image)">
-                                            <img class="object-cover object-center w-full rounded-lg h-auto"
+                                            <img #imageTag (error)="onImageError($event)" class="object-cover object-center w-full rounded-lg h-auto"
                                                 [src]="itemData?.image" alt="nature image" />
                                         </div>
-
                                     </td>
                                     <td class="px-6 text-center">
                                         <button class="cursor-pointer" (click)="downloadImage(itemData?.image)">
@@ -259,15 +258,15 @@
                                                     (change)="onCheckboxChange($event, item)"></mat-checkbox>
                                             </label>
                                         </td>
-                                        <td class="px-6 text-center" >
+                                        <td class="px-6 text-center">
                                             <div class="grid h-auto w-full place-items-center overflow-x-scroll rounded-lg p-0 md:p-6 lg:overflow-visible cursor-pointer"
                                                 (click)="showPicture(item.image)">
-                                                <img class="object-cover object-center w-full rounded-lg h-auto"
+                                                <img (error)="onImageError($event)" class="object-cover object-center w-full rounded-lg h-auto"
                                                     [src]="item.image" alt="nature image" />
                                             </div>
 
                                         </td>
-                                        <td class="px-6 text-center" >
+                                        <td class="px-6 text-center">
                                         </td>
                                     </tr>
                                 </ng-container>
@@ -413,7 +412,10 @@
                                             [file]="f" (removed)="onRemove1(f)">
                                         </ngx-dropzone-image-preview>
                                     </ngx-dropzone> -->
-                                    <dropzone [config]="DEFAULT_DROPZONE_CONFIG" class="custom-dropzone" [message]="'Click or drag images here to upload'" (error)="onUploadError($event)" (success)="onUploadSuccess($event)"></dropzone>
+                                    <dropzone [config]="DEFAULT_DROPZONE_CONFIG" class="custom-dropzone"
+                                        [message]="'Click or drag images here to upload'"
+                                        (removedfile)="onFileRemoved($event)"
+                                        (error)="onUploadError($event)" (success)="onUploadSuccess($event)"></dropzone>
 
                                 </div>
                             </dd>

@@ -4,8 +4,10 @@ import {
     AfterViewInit,
     ChangeDetectorRef,
     Component,
+    ElementRef,
     OnDestroy,
     OnInit,
+    ViewChild,
     ViewEncapsulation,
 } from '@angular/core';
 import {
@@ -39,11 +41,44 @@ import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
+import { environment } from 'environments/environment.development';
+
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     // Change this to your upload POST address:
-    url: 'https://httpbin.org/post',
+    url: environment.baseURL + '/api/upload-image',
     maxFilesize: 50,
-    acceptedFiles: 'image/*'
+    acceptedFiles: 'image/*',
+    addRemoveLinks: true, // Show remove links
+    // headers: {
+    //     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+    // },
+    paramName: 'image', // Ensure the field name matches the backend validation
+    init: function () {
+        this.on('removedfile', function (file) {
+            const storedArray = localStorage.getItem('upload_images');
+            const usestoredArray = localStorage.getItem('use_upload_images');
+
+            if (storedArray && usestoredArray) {
+                const myArray: string[] = storedArray ? JSON.parse(storedArray) : [];
+                const myArray1: string[] = usestoredArray ? JSON.parse(usestoredArray) : [];
+
+                const index = myArray.indexOf(file.name);
+                if (index > -1) {
+                    myArray.splice(index, 1);
+                    myArray1.splice(index, 1);
+                }
+                localStorage.setItem('upload_images', JSON.stringify(myArray));
+                localStorage.setItem('use_upload_images', JSON.stringify(myArray1));
+
+            }
+            // const index = this.upload_images.indexOf(file);
+            // if (index > -1) {
+            //     this.upload_images.splice(index, 1);
+            // }
+            // console.log('images:', this.upload_images);
+
+        });
+    },
 };
 
 @Component({
@@ -80,6 +115,8 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     ]
 })
 export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
+    @ViewChild('imageTag', { static: false }) imageTag!: ElementRef<HTMLImageElement>;
+
     formFieldHelpers: string[] = ['fuse-mat-dense'];
     fixedSubscriptInput: FormControl = new FormControl('', [
         Validators.required,
@@ -126,7 +163,9 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
     Id: any
     itemData: any
     images: any[] = []
-DEFAULT_DROPZONE_CONFIG: any;
+    upload_images: any[] = []
+
+    DEFAULT_DROPZONE_CONFIG: any;
     /**
      * Constructor
      */
@@ -214,6 +253,14 @@ DEFAULT_DROPZONE_CONFIG: any;
     // -----------------------------------------------------------------------------------------------------
 
     async ngOnInit(): Promise<void> {
+
+        if (localStorage.getItem('upload_images')) {
+            localStorage.removeItem('upload_images');
+        }
+
+        if (localStorage.getItem('use_upload_images')) {
+            localStorage.removeItem('use_upload_images');
+        }
         // this.getCategories();
         // this.getSuppliers();
         // this.getBrand();
@@ -291,9 +338,6 @@ DEFAULT_DROPZONE_CONFIG: any;
             this.formData.get('companie_id')?.setValue(this.companie[0].id);
         }
 
-
-
-
     }
     selectedImages: any[] = []; // ตัวแปรสำหรับเก็บรายการที่เลือก
 
@@ -364,7 +408,19 @@ DEFAULT_DROPZONE_CONFIG: any;
     /**
      * After view init
      */
-    ngAfterViewInit(): void { }
+    ngAfterViewInit() {
+        // ViewChild จะพร้อมใช้งานที่นี่
+        const imgElement = this.imageTag.nativeElement;
+
+        this.loadImageFromImgTag(imgElement)
+            .then((blob) => {
+                console.log('Image Blob:', blob);
+                // ทำงานต่อ เช่น อัปโหลด blob หรือแสดงผล
+            })
+            .catch((error) => {
+                console.error('Error loading image:', error);
+            });
+    }
 
     /**
      * On destroy
@@ -523,29 +579,40 @@ DEFAULT_DROPZONE_CONFIG: any;
 
     New(): void {
         // Function to prepare formData
-        const prepareFormData = (): FormData => {
-            const formData = new FormData();
-            Object.entries(this.formData.value).forEach(([key, value]: any[]) => {
-                formData.append(key, value);
+        // const prepareFormData = (): FormData => {
+        //     const formData = new FormData();
+        //     Object.entries(this.formData.value).forEach(([key, value]: any[]) => {
+        //         formData.append(key, value);
+        //     });
+
+        //     // Append images
+        //     this.files.forEach((file) => {
+        //         formData.append('image', file);
+        //     });
+
+        //     // Append additional images
+        //     this.files1.forEach((file) => {
+        //         formData.append('images[]', file);
+        //     });
+
+        //     // // Append videos
+        //     // this.files2.forEach((file) => {
+        //     //     formData.append('video', file);
+        //     // });
+
+        //     return formData;
+        // };
+
+        // Retrieve and parse the stored array from localStorage
+        const storedArray = localStorage.getItem('use_upload_images');
+        const uploadImages = storedArray ? JSON.parse(storedArray) : [];
+
+        // Ensure the form field exists and then update it
+        if (this.formData.contains('images')) {
+            this.formData.patchValue({
+                images: uploadImages
             });
-
-            // Append images
-            this.files.forEach((file) => {
-                formData.append('image', file);
-            });
-
-            // Append additional images
-            this.files1.forEach((file) => {
-                formData.append('images[]', file);
-            });
-
-            // // Append videos
-            // this.files2.forEach((file) => {
-            //     formData.append('video', file);
-            // });
-
-            return formData;
-        };
+        }
 
         if (this.Id) {
             const confirmation = this._fuseConfirmationService.open({
@@ -573,9 +640,16 @@ DEFAULT_DROPZONE_CONFIG: any;
             // Subscribe to the confirmation dialog closed action
             confirmation.afterClosed().subscribe((result) => {
                 if (result === 'confirmed') {
-                    const formData = prepareFormData();
-                    this._Service.update(formData).subscribe({
+                    // const formData = prepareFormData();
+                    this._Service.update(this.formData.value).subscribe({
                         next: (resp: any) => {
+                            if (localStorage.getItem('upload_images')) {
+                                localStorage.removeItem('upload_images');
+                            }
+
+                            if (localStorage.getItem('use_upload_images')) {
+                                localStorage.removeItem('use_upload_images');
+                            }
                             this._router.navigate(['admin/product/list']);
                         },
                         error: (err: any) => {
@@ -631,9 +705,16 @@ DEFAULT_DROPZONE_CONFIG: any;
             // Subscribe to the confirmation dialog closed action
             confirmation.afterClosed().subscribe((result) => {
                 if (result === 'confirmed') {
-                    const formData = prepareFormData();
-                    this._Service.create(formData).subscribe({
+                    // const formData = prepareFormData();
+                    this._Service.create(this.formData.value).subscribe({
                         next: (resp: any) => {
+                            if (localStorage.getItem('upload_images')) {
+                                localStorage.removeItem('upload_images');
+                            }
+
+                            if (localStorage.getItem('use_upload_images')) {
+                                localStorage.removeItem('use_upload_images');
+                            }
                             this._router.navigate(['admin/product/list']);
                         },
                         error: (err: any) => {
@@ -687,8 +768,6 @@ DEFAULT_DROPZONE_CONFIG: any;
     }
 
     downloadImage(image: any): void {
-        console.log(image);
-
         const imageUrl = image; // URL หรือ Path ของรูปภาพ
         const fileName = 'downloaded-image.jpg'; // ชื่อไฟล์ที่ต้องการให้ดาวน์โหลด
 
@@ -712,7 +791,7 @@ DEFAULT_DROPZONE_CONFIG: any;
                 document.body.removeChild(link);
                 window.URL.revokeObjectURL(url);
             })
-            .catch(err => console.error('Error downloading the image', err));
+            .catch(err => console.log('Error downloading the image', err));
     }
 
     downloadVideo(image: any): void {
@@ -731,19 +810,93 @@ DEFAULT_DROPZONE_CONFIG: any;
                 document.body.removeChild(link);
                 window.URL.revokeObjectURL(url);
             })
-            .catch(error => console.error('Error downloading video:', error));
+            .catch(error => console.log('Error downloading video:', error));
     }
 
     public onUploadInit(args: any): void {
-        console.log('onUploadInit:', args);
+        console.log('images:', this.upload_images);
     }
 
     public onUploadError(args: any): void {
-        console.log('onUploadError:', args);
+        console.log('images:', this.upload_images);
     }
 
     public onUploadSuccess(args: any): void {
-        console.log('onUploadSuccess:', args);
+
+        const storedArray = localStorage.getItem('upload_images');
+        const usestoredArray = localStorage.getItem('use_upload_images');
+
+        if (storedArray && usestoredArray) {
+            const myArray: string[] = storedArray ? JSON.parse(storedArray) : [];
+            myArray.push(args[1].old);
+            localStorage.setItem('upload_images', JSON.stringify(myArray));
+            const myArray1: string[] = usestoredArray ? JSON.parse(usestoredArray) : [];
+            myArray1.push(args[1].new);
+            localStorage.setItem('use_upload_images', JSON.stringify(myArray1));
+
+        } else {
+            const myArray: string[] = [];
+            myArray.push(args[1].old);
+            localStorage.setItem('upload_images', JSON.stringify(myArray));
+            const myArray1: string[] = usestoredArray ? JSON.parse(usestoredArray) : [];
+            myArray1.push(args[1].new);
+            localStorage.setItem('use_upload_images', JSON.stringify(myArray1));
+
+        }
+
+        console.log('images:', storedArray);
+
+    }
+
+    loadImage() {
+        const imgElement = this.imageTag.nativeElement;
+
+        this.loadImageFromImgTag(imgElement)
+            .then((blob) => {
+                console.log('Image Blob:', blob);
+                // ทำงานต่อ เช่น อัปโหลด blob หรือแสดงผล
+            })
+            .catch((error) => {
+                console.error('Error loading image:', error);
+            });
+    }
+
+    loadImageFromImgTag(imgElement: HTMLImageElement): Promise<Blob> {
+        return new Promise((resolve, reject) => {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+
+            if (!context) {
+                reject('Canvas context is not supported');
+                return;
+            }
+
+            canvas.width = imgElement.naturalWidth;
+            canvas.height = imgElement.naturalHeight;
+            context.drawImage(imgElement, 0, 0);
+
+            canvas.toBlob((blob) => {
+                if (blob) {
+                    resolve(blob);
+                } else {
+                    reject('Failed to convert image to Blob');
+                }
+            }, 'image/png');
+        });
+    }
+
+    onImageError(event: Event) {
+        const target = event.target as HTMLImageElement;
+        target.src = "https://asha-tech.co.th/asap/public/images/not_car.jpg"; // Set your default image path here
+    }
+
+    onFileRemoved(file: any): void {
+        console.log('File removed:', file);
+        // Perform additional actions, like removing the file from an array or making an API call
+        const index = this.upload_images.indexOf(file);
+        if (index > -1) {
+            this.upload_images.splice(index, 1);
+        }
     }
 }
 
