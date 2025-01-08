@@ -171,6 +171,9 @@
                 </div>
 
                 <div class="w-full mb-6 md:mb-0" *ngIf="this.Id">
+                    <h2 class="text-2xl md:text-2xl font-extrabold p-4 tracking-tight leading-7 sm:leading-10 truncate">
+                        ภาพหลัก
+                    </h2>
                     <div class="relative overflow-x-auto shadow-md m-0 border-2">
                         <table class="w-full text-md text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead
@@ -191,12 +194,15 @@
                                 <tr
                                     class="bg-white border-b dark:bg-gray-800 h-15 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                     <td class="px-6 py-1">
-                                        ภาพหลัก
+                                        <button class="cursor-pointer">
+                                            เปลี่ยนภาพ
+                                        </button>
                                     </td>
                                     <td class="px-6 text-center">
                                         <div class="grid h-auto w-full place-items-center overflow-x-scroll rounded-lg p-0 md:p-6 lg:overflow-visible cursor-pointer"
                                             (click)="showPicture(itemData?.image)">
-                                            <img #imageTag (error)="onImageError($event)" class="object-cover object-center w-full rounded-lg h-auto"
+                                            <img #imageTag (error)="onImageError($event)"
+                                                class="object-cover object-center w-full rounded-lg h-auto"
                                                 [src]="itemData?.image" alt="nature image" />
                                         </div>
                                     </td>
@@ -226,6 +232,17 @@
                         </table>
                     </div>
                     <div class="relative overflow-x-auto shadow-md m-0 border-2">
+                        <!-- <div cdkDropList [cdkDropListData]="images" class="image-container"
+                            (cdkDropListDropped)="onDrop($event)">
+                            <div class="image-item" *ngFor="let item of images" cdkDrag>
+                                <img (error)="onImageError($event)" [src]="item.image" alt="image"
+                                    class="image-preview" />
+                            </div>
+                        </div> -->
+                        <h2
+                            class="text-2xl md:text-2xl font-extrabold p-4 tracking-tight leading-7 sm:leading-10 truncate">
+                            ภาพเสริม
+                        </h2>
                         <table class="w-full text-md text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead
                                 class="text-md text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -249,6 +266,7 @@
                             </thead>
                             <tbody>
                                 <ng-container *ngFor="let item of this.images; let i = index">
+
                                     <tr
                                         class="bg-white border-b dark:bg-gray-800 h-15 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                         <td class="px-6 py-1">
@@ -261,12 +279,19 @@
                                         <td class="px-6 text-center">
                                             <div class="grid h-auto w-full place-items-center overflow-x-scroll rounded-lg p-0 md:p-6 lg:overflow-visible cursor-pointer"
                                                 (click)="showPicture(item.image)">
-                                                <img (error)="onImageError($event)" class="object-cover object-center w-full rounded-lg h-auto"
+                                                <img (error)="onImageError($event)"
+                                                    class="object-cover object-center w-full rounded-lg h-auto"
                                                     [src]="item.image" alt="nature image" />
                                             </div>
 
                                         </td>
                                         <td class="px-6 text-center">
+                                            <div class="image-item">
+                                                <!-- ปุ่มเลื่อนขึ้นและเลื่อนลง -->
+                                                <button (click)="moveUp(i)" [disabled]="i === 0">▲ ขึ้น</button>
+                                                <button (click)="moveDown(i)" [disabled]="i === images.length - 1">▼
+                                                    ลง</button>
+                                            </div>
                                         </td>
                                     </tr>
                                 </ng-container>
@@ -414,8 +439,8 @@
                                     </ngx-dropzone> -->
                                     <dropzone [config]="DEFAULT_DROPZONE_CONFIG" class="custom-dropzone"
                                         [message]="'Click or drag images here to upload'"
-                                        (removedfile)="onFileRemoved($event)"
-                                        (error)="onUploadError($event)" (success)="onUploadSuccess($event)"></dropzone>
+                                        (removedfile)="onFileRemoved($event)" (error)="onUploadError($event)"
+                                        (success)="onUploadSuccess($event)"></dropzone>
 
                                 </div>
                             </dd>

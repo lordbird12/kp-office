@@ -233,6 +233,17 @@ export class Service {
             );
     }
 
+    updateImages(data: any, id: any): Observable<any> {
+        return this._httpClient
+            .put<any>(environment.baseURL + '/api/updage_image_seq/' + id, { images: data })
+            .pipe(
+                tap((result) => {
+                    this._data.next(result);
+                })
+            );
+    }
+
+
     new(data: FormData): Observable<any> {
         // Throw error, if the user is already logged in
         //  if (this._authenticated) {
@@ -270,7 +281,7 @@ export class Service {
             );
     }
     exportExcel(data: any, id: any): Observable<any> {
-        return this._httpClient.post(environment.baseURL + '/api/downloadExcel', {sheets: data, order_id: id}, {
+        return this._httpClient.post(environment.baseURL + '/api/downloadExcel', { sheets: data, order_id: id }, {
             responseType: 'blob'
         })
     }

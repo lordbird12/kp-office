@@ -42,6 +42,8 @@ import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { environment } from 'environments/environment.development';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     // Change this to your upload POST address:
@@ -88,6 +90,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     encapsulation: ViewEncapsulation.None,
     standalone: true,
     imports: [
+        DragDropModule,
         DropzoneModule,
         MatIconModule,
         FormsModule,
@@ -115,7 +118,6 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     ]
 })
 export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
-    @ViewChild('imageTag', { static: false }) imageTag!: ElementRef<HTMLImageElement>;
 
     formFieldHelpers: string[] = ['fuse-mat-dense'];
     fixedSubscriptInput: FormControl = new FormControl('', [
@@ -409,17 +411,7 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
      * After view init
      */
     ngAfterViewInit() {
-        // ViewChild จะพร้อมใช้งานที่นี่
-        const imgElement = this.imageTag.nativeElement;
 
-        this.loadImageFromImgTag(imgElement)
-            .then((blob) => {
-                console.log('Image Blob:', blob);
-                // ทำงานต่อ เช่น อัปโหลด blob หรือแสดงผล
-            })
-            .catch((error) => {
-                console.error('Error loading image:', error);
-            });
     }
 
     /**
@@ -578,6 +570,7 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
     New(): void {
+
         // Function to prepare formData
         // const prepareFormData = (): FormData => {
         //     const formData = new FormData();
@@ -848,18 +841,7 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
 
     }
 
-    loadImage() {
-        const imgElement = this.imageTag.nativeElement;
 
-        this.loadImageFromImgTag(imgElement)
-            .then((blob) => {
-                console.log('Image Blob:', blob);
-                // ทำงานต่อ เช่น อัปโหลด blob หรือแสดงผล
-            })
-            .catch((error) => {
-                console.error('Error loading image:', error);
-            });
-    }
 
     loadImageFromImgTag(imgElement: HTMLImageElement): Promise<Blob> {
         return new Promise((resolve, reject) => {
@@ -897,6 +879,49 @@ export class FormComponent implements OnInit, AfterViewInit, OnDestroy {
         if (index > -1) {
             this.upload_images.splice(index, 1);
         }
+    }
+
+    // ฟังก์ชันเลื่อนขึ้น
+    moveUp(index: number): void {
+        if (index > 0) {
+            const temp = this.images[index];
+            this.images[index] = this.images[index - 1];
+            this.images[index - 1] = temp;
+        }
+
+        this._Service.updateImages(this.images, this.Id).subscribe({
+            next: (resp: any) => {
+
+            },
+            error: (err: any) => {
+
+            }
+        });
+    }
+
+    // ฟังก์ชันเลื่อนลง
+    moveDown(index: number): void {
+        if (index < this.images.length - 1) {
+            const temp = this.images[index];
+            this.images[index] = this.images[index + 1];
+            this.images[index + 1] = temp;
+        }
+
+        this._Service.updateImages(this.images, this.Id).subscribe({
+            next: (resp: any) => {
+
+            },
+            error: (err: any) => {
+
+            }
+        });
+    }
+
+    // ฟังก์ชันสำหรับจัดการการลากและปล่อย
+    onDrop(event: CdkDragDrop<any[]>): void {
+        moveItemInArray(this.images, event.previousIndex, event.currentIndex);
+        console.log('Updated images:', this.images);
+        alert(1);
     }
 }
 
