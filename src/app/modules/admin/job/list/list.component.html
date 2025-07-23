@@ -1,0 +1,161 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <!-- Loader -->
+    <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+    </div>
+    <div
+        class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 flemin-w-0">
+            <!-- Title -->
+            <div class="flex flex-row mt-2 justify-between">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    รายการงาน
+                </h2>
+                <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="addElement()">
+                        <mat-icon>add</mat-icon>
+                        &nbsp;
+                        เพิ่ม
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="grid gap-4 sm:grid-cols-1 mx-5 mt-8 ">
+        <form class="bg-card rounded-lg md:shadow px-8 pt-6 pb-8 mb-2 flex flex-col my-2" [formGroup]="form">
+            <div class="-mx-3 md:flex mb-6">
+                <div class="md:w-1/3 px-3 mb-6 md:mb-0">
+                    <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                        <mat-label>วันที่</mat-label>
+                        <input matInput [matDatepicker]="picker" formControlName="date" [placeholder]="'วันที่'">
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker xPosition="end"></mat-datepicker>
+                    </mat-form-field>
+                </div>
+                <div class="md:w-1/3 px-3 mb-6 md:mb-0">
+                    <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                        <mat-label>ประเภทงาน</mat-label>
+                        <mat-select [formControlName]="'work_type_id'">
+                            <mat-option [value]="''">
+                                <span>เลือกประเภทงาน</span>
+                            </mat-option>
+                            <mat-option *ngFor="let item of workTypes" [value]="item.id">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="md:w-1/3 px-3 mb-6 md:mb-0">
+                    <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                        <mat-label>รถยนต์</mat-label>
+                        <mat-select [formControlName]="'product_id'">
+                            <mat-option [value]="''">
+                                <span>เลือกรถยนต์</span>
+                            </mat-option>
+                            <mat-option *ngFor="let item of products" [value]="item.id">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="flex flex-row mt-2 justify-end">
+                <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="search()">
+                        <mat-icon>search</mat-icon>
+                        &nbsp;
+                        ค้นหา
+                    </button>
+                    <button class="px-6 ml-3" mat-flat-button [color]="'warn'" (click)="ClearForm()">
+                        ยกเลิก
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg m-5  bg-white">
+        <div class="flex flex-col flex-auto p-5  sm:overflow-y-auto">
+            <table datatable [dtOptions]="dtOptions" class="table row-border hover w-full bg-white whitespace-nowrap">
+                <thead>
+                    <tr>
+                        <th class="w-[100px]">จัดการ</th>
+                        <th class="w-[10px]">ลำดับ</th>
+                        <th>คำสั่งซื้อ</th>
+                        <th>ชื่อ</th>
+                        <th>ทะเบียน</th>
+                        <th>ราคา</th>
+                        <th>ราคาขาย</th>
+                        <th>สถานะ</th>
+                        <th>วันที่ดำเนินการเสร็จ</th>
+                        <!-- <th>สร้างโดย</th> -->
+                        <th>วันที่สร้าง</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="dataRow?.length != 0">
+                    <tr *ngFor="let item of dataRow; let i = index">
+                        <td>
+                            <button mat-icon-button [matMenuTriggerFor]="menu">
+                                <mat-icon svgIcon="heroicons_solid:cog-6-tooth" [color]="'accent'"></mat-icon>
+                            </button>
+                            <mat-menu #menu="matMenu">
+                                <ng-container>
+                                    <button mat-menu-item (click)="editElement(item)" [color]="'accent'">
+                                        <mat-icon [color]="'accent'">edit</mat-icon>
+                                        <span>แก้ไข</span>
+                                    </button>
+                                    <button mat-menu-item (click)="viewElement(item)" [color]="'accent'">
+                                        <mat-icon [color]="'accent'">search</mat-icon>
+                                        <span>ดูข้อมูล</span>
+                                    </button>
+                                </ng-container>
+                                <ng-container>
+                                    <button mat-menu-item (click)="deleteElement(item.id)" [color]="'accent'">
+                                        <mat-icon [color]="'accent'">delete</mat-icon>
+                                        <span>ลบ</span>
+                                    </button>
+                                </ng-container>
+                            </mat-menu>
+                        </td>
+                        <td>{{ pages.begin + (i + 1) }}</td>
+                        <td class="text-left">
+                            <a *ngIf="item?.order?.code" [routerLink]="['/admin/sales/edit', item.order.id]"
+                                class="text-blue-600 underline hover:text-blue-800 cursor-pointer">
+                                {{ item.order.code }}
+                            </a>
+                            <span *ngIf="!item?.order?.code">-</span>
+                        </td>
+
+                        <td class="text-left">{{ item?.product?.name || '-' }}</td>
+                        <td class="text-left">{{ item?.product?.license_plate || '-' }}</td>
+                        <td class="text-right">
+                            {{ item?.product?.cost != null ? (item.product.cost | number:'1.2-2') : '-' }}
+                        </td>
+                        <td class="text-right">
+                            {{ item?.product?.sale_price != null ? (item.product.sale_price | number:'1.2-2') : '-' }}
+                        </td>
+                        <td class="text-center">
+                            <span *ngIf="item.status == 'pending'" class="text-gray-400"> รอดำเนินการ </span>
+                            <span *ngIf="item.status == 'in_progress'" class="text-yellow-600"> กำลังดำเนินการ </span>
+                            <span *ngIf="item.status == 'completed'" class="text-green-600"> เสร็จสิ้น </span>
+                        </td>
+                        <td class="text-center">
+                            {{ item?.completed_date ? (item.completed_date | date: 'dd/MM/yyyy') : '-' }}
+                        </td>
+
+                        <!-- <td class="text-center">{{ item.create_by ? item.create_by : "-" }}</td> -->
+                        <td>{{ (item.created_at !== null ? item.created_at: "-") | date : 'dd/MM/yyyy'}}</td>
+                    </tr>
+                </tbody>
+                <tbody *ngIf="dataRow?.length == 0">
+                    <tr>
+                        <td colspan="5" class="no-data-available text-center">ไม่มีข้อมูล !</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

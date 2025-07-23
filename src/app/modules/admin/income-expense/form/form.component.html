@@ -1,0 +1,222 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <div
+        class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 min-w-0 flex items-center justify-between">
+            <!-- Title -->
+            <div class="flex flex-row mt-2 justify-between">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate"
+                    *ngIf="!Id">
+                    เพิ่มรายการรับ-จ่าย
+                </h2>
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate"
+                    *ngIf="Id">
+                    แก้ไขรายการรับ-จ่าย
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="grid grid-cols-1 gap-6 p-6 sm:p-10">
+        <form class="bg-card rounded-2xl md:shadow overflow-hidden px-8 pt-6 pb-8 mb-4 grid gap-6 my-2"
+            [formGroup]="formData">
+            <span class="text-xl md:text-xl font-bold tracking-tight leading-7 sm:leading-10 truncate text-gray-500">
+                ข้อมูลรายรับ-รายจ่าย
+            </span>
+            <!-- Transaction Date and Type -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div>
+                    <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                        <mat-label>วันที่ทำรายการ</mat-label>
+                        <input matInput [matDatepicker]="transactionDatePicker" formControlName="date">
+                        <mat-datepicker-toggle matSuffix [for]="transactionDatePicker"></mat-datepicker-toggle>
+                        <mat-datepicker #transactionDatePicker xPosition="end"></mat-datepicker>
+                        <mat-error *ngIf="formData.get('date').hasError('required')">
+                            กรุณาระบุวันที่ทำรายการ
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div>
+                    <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                        <mat-label>ประเภทรายการ</mat-label>
+                        <mat-select formControlName="direction">
+                            <mat-option [value]="'in'">
+                                รายรับ
+                            </mat-option>
+                            <mat-option [value]="'out'">
+                                รายจ่าย
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div>
+                    <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                        <mat-label>ประเภทเงิน</mat-label>
+                        <mat-select formControlName="payment_type">
+                            <mat-option [value]="'cash'">
+                                เงินสด
+                            </mat-option>
+                            <mat-option [value]="'transfer'">
+                                โอนเงิน
+                            </mat-option>
+                            <mat-option [value]="'credit'">
+                                เครดิต
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <!-- Type Reference and Category -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                        <mat-label>หมวดหมู่</mat-label>
+                        <mat-select formControlName="income_expenses_tracker_type_id"
+                            (selectionChange)="onCategoryChange($event.value)">
+                            <mat-option [value]="''">
+                                <span>เลือกหมวดหมู่</span>
+                            </mat-option>
+                            <mat-option *ngFor="let item of categories" [value]="item.id">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="formData.get('income_expenses_tracker_type_id').hasError('required')">
+                            กรุณาเลือกหมวดหมู่
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div>
+                    <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                        <mat-label>จำนวนเงิน</mat-label>
+                        <input matInput formControlName="amount" placeholder="จำนวนเงิน" type="number">
+                        <mat-error *ngIf="formData.get('amount').hasError('required')">
+                            กรุณาระบุจำนวนเงิน
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <!-- Amount and Payment Method -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="col-span-3">
+                    <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                        <mat-label>ชื่อรายการ</mat-label>
+                        <input matInput formControlName="transaction_type">
+
+                    </mat-form-field>
+                </div>
+                <div class="col-span-2">
+                    <mat-form-field class="w-full" [ngClass]="formFieldHelpers">
+                        <mat-label>ชื่อร้านค้า / ชื่อผู้ยืมเงิน</mat-label>
+                        <input matInput formControlName="partner_name" />
+                    </mat-form-field>
+                </div>
+                <!-- Optional second column content can go here -->
+                <div>
+                    <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                        <mat-label>เลือกรถ</mat-label>
+                        <input matInput [formControl]="productsFilter" [matAutocomplete]="productsAutoComplete" />
+                        <mat-autocomplete #productsAutoComplete="matAutocomplete"
+                            (optionSelected)="onSelectproducts($event.option.value)"> <mat-option
+                                *ngFor="let item of filterproducts | async" [value]="item"> {{item.name}}
+                                ({{item.license_plate}}) </mat-option> </mat-autocomplete>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <!-- Image Upload Section -->
+            <div class="grid grid-cols-1 gap-6 mb-6 hidden" >
+                <div>
+                    <div class="border-t border-gray-200">
+                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                            <div class="flex flex-wrap justify-start">
+                                <ngx-dropzone style="width: 100%; height: 150px; justify-content: center;"
+                                    (change)="onSelect($event)">
+                                    <ngx-dropzone-label>แนบไฟล์หลักฐาน (ถ้ามี)</ngx-dropzone-label>
+                                    <ngx-dropzone-image-preview *ngFor="let f of files" [removable]="true" [file]="f"
+                                        (removed)="onRemove(f)">
+                                    </ngx-dropzone-image-preview>
+                                </ngx-dropzone>
+                            </div>
+                        </dd>
+                    </div>
+                </div>
+            </div>
+
+            <table class="w-full table-auto border border-gray-300 text-lg mt-4" formArrayName="items">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="border px-2 py-1 text-left">#</th>
+                        <th class="border px-2 py-1 text-left">รายการอะไหล่</th>
+                        <th class="border px-2 py-1 text-left">จำนวน</th>
+                        <th class="border px-2 py-1 text-left">ราคา</th>
+                        <th class="border px-2 py-1 text-center">จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of items.controls; let i = index" [formGroupName]="i">
+                        <td class="border px-2 py-1 text-center">{{ i + 1 }}</td>
+
+                        <td class="border px-2 py-1">
+
+                            <!-- ตัวเลือกที่ใช้กับ Reactive Form -->
+                            <mat-form-field class="w-full">
+                                <mat-select formControlName="product_attribute_id" placeholder="เลือกอะไหล่">
+                                    <mat-option *ngFor="let product of productList" [value]="product.id">
+                                        {{ product.name }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+
+                        <td class="border px-2 py-1">
+                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                                <input matInput formControlName="qty" type="number">
+                            </mat-form-field>
+                        </td>
+                        <td class="border px-2 py-1">
+                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                                <input matInput formControlName="unit_cost" type="number">
+
+                            </mat-form-field>
+                        </td>
+
+                        <td class="border px-2 py-1 text-center">
+                            <button type="button" (click)="removeItem(i)"
+                                class="text-red-600 hover:underline">ลบ</button>
+                        </td>
+                    </tr>
+                    <tr *ngIf="this.formData.value.items.length === 0">
+                        <td class="border px-2 py-1 text-center" colspan="5">
+                            ไม่มีรายการ
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ปุ่มเพิ่มรายการ -->
+            <div class="mt-4">
+                <button type="button" (click)="addItem()" class="bg-blue-600 text-white px-4 py-2 rounded">
+                    เพิ่มรายการ
+                </button>
+            </div>
+
+
+
+            <!-- Action Buttons -->
+            <div class="flex flex-row gap-4 mt-2 justify-center">
+                <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    <button class="w-full" mat-flat-button [color]="'primary'" (click)="save()">
+                        บันทึก
+                    </button>
+                </div>
+                <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    <button class="w-full" mat-flat-button [color]="'warn'" (click)="backTo()">
+                        ยกเลิก
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

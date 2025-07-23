@@ -1,0 +1,195 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b
+        bg-card dark:bg-transparent" *ngIf="this.isForm === true">
+        <div class="flex-1 flemin-w-0">
+            <!-- Title -->
+            <div class="flex flex-row mt-2 justify-between">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate"
+                    *ngIf="this.isForm === true">
+                    สร้างการขาย
+                </h2>
+
+                <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="onSubmit()">
+                        บันทึก
+                    </button>
+                    <button class="px-6 ml-3" mat-flat-button [color]="'warn'" (click)="onBack()">
+                        ยกเลิก
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent"
+        *ngIf="this.isForm === false">
+        <div class="flex-1 flemin-w-0">
+            <!-- Title -->
+            <div class="flex flex-row mt-2 justify-between">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    แก้ไขการขาย
+                </h2>
+                <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+
+                    <button class="px-6 ml-3" mat-flat-button [color]="'warn'" (click)="onBack()">
+                        ย้อนกลับ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+        <div class="grid gap-4 w-full sm:grid-cols-1 md:grid-cols-1">
+            <form class="bg-card rounded-2xl md:shadow px-8 pt-6 pb-8 mb-4 flex flex-col my-2"
+                [formGroup]="form">
+                <span
+                    class="text-xl md:text-xl font-bold tracking-tight leading-7 sm:leading-10 truncate text-gray-500">
+                    ข้อมูลการขาย
+                </span>
+                <div class="-mx-3 md:flex mb-6">
+                    <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>เลือกลูกค้า</mat-label>
+                            <mat-select formControlName="client_id">
+                                <mat-option *ngFor="let item of clientData;" value="{{item.id}}">
+                                    [{{item.code}}] : {{item.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="md:w-1/2 px-3">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>วันที่ซื้อ</mat-label>
+                            <input matInput [matDatepicker]="picker" formControlName="date">
+                            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="-mx-3 md:flex mb-6">
+                    <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>ยอดชำระ</mat-label>
+                            <input matInput [placeholder]="'ยอดชำระ'" formControlName="total_price">
+                            <!-- <mat-hint>This is a hint text</mat-hint> -->
+                        </mat-form-field>
+                    </div>
+                    <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>เงินดาวน์</mat-label>
+                            <input matInput [placeholder]="'เงินดาวน์'" formControlName="down_payment">
+                            <!-- <mat-hint>This is a hint text</mat-hint> -->
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="-mx-3 md:flex mb-6">
+                    <div class="md:w-1/3 px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>เลือกไฟแนนซ์</mat-label>
+                            <mat-select formControlName="finance_id">
+                                <mat-option *ngFor="let item of finanaceData;" value="{{item.id}}">
+                                    [{{item.code}}] : {{item.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="md:w-1/3 px-3">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>ดอกเบี้ย</mat-label>
+                            <input matInput [placeholder]="'ดอกเบี้ย'" formControlName="interest">
+                            <!-- <mat-hint>This is a hint text</mat-hint> -->
+                        </mat-form-field>
+                    </div>
+                    <div class="md:w-1/3 px-3">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>วันที่ชำระ</mat-label>
+                            <input matInput type="int" min="1" max="31" [placeholder]="'วันที่ชำระ'"
+                                formControlName="payment_date">
+                            <!-- <mat-hint>This is a hint text</mat-hint> -->
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="-mx-3 md:flex mb-6">
+                    <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>ประเภทการขาย</mat-label>
+                            <mat-select formControlName="sale_type">
+                                <mat-option *ngFor="let item of saleType;" value="{{item.code}}">
+                                    {{item.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="md:w-1/2 px-3">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>จำนวนงวดที่ผ่อน</mat-label>
+                            <input matInput [placeholder]="'จำนวนงวดที่ผ่อน'" formControlName="payment_period">
+                            <!-- <mat-hint>This is a hint text</mat-hint> -->
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="-mx-3 md:flex mb-6" *ngIf="this.isForm === true">
+                    <div class="md:w-full px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>เลือกสินค้า</mat-label>
+                            <mat-select (selectionChange)="selectProduct($event.value)">
+                                <mat-option *ngFor="let item of productData;" value="{{item.code}}">
+                                    {{item.name}} : <b>ปี</b> {{item.year}} : [<b>ราคา</b> {{item.sale_price | currency:
+                                    'THB'}}]
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="grid gap-4 w-full sm:grid-cols-1 md:grid-cols-1" *ngIf="this.isForm === false">
+            <div class="bg-card rounded-2xl md:shadow px-8 pt-6 pb-8 mb-4 flex flex-col my-2">
+                <div class="flex flex-col md:flex-row m-5 justify-between">
+                    <span
+                        class="text-xl md:text-xl font-bold tracking-tight leading-7 sm:leading-10 truncate text-gray-500">
+                        ข้อมูลการผ่อนชำระ
+                    </span>
+                    <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                        <button class="px-6 mt-2" mat-flat-button [color]="'primary'" (click)="payment()">
+                            บันทึกการชำระเงิน
+                        </button>
+                    </div>
+                </div>
+                <div class="flex flex-col justify-between">
+                    <table class="min-w-full text-left text-lg font-light">
+                        <thead class="border-b font-medium dark:border-neutral-500">
+                            <tr>
+                                <th scope="col" class="px-6 py-4">ครั้งที่</th>
+                                <th scope="col" class="px-6 py-4">วันที่</th>
+                                <th scope="col" class="px-6 py-4">เลขออเดอร์</th>
+                                <th scope="col" class="px-6 py-4">จำนวน</th>
+                                <th scope="col" class="px-6 py-4">หลักฐาน</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b dark:border-neutral-500" *ngFor="let item of paymentData;let i = index">
+                                <td class="whitespace-nowrap px-6 py-4 font-medium">{{i + 1 }}</td>
+                                <td class="whitespace-nowrap px-6 py-4">{{item.date | date : "dd-MM-yyyy"}}</td>
+                                <td class="whitespace-nowrap px-6 py-4">{{item.code? item.code: '-'}}</td>
+                                <td class="whitespace-nowrap px-6 py-4">{{item.price | number}} บาท</td>
+                                <td class="whitespace-nowrap px-6 py-4">
+                                    <button mat-icon-button color="accent" (click)="showPicture(item.image)">
+                                        <mat-icon>image</mat-icon>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="border-b dark:border-neutral-500">
+                                <td colspan="3" class="whitespace-nowrap px-6 py-4 font-bold text-xl">ยอดรวม</td>
+                                <td class="whitespace-nowrap px-6 py-4 underline font-bold text-xl">{{this.total |
+                                    number}} บาท
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

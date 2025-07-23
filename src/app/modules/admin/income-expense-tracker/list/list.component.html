@@ -1,0 +1,76 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <!-- Loader -->
+    <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+    </div>
+    <div
+        class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 flemin-w-0">
+            <!-- Title -->
+            <div class="flex flex-row mt-2 justify-between">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    ประเภทรายรับ - รายจ่าย
+                </h2>
+                <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    <div class="flex flex-col md:flex-row gap-1 md:gap-4 items-center px-6 mt-4">
+                        <button class="px-6" mat-flat-button [color]="'primary'" (click)="addElement()">
+                            <!--<mat-icon svgIcon="heroicons_outline:plus"></mat-icon> -->
+                            <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                            <!-- heroicons_outline:clipboard-document-list -->
+                            &nbsp;
+                            เพิ่ม
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg m-5  bg-white">
+        <mat-tab-group (selectedTabChange)="onTabChange($event)" [selectedIndex]="selectedTabIndex" class="px-4 pt-4">
+            <mat-tab *ngFor="let tab of statusTabs" [label]="tab.label"></mat-tab>
+        </mat-tab-group>
+        <div class="flex flex-col flex-auto p-5  sm:overflow-y-auto">
+            <table datatable [dtOptions]="dtOptions" class="table row-border hover w-full bg-white whitespace-nowrap">
+                <thead>
+                    <tr>
+                        <th class="w-[100px]">จัดการ</th>
+                        <th class="w-[10px]">ลำดับ</th>
+                        <th>ประเภทรายการ </th>
+                        <th>ชื่อรายการ</th>
+                        <th>รายละเอียด</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="dataRow?.length != 0">
+                    <tr *ngFor="let item of dataRow; let i = index">
+                        <td>
+                            <button mat-icon-button color="accent" (click)="editElement(item)">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button color="accent" (click)="deleteElement(item.id)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </td>
+                        <td class="text-center">{{ pages.begin + (i + 1) }}</td>
+                        <td class="text-center">
+                            <span
+                                [ngClass]="item.type === 'expense' ? 'text-red-600 font-semibold' : 'text-green-600 font-semibold'">
+                                {{ item.type === 'expense' ? 'รายจ่าย' : item.type === 'income' ? 'รายรับ' :
+                                '-' }}
+                            </span>
+                        </td>
+                        <td class="text-center">{{ item.name ? item.name : "-" }}</td>
+                        <td class="text-left">{{ item.detail ? item.detail : "-" }}</td>
+                
+                    </tr>
+                </tbody>
+                <tbody *ngIf="dataRow?.length == 0">
+                    <tr>
+                        <td colspan="5" class="no-data-available text-center">ไม่มีข้อมูล !</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

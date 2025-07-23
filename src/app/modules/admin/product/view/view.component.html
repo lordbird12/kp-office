@@ -1,0 +1,251 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <div
+        class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 min-w-0 flex items-center justify-between">
+            <!-- Title -->
+            <div class="flex flex-row mt-2 justify-between w-full">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    รายละเอียดงาน</h2>
+                <!-- Status Badge -->
+                <div class="flex items-center">
+                    <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="gotoEdit()">
+                        แก้ไข
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="flex-auto p-2 sm:p-6">
+        <!-- 1. ข้อมูลรถ -->
+        <div class="bg-card rounded-2xl md:shadow overflow-hidden px-4 md:px-6 pt-6 pb-8 mb-4">
+            <h3 class="text-2xl font-bold mb-4">ข้อมูลรถ</h3>
+
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                <!-- ข้อมูลรถ: กินพื้นที่ 3 คอลัมน์ -->
+                <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    <div class="flex flex-col">
+                        <span class="text-lg text-gray-500">รหัสสินค้า</span>
+                        <span class="font-medium">{{itemData?.code || '-'}}</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-lg text-gray-500">ชื่อรถ</span>
+                        <span class="font-medium">{{itemData?.name || '-'}}</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-lg text-gray-500">ยี่ห้อ</span>
+                        <span class="font-medium">{{itemData?.brand?.name || '-'}}</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-lg text-gray-500">รุ่น</span>
+                        <span class="font-medium">{{itemData?.brand_model?.name || '-'}}</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-lg text-gray-500">ทะเบียนรถ</span>
+                        <span class="font-medium">{{itemData?.license_plate || '-'}}</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-lg text-gray-500">เลขตัวถัง</span>
+                        <span class="font-medium">{{itemData?.tank_no || '-'}}</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-lg text-gray-500">เลขเครื่องยนต์</span>
+                        <span class="font-medium">{{itemData?.engine_no || '-'}}</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-lg text-gray-500">ปีรถ</span>
+                        <span class="font-medium">{{itemData?.year || '-'}}</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-lg text-gray-500">สี</span>
+                        <span class="font-medium">{{getColorName(itemData?.color_id) || '-'}}</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-lg text-gray-500">ภาษีหมดอายุ</span>
+                        <span class="font-medium">
+                            {{ itemData?.tax_expire ? (itemData?.tax_expire | date:'dd/MM/yyyy') : '-' }}
+                        </span>
+                    </div>
+                    <!-- <div class="flex flex-col">
+                        <span class="text-lg text-gray-500">ราคาขาย</span>
+                        <span class="font-medium">{{ itemData?.sale_price != null ? (itemData?.sale_price
+                            | number) : '-' }}
+                        </span>
+                    </div> -->
+                    <div class="flex flex-col">
+                        <span class="text-lg text-gray-500">ไมล์</span>
+                        <span class="font-medium">{{itemData?.mile || '-'}}</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-lg text-gray-500">เกียร์</span>
+                        <span class="font-medium">{{itemData?.gear || '-'}}</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-lg text-gray-500">วันหมดภาษี</span>
+                        <span class="font-medium">
+                            {{ itemData?.tax_expire ? (itemData?.tax_expire | date:'dd/MM/yyyy') : '-' }}
+                        </span>
+                    </div>
+                    <div class="flex flex-col md:col-span-2 lg:col-span-3">
+                        <span class="text-lg text-gray-500">รายละเอียด</span>
+                        <span class="font-medium">{{itemData?.detail || '-'}}</span>
+                    </div>
+                </div>
+
+                <!-- คอลัมน์รูปภาพ (แยกฝั่งขวา) -->
+                <div class="flex flex-col justify-center items-start">
+                    <div class="w-full h-auto flex items-center justify-center">
+                        <img [src]="converImage(itemData?.image)" (error)="onImageError($event)" alt="รูปภาพ"
+                            class="w-full h-full object-cover rounded-lg" />
+                    </div>
+                    <div class="flex flex-col justify-end text-right w-full gap-2">
+                        <div class="flex flex-col">
+                            <span class="text-lg text-gray-500">ราคาขาย</span>
+                            <span class="text-2xl font-medium">{{itemData?.sale_price | number}} บาท</span>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <span class="text-lg text-gray-500">ยอดรวมค่าใช้จ่าย ณ ปัจจุบัน</span>
+                            <span class="text-2xl font-medium">{{totalAll | number}} บาท</span>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <span class="text-lg text-gray-500">ราคาขายรวมค่าใช้จ่าย</span>
+                            <span class="text-2xl font-medium">{{netProfit | number}} บาท</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-lg text-gray-500">กำไรสุทธิ</span>
+                            <span class="text-2xl font-medium">{{summaryNet | number}} บาท</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. ขั้นตอนการทำงาน -->
+        <ng-container *ngFor="let item of itemData?.jobs; let indexJob = index;">
+            <div class="bg-card rounded-2xl md:shadow overflow-hidden px-4 md:px-6 pt-6 pb-8 mt-4">
+                <div class="flex flex-row mt-2 justify-between w-full">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4">รายละเอียดค่าใช้จ่าย </h3>
+                        <p class="text-xl"></p>
+                    </div>
+                    <div class="flex items-center">
+                        <button class="px-6 ml-3" mat-flat-button [color]="'accent'" (click)="gotoJob(item.id)">
+                            ติดตาม
+                        </button>
+                    </div>
+                </div>
+
+                <div *ngIf="item?.steps && item.steps.length > 0">
+                    <div *ngFor="let step of item?.steps; let i = index" class="border rounded-lg p-4 mb-4">
+                        <div class="mb-4">
+                            <span class="text-sm text-gray-500">วันที่ดำเนินการเสร็จ</span>
+                            <div class="font-medium">{{step.completed_date | date:'dd/MM/yyyy' ?? '-'}}</div>
+                        </div>
+                        <!-- Work Types within step -->
+                        <div *ngFor="let workType of step.step_job_type_lists"
+                            class="border-l-4 border-[#bb9149] pl-4 mb-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-semibold">{{workType.work_type?.name ?? 'ประเภทงาน'}}</h4>
+                            </div>
+
+                            <!-- Product Attributes (อะไหล่) Section -->
+                            <div class="p-2 md:p-4 rounded mb-3 border"
+                                *ngIf="workType.product_attributes && workType.product_attributes.length > 0">
+                                <h4 class="font-semibold mb-2">อะไหล่</h4>
+                                <div class="overflow-x-auto shadow-sm border mb-3">
+                                    <table class="w-full text-sm">
+                                        <thead class="bg-gray-100">
+                                            <tr>
+                                                <th class="px-4 py-2 text-left">ประเภท</th>
+                                                <th class="px-4 py-2 text-left">รายการอะไหล่</th>
+                                                <th class="px-4 py-2 text-center">จำนวน</th>
+                                                <th class="px-4 py-2 text-right">ราคา</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let part of workType.product_attributes" class="border-b">
+                                                <td class="px-4 py-2">{{getDepositTypeName(part.deposit_type)}}</td>
+                                                <td class="px-4 py-2">{{part?.product_attribute?.name}}
+                                                </td>
+                                                <td class="px-4 py-2 text-center">{{part.product_attribute_qty |
+                                                    number}}
+                                                </td>
+                                                <td class="px-4 py-2 text-right">{{part.amount | number:'1.2-2'}} บาท
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Custom Product Attributes Section -->
+                            <div class="p-2 md:p-4 rounded mb-3 border"
+                                *ngIf="workType.product_attribute_others && workType.product_attribute_others.length > 0">
+                                <h4 class="font-semibold mb-2">อะไหล่อื่นๆ</h4>
+                                <div class="overflow-x-auto shadow-sm border mb-3">
+                                    <table class="w-full text-sm">
+                                        <thead class="bg-gray-100">
+                                            <tr>
+                                                <th class="px-4 py-2 text-left">ประเภท</th>
+                                                <th class="px-4 py-2 text-left">ชื่ออะไหล่</th>
+                                                <th class="px-4 py-2 text-left">รายละเอียด</th>
+                                                <th class="px-4 py-2 text-center">จำนวน</th>
+                                                <th class="px-4 py-2 text-right">ราคา</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let part of workType.product_attribute_others" class="border-b">
+                                                <td class="px-4 py-2">{{getDepositTypeName(part.deposit_type)}}</td>
+                                                <td class="px-4 py-2">{{part.name}}</td>
+                                                <td class="px-4 py-2">{{part.detail}}</td>
+                                                <td class="px-4 py-2 text-center">{{part.qty | number}}</td>
+                                                <td class="px-4 py-2 text-right">{{part.amount | number:'1.2-2'}} บาท
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Services (บริการ) Section -->
+                            <div class="p-2 md:p-4 rounded mb-3 border"
+                                *ngIf="workType.expenses && workType.expenses.length > 0">
+                                <h4 class="font-medium mb-2">บริการ</h4>
+                                <div class="overflow-x-auto shadow-sm border mb-3">
+                                    <table class="w-full text-sm">
+                                        <thead class="bg-gray-100">
+                                            <tr>
+                                                <th [colSpan]="3" class="px-4 py-2 text-left">รายการบริการ</th>
+                                                <th class="px-4 py-2 text-right">ราคา</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let expense of workType.expenses" class="border-b">
+                                                <td [colSpan]="3" class="px-4 py-2">
+                                                    {{getExpenseTypeName(expense.expense_type_id)}}
+                                                </td>
+                                                <td class="px-4 py-2 text-right">{{expense.amount | number:'1.2-2'}}
+                                                    บาท
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex text-right justify-end px-8">
+                        <p>ยอดรวม <span class="text-2xl font-medium">{{jobTotals[indexJob].total | number}}</span> บาท
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+
+    </div>
+</div>

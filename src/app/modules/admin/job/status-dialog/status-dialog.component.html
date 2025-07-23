@@ -1,0 +1,63 @@
+<div class="md:max-w-lg mx-auto">
+    <h1 mat-dialog-title class="text-xl font-semibold mb-4">อัปเดตสถานะ</h1>
+
+    <div mat-dialog-content>
+        <form [formGroup]="addForm" class="flex flex-col gap-4">
+            <!-- Status Selection -->
+            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                <mat-label>สถานะ</mat-label>
+                <mat-select formControlName="status" required>
+                    <mat-option *ngFor="let item of status" [value]="item.values">
+                        {{item.name}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="addForm.get('status').hasError('required')">
+                    กรุณาเลือกสถานะ
+                </mat-error>
+            </mat-form-field>
+
+            <!-- Image Upload Section -->
+            <div class="md:flex mb-6">
+                <div class="md:min-w-full mb-6 md:mb-0">
+                    <!-- แสดงภาพเดิม (ถ้ามี) -->
+                    <div class="mb-3" *ngIf="existingImages && existingImages.length > 0">
+                        <h3 class="text-sm font-medium mb-2">รูปภาพปัจจุบัน</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <div *ngFor="let img of existingImages" class="relative border rounded-lg p-1">
+                                <img [src]="getImageUrl(img.image)" alt="รูปภาพงาน"
+                                    class="h-24 w-24 object-cover rounded">
+                                <button mat-icon-button color="warn"
+                                    class="absolute -top-2 -right-2 bg-white rounded-full shadow-md"
+                                    (click)="onRemoveExistingImage(img)">
+                                    <mat-icon svgIcon="heroicons_outline:x-mark" class="text-red-500"></mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- อัปโหลดภาพใหม่ -->
+                    <div class="flex flex-col">
+                        <h3 class="text-sm font-medium mb-2">เพิ่มรูปภาพใหม่</h3>
+                        <ngx-dropzone style="width: 100%; height: 150px; justify-content: center;"
+                            (change)="onSelect($event)">
+                            <ngx-dropzone-label>อัปโหลดรูปภาพใหม่</ngx-dropzone-label>
+                            <ngx-dropzone-image-preview *ngFor="let f of files" [removable]="true" [file]="f"
+                                (removed)="onRemove(f)">
+                            </ngx-dropzone-image-preview>
+                        </ngx-dropzone>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div mat-dialog-actions class="flex justify-end mt-4">
+        <button class="px-6 ml-3" mat-flat-button [color]="'primary'" [disabled]="addForm.invalid"
+            (click)="onSaveClick()">
+            บันทึก
+        </button>
+        <button class="px-6 ml-3" mat-flat-button [color]="'warn'" (click)="onCancelClick()">
+            ยกเลิก
+        </button>
+    </div>
+</div>

@@ -1,0 +1,114 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <!-- Loader -->
+    <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+    </div>
+    <div
+        class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 flemin-w-0">
+            <!-- Title -->
+            <!-- <div class="flex flex-row mt-2 justify-between"> -->
+            <div class="flex mt-2 justify-between flex-col md:flex-row w-full">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    รายการรายรับ-รายจ่าย
+                </h2>
+                <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate grow">
+                    <div class="flex flex-col md:flex-row sm:gap-4 items-center px-3 mt-4 w-ful md:pr-0 md:mt-0">
+                        <div class="flex justify-end w-full sm:gap-4 flex-col sm:flex-row">
+                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full md:max-w-[200px]">
+                                <mat-label>วันที่</mat-label>
+                                <input matInput [matDatepicker]="pickerDate" [(ngModel)]="filterDate.start" />
+                                <mat-datepicker-toggle matSuffix [for]="pickerDate"></mat-datepicker-toggle>
+                                <mat-datepicker #pickerDate></mat-datepicker>
+                            </mat-form-field>
+                            <!--
+                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full md:max-w-[200px]">
+                              <mat-label>วันที่สิ้นสุด</mat-label>
+                              <input matInput [matDatepicker]="endPicker" [(ngModel)]="filterDate.end" />
+                              <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+                              <mat-datepicker #endPicker></mat-datepicker>
+                            </mat-form-field> -->
+                        </div>
+
+
+                        <div class="flex flex-col justify-between w-full md:w-fit gap-4 md:flex-row">
+                            <button mat-flat-button color="primary" (click)="search()">
+                                <mat-icon>search</mat-icon>
+                                ค้นหา
+                            </button>
+                            <button class="px-6" mat-flat-button [color]="'primary'" (click)="addElement()">
+                                <mat-icon>add</mat-icon>
+                                &nbsp;
+                                เพิ่ม
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg m-5  bg-white">
+        <mat-tab-group (selectedTabChange)="onTabChange($event)" [selectedIndex]="selectedTabIndex" class="px-4 pt-4">
+            <mat-tab *ngFor="let tab of statusTabs" [label]="tab.label"></mat-tab>
+        </mat-tab-group>
+        <div class="flex flex-col flex-auto p-5  sm:overflow-y-auto">
+            <table datatable [dtOptions]="dtOptions" class="table row-border hover w-full bg-white whitespace-nowrap">
+                <thead>
+                    <tr>
+                        <th class="w-[100px]">จัดการ</th>
+                        <th class="w-[10px]">ลำดับ</th>
+                        <th>วันที่</th>
+                        <th>ประเภทรายการ </th>
+                        <th>ชื่อรายการ</th>
+                        <th>จำนวนเงิน</th>
+                        <!-- <th>ประเภทเงิน</th> -->
+                        <th>ไฟล์หลักฐาน</th>
+                        <!-- <th>ผู้ทำรายการ</th> -->
+                    </tr>
+                </thead>
+                <tbody *ngIf="dataRow?.length != 0">
+                    <tr *ngFor="let item of dataRow; let i = index">
+                        <td>
+                            <button mat-icon-button color="accent" (click)="editElement(item)">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button color="accent" (click)="deleteElement(item.id)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </td>
+                        <td class="text-center">{{ pages.begin + (i + 1) }}</td>
+                        <td class="text-center">{{ (item.date ? item?.date : "-") | date : 'dd-MM-yyyy' }}</td>
+                        <td class="text-center">
+                            <span
+                                [ngClass]="item.type?.type === 'expense' ? 'text-red-600 font-semibold' : 'text-green-600 font-semibold'">
+                                {{ item.type.type === 'expense' ? 'รายจ่าย' : item.type.type === 'income' ? 'รายรับ' :
+                                '-' }}
+                            </span>
+                        </td>
+                        <td class="text-center">{{ item.name ? item.name : "-" }}</td>
+                        <td class="text-center">
+                            {{ item.amount != null ? (item.amount | number:'1.2-2') : '-' }}
+                        </td>
+
+                        <!-- <td class="text-center">{{ item.payment_method ? item.payment_method : "-" }}</td> -->
+                        <td class="text-center">
+                            <a *ngIf="item.image" [href]="getAttachmentUrl(item.image)" target="_blank"
+                                class="text-blue-500 underline hover:text-blue-700">
+                                ดูไฟล์
+                            </a>
+                            <span *ngIf="!item.image">-</span>
+                        </td>
+                        <!-- <td class="text-center">{{ item?.user ? item?.user?.name : "-" }}</td> -->
+                    </tr>
+                </tbody>
+                <tbody *ngIf="dataRow?.length == 0">
+                    <tr>
+                        <td colspan="5" class="no-data-available text-center">ไม่มีข้อมูล !</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

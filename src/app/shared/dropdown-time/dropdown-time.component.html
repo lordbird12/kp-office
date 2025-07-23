@@ -1,0 +1,6 @@
+<mat-form-field class="flex-auto w-full">
+    <mat-select>
+        <mat-option value="">เลือกเวลา</mat-option>
+        <mat-option value="time" *ngFor="let time of timeOptions; let i = index">{{time}}</mat-option>
+    </mat-select>
+</mat-form-field>

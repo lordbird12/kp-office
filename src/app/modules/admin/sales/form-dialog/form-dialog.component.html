@@ -1,0 +1,35 @@
+<div class="md:max-w-lg mx-auto">
+    <h1 mat-dialog-title class="text-xl font-semibold mb-4">อัปเดตสถานะ</h1>
+
+    <div mat-dialog-content>
+        <form [formGroup]="addForm" class="flex flex-col gap-4">
+            <!-- Status Selection -->
+            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                <mat-label>สถานะ</mat-label>
+                <mat-select formControlName="status" required>
+                    <mat-option *ngFor="let item of status" [value]="item.values">
+                        {{item.name}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="addForm.get('status').hasError('required')">
+                    กรุณาเลือกสถานะ
+                </mat-error>
+            </mat-form-field>
+
+            <!-- Remarks -->
+            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                <mat-label>หมายเหตุเพิ่มเติม</mat-label>
+                <textarea matInput formControlName="remark" rows="3"></textarea>
+            </mat-form-field>
+        </form>
+    </div>
+
+    <div mat-dialog-actions class="flex justify-end mt-4">
+        <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="onSaveClick();">
+            บันทึก
+        </button>
+        <button class="px-6 ml-3" mat-flat-button [color]="'warn'" (click)="onCancelClick()">
+            ยกเลิก
+        </button>
+    </div>
+</div>

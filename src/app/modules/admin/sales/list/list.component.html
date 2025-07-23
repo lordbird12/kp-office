@@ -1,0 +1,143 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <!-- Loader -->
+    <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+    </div>
+    <div
+        class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 flemin-w-0">
+            <!-- Title -->
+            <div class="flex flex-row mt-2 justify-between">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    รายการสั่งซื้อ
+                </h2>
+                <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="addElement()">
+                        <mat-icon>add</mat-icon>
+                        &nbsp;
+                        เพิ่ม
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg m-5  bg-white">
+        <mat-tab-group (selectedTabChange)="onTabChange($event)" [selectedIndex]="selectedTabIndex" class="px-4 pt-4">
+            <mat-tab *ngFor="let tab of statusTabs" [label]="tab.label"></mat-tab>
+        </mat-tab-group>
+        <div class="flex flex-col flex-auto p-5  sm:overflow-y-auto">
+            <table datatable [dtOptions]="dtOptions" class="table row-border hover w-full bg-white whitespace-nowrap">
+                <thead>
+                    <tr>
+                        <th class="w-[100px]">จัดการ</th>
+                        <th class="w-[10px]">ลำดับ</th>
+                        <th>รหัสสั่งซื้อ</th>
+                        <th>วันที่จอง</th>
+                        <th>วันที่รับรถ</th>
+                        <th>ลูกค้า</th>
+                        <th>เบอร์ติดต่อ</th>
+                        <th>ยอดรวม</th>
+                        <th>ยี่ห้อ</th>
+                        <th>รุ่น</th>
+                        <th>ทะเบียน</th>
+                        <th>ใบงาน</th>
+                        <th>สถานะ</th>
+                        <!-- <th>สร้างโดย</th>
+                        <th>วันที่สร้าง</th> -->
+                    </tr>
+                </thead>
+                <tbody *ngIf="dataRow?.length != 0">
+                    <tr *ngFor="let item of dataRow; let i = index">
+                        <td>
+                            <button mat-icon-button [matMenuTriggerFor]="menu">
+                                <mat-icon svgIcon="heroicons_solid:cog-6-tooth"></mat-icon>
+                            </button>
+                            <mat-menu #menu="matMenu">
+                                <ng-container>
+                                    <button mat-menu-item (click)="editElement(item)">
+                                        <mat-icon>edit</mat-icon>
+                                        <span>แก้ไข</span>
+                                    </button>
+                                    <!-- <button mat-menu-item (click)="viewElement(item)">
+                                        <mat-icon>search</mat-icon>
+                                        <span>ดูข้อมูล</span>
+                                    </button> -->
+                                </ng-container>
+                                <ng-container>
+                                    <button mat-menu-item (click)="deleteElement(item.id)">
+                                        <mat-icon>delete</mat-icon>
+                                        <span>ลบ</span>
+                                    </button>
+                                </ng-container>
+                            </mat-menu>
+                        </td>
+                        <td>{{ pages.begin + (i + 1) }}</td>
+                        <td class="text-left">
+                            <a *ngIf="item?.code" [routerLink]="['/admin/sales/edit', item.id]"
+                                class="text-blue-600 underline hover:text-blue-800 cursor-pointer">
+                                {{ item.code }}
+                            </a>
+                            <span *ngIf="!item?.code">-</span>
+                        </td>
+                        <td>{{ item?.booking_date ? (item.booking_date | date : "dd-MM-yyyy") : '-' }}</td>
+                        <td>{{ item?.pickup_date ? (item.pickup_date | date : "dd-MM-yyyy") : '-' }}</td>
+                        <td>{{ item?.client_name || '-' }}</td>
+                        <td>{{ item?.client_phone || '-' }}</td>
+                        <td class="text-right">{{ item?.sale_price != null ? (item.sale_price | number:'1.2-2') : '-' }}
+                        </td>
+                        <td>{{ item?.brand || '-' }}</td>
+                        <td>{{ item?.model || '-' }}</td>
+                        <td>{{ item?.license || '-' }}</td>
+                        <td>{{ item?.license || '-' }}</td>
+                        <td class="text-left">
+                            <a *ngIf="item?.jobs" [routerLink]="['/admin/job/view', item.jobs?.id]"
+                                class="text-blue-600 underline hover:text-blue-800 cursor-pointer">
+                               {{item?.jobs?.code}}
+                            </a>
+                            <span *ngIf="!item?.jobs" >-</span>
+                        </td>
+                        <td>
+                            <div *ngIf="item.status === 'pending'"
+                                class="bg-blue-200 p-1 rounded-md text-center text-blue-800 font-bold">
+                                รอรับมัดจำ
+                            </div>
+                            <div *ngIf="item.status === 'deposit_received'"
+                                class="bg-indigo-200 p-1 rounded-md text-center text-indigo-800 font-bold">
+                                รับมัดจำแล้ว
+                            </div>
+                            <div *ngIf="item.status === 'waiting_for_finance'"
+                                class="bg-yellow-200 p-1 rounded-md text-center text-yellow-800 font-bold">
+                                รอผลไฟแนนซ์
+                            </div>
+                            <div *ngIf="item.status === 'finance_approved'"
+                                class="bg-green-200 p-1 rounded-md text-center text-green-800 font-bold">
+                                ไฟแนนซ์อนุมัติผล
+                            </div>
+                            <div *ngIf="item.status === 'waiting_for_delivery'"
+                                class="bg-purple-200 p-1 rounded-md text-center text-purple-800 font-bold">
+                                รอรับรถ
+                            </div>
+                            <div *ngIf="item.status === 'completed'"
+                                class="bg-teal-200 p-1 rounded-md text-center text-teal-800 font-bold">
+                                ส่งมอบเรียบร้อย
+                            </div>
+                            <div *ngIf="item.status === 'cancelled'"
+                                class="bg-red-200 p-1 rounded-md text-center text-red-800 font-bold">
+                                ยกเลิกการขาย
+                            </div>
+                        </td>
+
+                    </tr>
+                </tbody>
+                <tbody *ngIf="dataRow?.length == 0">
+                    <tr>
+                        <td colspan="9" class="no-data-available text-center">ไม่มีข้อมูล !</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

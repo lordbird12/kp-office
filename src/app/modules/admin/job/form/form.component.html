@@ -1,0 +1,500 @@
+<div class="flex flex-col flex-auto min-w-0"> <!-- Header -->
+    <div
+        class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 min-w-0 flex items-center justify-between"> <!-- Title -->
+            <div class="flex flex-row mt-2 justify-between">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate"
+                    *ngIf="!Id">เพิ่มงาน</h2>
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate"
+                    *ngIf="Id">แก้ไขงาน</h2>
+            </div> <!-- Update Status Button -->
+            <!-- <button mat-flat-button color="primary" (click)="openStatusDialog()" *ngIf="Id">อัปเดตสถานะ</button> -->
+        </div>
+    </div> <!-- Main -->
+    <div class="flex-auto p-2 sm:p-6">
+        <div class="w-full">
+            <form class="bg-card rounded-2xl md:shadow overflow-hidden px-4 md:px-8 pt-6 pb-8 mb-4 flex flex-col my-2"
+                [formGroup]="formData"> <span
+                    class="text-xl md:text-xl font-bold tracking-tight leading-7 sm:leading-10 truncate text-gray-500">ข้อมูลงาน</span>
+                <!-- Vehicle Selection and Remark -->
+                <div class="md:flex mb-6 gap-2">
+                    <div class="md:w-full mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>เลือกรถ</mat-label>
+                            <input matInput [formControl]="productsFilter" [matAutocomplete]="productsAutoComplete" />
+                            <mat-autocomplete #productsAutoComplete="matAutocomplete"
+                                (optionSelected)="onSelectproducts($event.option.value)"> <mat-option
+                                    *ngFor="let item of filterproducts | async" [value]="item"> {{item.name}}
+                                    ({{item.license_plate}}) </mat-option> </mat-autocomplete> <mat-error
+                                *ngIf="formData.get('product_id').hasError('required')"> กรุณาเลือกรถ </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="md:w-full mb-6 md:mb-0"> <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>ความสำคัญ</mat-label>
+                            <mat-select formControlName="priority">
+                                <mat-option [value]="''">
+                                </mat-option>
+                                <mat-option [value]="'normal'"> {{'ปกติ'}}
+                                </mat-option>
+                                <mat-option [value]="'urgent'"> {{'ด่วน'}}
+                                </mat-option>
+                                <mat-option [value]="'veryurgent'"> {{'ด่วนมาก'}}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="formData.get('priority').hasError('required')"> กรุณาเลือกความสำคัญ
+                            </mat-error>
+                        </mat-form-field> </div>
+                    <div class="md:w-full mb-6 md:mb-0"> <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>วันที่ดำเนินการเสร็จ</mat-label> <input matInput [matDatepicker]="picker"
+                                formControlName="completed_date"> <mat-datepicker-toggle matSuffix
+                                [for]="picker"></mat-datepicker-toggle> <mat-datepicker #picker
+                                xPosition="end"></mat-datepicker> </mat-form-field> </div>
+                </div>
+
+                <div class="bg-card rounded-2xl md:shadow overflow-hidden px-4 md:px-6 pt-6 pb-8 mb-4"
+                    *ngIf="selectedVehicle">
+                    <h3 class="text-2xl font-bold mb-4">ข้อมูลรถ</h3>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                        <!-- ข้อมูลรถ: กินพื้นที่ 3 คอลัมน์ -->
+                        <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">รหัสสินค้า</span>
+                                <span class="font-medium">{{selectedVehicle.code || '-'}}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">ชื่อรถ</span>
+                                <span class="font-medium">{{selectedVehicle.name || '-'}}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">ยี่ห้อ</span>
+                                <span class="font-medium">{{selectedVehicle.brand?.name || '-'}}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">รุ่น</span>
+                                <span class="font-medium">{{selectedVehicle.brand_model?.name || '-'}}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">ทะเบียนรถ</span>
+                                <span class="font-medium">{{selectedVehicle.license_plate || '-'}}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">เลขตัวถัง</span>
+                                <span class="font-medium">{{selectedVehicle.tank_no || '-'}}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">เลขเครื่องยนต์</span>
+                                <span class="font-medium">{{selectedVehicle.engine_no || '-'}}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">ปีรถ</span>
+                                <span class="font-medium">{{selectedVehicle.year || '-'}}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">สี</span>
+                                <span class="font-medium">{{selectedVehicle.color?.name || '-'}}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">ภาษีหมดอายุ</span>
+                                <span class="font-medium">
+                                    {{ selectedVehicle.tax_expire ? (selectedVehicle.tax_expire | date:'dd/MM/yyyy') :
+                                    '-' }}
+                                </span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">ราคาขาย</span>
+                                <span class="font-medium">{{ selectedVehicle.sale_price != null ?
+                                    (selectedVehicle.sale_price
+                                    | number) : '-' }}
+                                </span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">ไมล์</span>
+                                <span class="font-medium">{{selectedVehicle.mile || '-'}}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">เกียร์</span>
+                                <span class="font-medium">{{selectedVehicle.gear || '-'}}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">วันหมดภาษี</span>
+                                <span class="font-medium">
+                                    {{ selectedVehicle.tax_expire ? (selectedVehicle.tax_expire | date:'dd/MM/yyyy') :
+                                    '-' }}
+                                </span>
+                            </div>
+                            <div class="flex flex-col md:col-span-2 lg:col-span-3">
+                                <span class="text-lg text-gray-500">รายละเอียด</span>
+                                <span class="font-medium">{{selectedVehicle.detail || '-'}}</span>
+                            </div>
+                        </div>
+
+                        <!-- คอลัมน์รูปภาพ (แยกฝั่งขวา) -->
+                        <div class="flex justify-center items-start">
+                            <div class="w-full h-auto flex items-center justify-center">
+                                <img [src]="converImage(selectedVehicle?.image)" (error)="onImageError($event)"
+                                    alt="รูปภาพ" class="w-full h-full object-cover rounded-lg" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="md:flex mb-6 gap-2">
+                    <div class="md:w-full mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>หมายเหตุ</mat-label>
+                            <!-- <input matInput formControlName="remark" placeholder="หมายเหตุ"> -->
+                            <textarea matInput formControlName="remark" rows="3" placeholder="หมายเหตุ"></textarea>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <!-- Image Upload Section ต่อเนื่อง -->
+                <div class="md:flex mb-6">
+                    <div class="md:min-w-full mb-6 md:mb-0"> <!-- แสดงภาพเดิม (ถ้ามี) -->
+                        <div class="mb-3" *ngIf="existingImages && existingImages.length > 0">
+                            <div class="flex flex-wrap gap-2">
+                                <div *ngFor="let img of existingImages" class="relative border rounded-lg p-1"> <img
+                                        [src]="getImageUrl(img.image)" alt="รูปภาพงาน"
+                                        class="h-24 w-24 object-cover rounded"> <button mat-icon-button color="warn"
+                                        class="absolute -top-2 -right-2 bg-white rounded-full shadow-md"
+                                        (click)="onRemoveExistingImage(img)"> <mat-icon
+                                            svgIcon="heroicons_outline:x-mark" class="text-red-500"></mat-icon>
+                                    </button> </div>
+                            </div>
+                        </div> <!-- อัปโหลดภาพใหม่ -->
+                        <div class="flex flex-wrap justify-start"> <ngx-dropzone
+                                style="width: 100%; height: 150px; justify-content: center;"
+                                (change)="onSelect($event)"> <ngx-dropzone-label>อัปโหลดรูปภาพใหม่</ngx-dropzone-label>
+                                <ngx-dropzone-image-preview *ngFor="let f of files" [removable]="true" [file]="f"
+                                    (removed)="onRemove(f)"> </ngx-dropzone-image-preview> </ngx-dropzone> </div>
+                    </div>
+                </div>
+                <!-- Master Section -->
+                <div class="md:flex mb-6 gap-2">
+                    <div class="md:w-full mb-6 md:mb-0">
+                        <app-autocomplete-dropdown [placeholder]="'เลือกชุดมาตราฐาน'" [searchFields]="['master_name']"
+                            [datasource]="masters" [displayField]="'master_name'" [valueField]="'id'"
+                            [control]="masterControl" (selectionChange)="onSelectMaseter($event)">
+                        </app-autocomplete-dropdown>
+                    </div>
+                </div>
+                <div class="md:flex mb-6 gap-2">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div class="flex items-center">
+                            <mat-checkbox [formControlName]="'master'" class="mr-2">
+                                ตั้งค่าเป็นมาตราฐาน
+                            </mat-checkbox>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:flex mb-6 gap-2" *ngIf="formData.get('master').value">
+                    <div class="md:w-full mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>ชื่อมาตราฐาน</mat-label>
+                            <input matInput formControlName="master_name" placeholder="ชื่อมาตราฐาน">
+                        </mat-form-field>
+                    </div>
+                </div>
+                <!-- Work Steps Section -->
+                <div class="mb-6 w-full">
+                    <div class="my-2 w-full">
+                        <div
+                            class="text-xl md:text-xl font-bold tracking-tight leading-7 sm:leading-10 truncate text-gray-500">
+                            ขั้นตอนการทำงาน </div> <!-- Work Steps List -->
+                        <div *ngFor="let step of steps; let stepIndex = index" class="border rounded-lg p-4 mb-4">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-semibold">ขั้นตอนที่ {{step.step_no}}</h3> <button
+                                    mat-icon-button color="warn" (click)="removeStep(stepIndex)"> <mat-icon
+                                        svgIcon="heroicons_outline:trash"></mat-icon> </button>
+                            </div>
+                            <div class="mb-4"> <mat-form-field [ngClass]="formFieldHelpers" class="w-full md:w-[220px]">
+                                    <mat-label>วันที่ดำเนินการเสร็จสำหรับขั้นตอนที่ {{step.step_no}}</mat-label> <input
+                                        matInput [matDatepicker]="stepDatePicker" [(ngModel)]="step.completed_date"
+                                        [ngModelOptions]="{standalone: true}"> <mat-datepicker-toggle matSuffix
+                                        [for]="stepDatePicker"></mat-datepicker-toggle> <mat-datepicker #stepDatePicker
+                                        xPosition="end"></mat-datepicker> </mat-form-field> </div>
+                            <!-- Work Types within step -->
+                            <div *ngFor="let workType of step.work_types; let workTypeIndex = index"
+                                class="border-l-4 border-[#bb9149] pl-4 mb-4">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="md:w-1/2 w-full"> <mat-form-field [ngClass]="formFieldHelpers"
+                                            class="w-full"> <mat-label>ประเภทงาน</mat-label> <mat-select
+                                                [(ngModel)]="step.work_types[workTypeIndex].work_type_id"
+                                                [ngModelOptions]="{standalone: true}"
+                                                (selectionChange)="onWorkTypeChange(step, workType)"> <mat-option
+                                                    *ngFor="let item of workTypeList" [value]="item.id"> {{item.name}}
+                                                </mat-option> </mat-select> </mat-form-field> </div> <button
+                                        mat-icon-button color="warn" (click)="removeWorkType(step, workTypeIndex)">
+                                        <mat-icon svgIcon="heroicons_outline:x-mark"></mat-icon> </button>
+                                </div> <!-- Product Attributes (อะไหล่) Section -->
+                                <div class="p-2 md:p-4 rounded mb-3 border" *ngIf="workType.work_type_id">
+                                    <h4 class="font-semibold mb-2">อะไหล่</h4>
+                                    <div class="overflow-x-auto shadow-sm border mb-3"
+                                        *ngIf="workType.product_attributes && workType.product_attributes.length > 0">
+                                        <table class="w-full text-sm">
+                                            <thead class="bg-gray-100">
+                                                <tr>
+                                                    <th class="px-4 py-2 text-left">ประเภท</th>
+                                                    <th class="px-4 py-2 text-left">รายการอะไหล่</th>
+                                                    <th class="px-4 py-2 text-center">จำนวน</th>
+                                                    <th class="px-4 py-2 text-center">ราคา</th>
+                                                    <th class="px-4 py-2 text-center">จัดการ</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let part of workType.product_attributes; let partIndex = index"
+                                                    class="border-b">
+                                                    <td class="px-4 py-2">{{getDepositTypeName(part.deposit_type)}}
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        {{getProductAttributeName(part.product_attribute_id)}}</td>
+                                                    <td class="px-4 py-2 text-center">{{part.product_attribute_qty}}
+                                                    </td>
+                                                    <td class="px-4 py-2 text-center">{{part.amount | number}}</td>
+                                                    <td class="px-4 py-2 text-center"> <button mat-icon-button
+                                                            color="warn"
+                                                            (click)="removeProductAttribute(workType, partIndex)">
+                                                            <mat-icon svgIcon="heroicons_outline:trash"
+                                                                class="icon-size-5 text-red-500"></mat-icon> </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div *ngIf="!workType.product_attributes || workType.product_attributes.length === 0"
+                                        class="text-center py-2 text-gray-500"> ไม่มีรายการอะไหล่ </div>
+                                    <!-- Add Part Form -->
+                                    <div class="md:flex mt-2 items-center w-full gap-2">
+                                        <div class="w-full md:w-1/5 mb-2 md:mb-0"> <mat-form-field
+                                                [ngClass]="formFieldHelpers" class="w-full">
+                                                <mat-label>ประเภท</mat-label> <mat-select
+                                                    [(ngModel)]="newPart.deposit_type"
+                                                    [ngModelOptions]="{standalone: true}"> <mat-option
+                                                        *ngFor="let type of depositTypes" [value]="type.value">
+                                                        {{type.label}} </mat-option> </mat-select> </mat-form-field>
+                                        </div>
+                                        <div class="md:w-full mb-2 md:mb-0"> <mat-form-field
+                                                [ngClass]="formFieldHelpers" class="w-full">
+                                                <mat-label>เลือกอะไหล่</mat-label> <input matInput
+                                                    [formControl]="partsFilter" [matAutocomplete]="partsAutoComplete" />
+                                                <mat-autocomplete #partsAutoComplete="matAutocomplete"
+                                                    (optionSelected)="onSelectparts($event.option.value)"> <mat-option
+                                                        *ngFor="let item of filterparts | async" [value]="item">
+                                                        {{item.name}}
+                                                    </mat-option> </mat-autocomplete>
+                                            </mat-form-field> </div>
+                                        <!-- <div class="w-full mb-2 md:mb-0"> <mat-form-field [ngClass]="formFieldHelpers"
+                                                class="w-full"> <mat-label>เลือกอะไหล่</mat-label> <mat-select
+                                                    [(ngModel)]="newPart.product_attribute_id"
+                                                    [ngModelOptions]="{standalone: true}"
+                                                    (selectionChange)="onProductAttributeChange($event)"> <mat-option
+                                                        *ngFor="let item of productAttributes" [value]="item.id">
+                                                        {{item.name}} </mat-option> </mat-select> </mat-form-field>
+                                        </div> -->
+                                        <div class="w-full md:w-1/5 mb-2 md:mb-0"> <mat-form-field
+                                                [ngClass]="formFieldHelpers" class="w-full">
+                                                <mat-label>จำนวน</mat-label> <input matInput type="number" min="1"
+                                                    [(ngModel)]="newPart.product_attribute_qty"
+                                                    [ngModelOptions]="{standalone: true}"
+                                                    (input)="onQuantityChange($event)"> </mat-form-field> </div>
+                                        <div class="w-full md:w-1/5 mb-2 md:mb-0"> <mat-form-field
+                                                [ngClass]="formFieldHelpers" class="w-full"> <mat-label>ราคา</mat-label>
+                                                <input matInput type="number" min="0" [(ngModel)]="newPart.amount"
+                                                    [ngModelOptions]="{standalone: true}"> </mat-form-field> </div>
+                                        <div class="mb-2 md:mb-0"> <button mat-flat-button color="primary"
+                                                [disabled]="!newPart.product_attribute_id || newPart.product_attribute_qty < 1 || newPart.amount < 0"
+                                                (click)="addProductAttribute(workType)"> เพิ่มอะไหล่ </button> </div>
+                                    </div> <!-- Custom Product Attributes Section -->
+                                    <div class="mt-6">
+                                        <h4 class="font-semibold mb-2">อะไหล่อื่นๆ</h4>
+                                        <div class="overflow-x-auto shadow-sm border mb-3"
+                                            *ngIf="workType.product_attribute_others && workType.product_attribute_others.length > 0">
+                                            <table class="w-full text-sm">
+                                                <thead class="bg-gray-100">
+                                                    <tr>
+                                                        <th class="px-4 py-2 text-left">ประเภท</th>
+                                                        <th class="px-4 py-2 text-left">ชื่ออะไหล่</th>
+                                                        <th class="px-4 py-2 text-left">รายละเอียด</th>
+                                                        <th class="px-4 py-2 text-center">จำนวน</th>
+                                                        <th class="px-4 py-2 text-center">ราคา</th>
+                                                        <th class="px-4 py-2 text-center">จัดการ</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let part of workType.product_attribute_others; let partIndex = index"
+                                                        class="border-b">
+                                                        <td class="px-4 py-2"> {{getDepositTypeName(part.deposit_type)}}
+                                                        </td>
+                                                        <td class="px-4 py-2">{{part.name}}</td>
+                                                        <td class="px-4 py-2">{{part.detail}}</td>
+                                                        <td class="px-4 py-2 text-center">{{part.qty | number}}</td>
+                                                        <td class="px-4 py-2 text-center">{{part.amount | number}} </td>
+                                                        <td class="px-4 py-2 text-center"> <button mat-icon-button
+                                                                color="warn"
+                                                                (click)="removeCustomProductAttribute(workType, partIndex)">
+                                                                <mat-icon svgIcon="heroicons_outline:trash"
+                                                                    class="icon-size-5 text-red-500"></mat-icon>
+                                                            </button> </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div *ngIf="!workType.product_attribute_others || workType.product_attribute_others.length === 0"
+                                            class="text-center py-2 text-gray-500"> ไม่มีรายการอะไหล่อื่นๆ </div>
+                                        <!-- Add Custom Part Form -->
+                                        <div class="flex flex-col mt-2 items-center w-full gap-2">
+                                            <div class="w-full flex flex-col md:flex-row items-center gap-2">
+                                                <div class="w-full md:w-1/5 mb-2 md:mb-0"> <mat-form-field
+                                                        [ngClass]="formFieldHelpers" class="w-full">
+                                                        <mat-label>ประเภท</mat-label> <mat-select
+                                                            [(ngModel)]="newCustomPart.deposit_type"
+                                                            [ngModelOptions]="{standalone: true}"> <mat-option
+                                                                *ngFor="let type of depositTypes" [value]="type.value">
+                                                                {{type.label}} </mat-option> </mat-select>
+                                                    </mat-form-field> </div>
+                                                <div class="w-full mb-2 md:mb-0"> <mat-form-field
+                                                        [ngClass]="formFieldHelpers" class="w-full">
+                                                        <mat-label>ชื่ออะไหล่</mat-label> <input matInput
+                                                            [(ngModel)]="newCustomPart.name"
+                                                            [ngModelOptions]="{standalone: true}"> </mat-form-field>
+                                                </div>
+                                                <div class="w-full md:w-1/5 mb-2 md:mb-0"> <mat-form-field
+                                                        [ngClass]="formFieldHelpers" class="w-full">
+                                                        <mat-label>จำนวน</mat-label> <input matInput type="number"
+                                                            min="0" [(ngModel)]="newCustomPart.qty"
+                                                            [ngModelOptions]="{standalone: true}"> </mat-form-field>
+                                                </div>
+                                                <div class="w-full md:w-1/5 mb-2 md:mb-0"> <mat-form-field
+                                                        [ngClass]="formFieldHelpers" class="w-full">
+                                                        <mat-label>ราคา</mat-label> <input matInput type="number"
+                                                            min="0" [(ngModel)]="newCustomPart.amount"
+                                                            [ngModelOptions]="{standalone: true}"> </mat-form-field>
+                                                </div>
+                                            </div>
+                                            <div class="w-full flex flex-col md:flex-row items-center gap-2">
+                                                <div class="w-full mb-2 md:mb-0"> <mat-form-field
+                                                        [ngClass]="formFieldHelpers" class="w-full">
+                                                        <mat-label>รายละเอียด</mat-label> <input matInput
+                                                            [(ngModel)]="newCustomPart.detail"
+                                                            [ngModelOptions]="{standalone: true}"> </mat-form-field>
+                                                </div>
+                                                <div class="mb-2 md:mb-0"> <button mat-flat-button color="primary"
+                                                        [disabled]="!newCustomPart.name || newCustomPart.amount < 0"
+                                                        (click)="addCustomProductAttribute(workType)"> เพิ่มอะไหล่
+                                                    </button> </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> <!-- Services (บริการ) Section -->
+                                <div class="p-2 md:p-4 rounded mb-3 border mt-4" *ngIf="workType.work_type_id">
+                                    <h4 class="font-medium mb-2">บริการ</h4>
+                                    <div class="overflow-x-auto shadow-sm border mb-3"
+                                        *ngIf="workType.expenses && workType.expenses.length > 0">
+                                        <table class="w-full text-sm">
+                                            <thead class="bg-gray-100">
+                                                <tr>
+                                                    <th class="px-4 py-2 text-left">รายการบริการ</th>
+                                                    <th class="px-4 py-2 text-center">ราคา</th>
+                                                    <th class="px-4 py-2 text-center">จัดการ</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let expense of workType.expenses; let expenseIndex = index"
+                                                    class="border-b">
+                                                    <td class="px-4 py-2">
+                                                        {{getExpenseTypeName(expense.expense_type_id)}} </td>
+                                                    <td class="px-4 py-2 text-center">{{expense.amount | number}} </td>
+                                                    <td class="px-4 py-2 text-center"> <button mat-icon-button
+                                                            color="warn"
+                                                            (click)="removeExpense(workType, expenseIndex)"> <mat-icon
+                                                                svgIcon="heroicons_outline:trash"
+                                                                class="icon-size-5 text-red-500"></mat-icon> </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div *ngIf="!workType.expenses || workType.expenses.length === 0"
+                                        class="text-center py-2 text-gray-500"> ไม่มีรายการบริการ </div>
+                                    <!-- Add Service Form -->
+                                    <div class="md:flex mt-2 items-center w-full gap-2">
+                                        <div class="w-full mb-2 md:mb-0"> <mat-form-field [ngClass]="formFieldHelpers"
+                                                class="w-full"> <mat-label>เลือกบริการ</mat-label> <mat-select
+                                                    [(ngModel)]="newExpense.expense_type_id"
+                                                    [ngModelOptions]="{standalone: true}"> <mat-option
+                                                        *ngFor="let item of expenseType" [value]="item.id">
+                                                        {{item.name}} </mat-option> </mat-select> </mat-form-field>
+                                        </div>
+                                        <div class="w-full mb-2 md:mb-0"> <mat-form-field [ngClass]="formFieldHelpers"
+                                                class="w-full"> <mat-label>ราคา</mat-label> <input matInput
+                                                    type="number" min="0" [(ngModel)]="newExpense.amount"
+                                                    [ngModelOptions]="{standalone: true}"> </mat-form-field> </div>
+                                        <div class="mb-2 md:mb-0"> <button mat-flat-button color="primary"
+                                                [disabled]="!newExpense.expense_type_id || newExpense.amount < 0"
+                                                (click)="addExpense(workType)"> เพิ่มบริการ </button> </div>
+                                    </div>
+                                </div>
+                            </div> <!-- Add Work Type Button --> <button mat-stroked-button color="primary" class="my-2"
+                                (click)="addWorkType(step)"> <mat-icon svgIcon="heroicons_outline:plus"></mat-icon>
+                                เพิ่มประเภทงาน </button>
+                        </div> <!-- Add Step Button --> <button mat-flat-button color="accent" class="my-3 w-full"
+                            (click)="addStep()"> <mat-icon svgIcon="heroicons_outline:plus"></mat-icon> เพิ่มขั้นตอน
+                        </button>
+                    </div>
+                </div> <!-- Other Expenses Section -->
+                <div class="mb-6 w-full">
+                    <div class="my-2 w-full"> <span
+                            class="text-xl md:text-xl font-bold tracking-tight leading-7 sm:leading-10 truncate text-gray-500">
+                            ค่าใช้จ่ายอื่นๆ </span> <!-- Other Expenses List -->
+                        <div class="relative overflow-x-auto shadow-md m-0 border-2 mb-4">
+                            <table class="w-full text-md text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                <thead
+                                    class="text-md text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3">รายการค่าใช้จ่าย</th>
+                                        <th scope="col" class="px-6 py-3 text-center">จำนวนเงิน</th>
+                                        <th scope="col" class="px-6 py-3 text-center">จัดการ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                                        *ngFor="let expense of otherExpenses; let i = index">
+                                        <td class="px-6 py-3">{{expense.name}}</td>
+                                        <td class="px-6 py-3 text-center">{{expense.amount | number}}</td>
+                                        <td class="px-6 py-3 text-center"> <button class="cursor-pointer"
+                                                (click)="removeOtherExpense(i)"> <mat-icon
+                                                    svgIcon="heroicons_outline:trash"
+                                                    class="icon-size-5 text-red-500"></mat-icon> </button> </td>
+                                    </tr>
+                                    <tr *ngIf="otherExpenses.length === 0">
+                                        <td colspan="3" class="px-6 py-3 text-center"> ไม่มีรายการค่าใช้จ่ายอื่นๆ </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div> <!-- Add Other Expense Form -->
+                        <div class="md:flex mb-6 gap-2">
+                            <div class="w-full mb-6 md:mb-0"> <mat-form-field [ngClass]="formFieldHelpers"
+                                    class="w-full"> <mat-label>รายการค่าใช้จ่าย</mat-label> <input matInput
+                                        [(ngModel)]="newOtherExpense.name" [ngModelOptions]="{standalone: true}"
+                                        placeholder="รายการค่าใช้จ่าย"> </mat-form-field> </div>
+                            <div class="w-full mb-6 md:mb-0"> <mat-form-field [ngClass]="formFieldHelpers"
+                                    class="w-full"> <mat-label>จำนวนเงิน</mat-label> <input matInput type="number"
+                                        [(ngModel)]="newOtherExpense.amount" [ngModelOptions]="{standalone: true}"
+                                        placeholder="ระบุจำนวนเงิน"> </mat-form-field> </div>
+                            <div class="flex items-center justify-center"> <button mat-flat-button [color]="'primary'"
+                                    [disabled]="!newOtherExpense.name || !newOtherExpense.amount"
+                                    (click)="addOtherExpense()"> เพิ่ม </button> </div>
+                        </div>
+                    </div>
+                </div> <!-- Action Buttons -->
+                <div class="flex flex-row mt-2 justify-end">
+                    <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                        <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="save()"> บันทึก </button>
+                        <button class="px-6 ml-3" mat-flat-button [color]="'warn'" (click)="backTo()"> ยกเลิก </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,151 @@
+<!-- เทมเพลตรายงานตาราง -->
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- แถบโหลด -->
+    <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+    </div>
+    <!-- หัวเรื่อง -->
+    <div
+        class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 min-w-0">
+            <div class="flex flex-row mt-2 justify-between">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    รายงานรายรับ - รายจ่าย แบบรายวัน
+                </h2>
+                <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    <div class="flex flex-col md:flex-row gap-1 md:gap-4 items-center mt-4">
+                        <button class="px-6" mat-flat-button [color]="'primary'" (click)="search()">
+                            <mat-icon svgIcon="heroicons_outline:magnifying-glass"></mat-icon>
+                            &nbsp; ค้นหา
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ตัวกรองวันที่ -->
+    <div class="flex flex-col sm:flex-row p-6 sm:py-4 sm:px-10 bg-card dark:bg-transparent">
+        <div class="flex flex-col md:flex-row gap-4 w-full" [formGroup]="dateFilterForm">
+            <mat-form-field [ngClass]="formFieldHelpers" class="w-full md:max-w-[200px]">
+                <mat-label>วันที่</mat-label>
+                <input matInput [matDatepicker]="pickerDate" formControlName="startDate" />
+                <mat-datepicker-toggle matSuffix [for]="pickerDate"></mat-datepicker-toggle>
+                <mat-datepicker #pickerDate></mat-datepicker>
+            </mat-form-field>
+        </div>
+    </div>
+    <!-- เนื้อหารายงาน -->
+    <div class="p-6 sm:py-6 sm:px-10 overflow-auto">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
+            <!-- หัวตาราง -->
+            <div class="p-6 text-center border-b">
+                <h2 class="text-2xl font-bold">รายงานรายรับ - รายจ่าย ประจำวัน</h2>
+                <p class="mt-2">วันที่: {{ this.dateFilterForm.get('startDate').value | date:'dd-MM-yyyy' }}</p>
+            </div> <!-- ตารางรายงาน -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100 dark:bg-gray-700">
+                            <th class="py-3 px-4 text-left border">ลำดับ</th>
+                            <th class="py-3 px-4 text-left border">รายการ</th>
+                            <th class="py-3 px-4 text-left border">ประเภท</th>
+                            <th class="py-3 px-4 text-left border">หมวดหมู่</th>
+                            <th class="py-3 px-4 text-left border">รายละเอียด</th>
+                            <th class="py-3 px-4 text-left border">ประเภทเงิน</th>
+                            <th class="py-3 px-4 text-right border">รายรับ (บาท)</th>
+                            <th class="py-3 px-4 text-right border">รายจ่าย (บาท)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of reportData; let i = index" class="border-b">
+                            <td class="py-3 px-4 border">{{ i + 1 }}</td>
+                            <td class="py-3 px-4 border">{{ item.name }}</td>
+                            <td class="py-3 px-4 border">
+                                <span
+                                    [ngClass]="item.type.type === 'expense' ? 'text-red-600 font-semibold' : 'text-green-600 font-semibold'">
+                                    {{ item.type.type === 'expense' ? 'รายจ่าย' : item.type.type === 'income' ? 'รายรับ'
+                                    :
+                                    '-' }}
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 border">{{ item.type.name }}</td>
+                            <td class="py-3 px-4 border">{{ item.type.detail }}</td>
+                            <td class="py-3 px-4 border">
+                                {{ item.payment_type === 'cash' ? 'เงินสด' : item.payment_type === 'transfer' ?
+                                'เงินโอน' : item.payment_type === 'credit' ? 'เงินเครดิต' : '-' }}
+                            </td>
+                            <td class="py-3 px-4 text-right border">
+                                {{ item.type?.type === 'income' ? (item.amount | number : '1.2-2') : '-' }}
+                            </td>
+                            <td class="py-3 px-4 text-right border">
+                                {{ item.type?.type === 'expense' ? (item.amount | number : '1.2-2') : '-' }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- สรุปรายงาน -->
+            <div class="p-6 border-t">
+                <h3 class="text-xl font-bold mb-4">สรุปผล</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- รายรับ -->
+                    <div class="border p-4 rounded">
+                        <div class="flex justify-between mb-1 text-lg">
+                            <span class="font-medium">รายรับรวม</span>
+                            <span class="font-bold">{{ totalIncome | number }} บาท</span>
+                        </div>
+                        <ul class="text-lg text-gray-600 mt-2 space-y-1">
+                            <li class="flex justify-between">
+                                <span>- เงินสด</span>
+                                <span>{{ incomeCash | number }} บาท</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span>- เงินโอน</span>
+                                <span>{{ incomeTransfer | number }} บาท</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span>- เครดิต</span>
+                                <span>{{ incomeCredit | number }} บาท</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- รายจ่าย -->
+                    <div class="border p-4 rounded">
+                        <div class="flex justify-between mb-1 text-lg">
+                            <span class="font-medium">รายจ่ายรวม</span>
+                            <span class="font-bold">{{ totalExpense | number }} บาท</span>
+                        </div>
+                        <ul class="text-lg text-gray-600 mt-2 space-y-1">
+                            <li class="flex justify-between">
+                                <span>- เงินสด</span>
+                                <span>{{ expenseCash | number }} บาท</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span>- เงินโอน</span>
+                                <span>{{ expenseTransfer | number }} บาท</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span>- เครดิต</span>
+                                <span>{{ expenseCredit | number }} บาท</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- กำไร/ขาดทุนสุทธิ -->
+                    <div class="border p-4 rounded text-lg"
+                        [ngClass]="{'bg-green-100': netProfit > 0, 'bg-red-100': netProfit < 0}">
+                        <div class="flex justify-between">
+                            <span class="font-medium font-xl">กำไร / ขาดทุน สุทธิ</span>
+                            <span class="font-bold"
+                                [ngClass]="{'text-green-600': netProfit > 0, 'text-red-600': netProfit < 0}">
+                                {{ netProfit > 0 ? '+' : '' }}{{ netProfit | number }} บาท
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

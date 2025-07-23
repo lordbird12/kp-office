@@ -1,0 +1,480 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <div
+        class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 flemin-w-0">
+            <!-- Title -->
+            <div class="flex flex-row mt-2 justify-between">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate"
+                    *ngIf="!this.Id">
+                    เพิ่มข้อมูล
+                </h2>
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate"
+                    *ngIf="this.Id">
+                    แก้ไขข้อมูล
+                </h2>
+            </div>
+        </div>
+    </div>
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+        <div class="grid gap-4 w-full sm:grid-cols-1 md:grid-cols-2">
+            <div class="bg-card rounded-2xl md:shadow overflow-hidden px-8 pt-6 pb-8 mb-4 flex flex-col my-2 col-span-2"
+                [formGroup]="formData">
+                <span
+                    class="text-xl md:text-xl font-bold tracking-tight leading-7 sm:leading-10 truncate text-gray-500">
+                    ข้อมูลรถยนต์
+                </span>
+                <div>
+                    <div class="-mx-3 md:flex mb-6">
+                        <div class="md:min-w-full px-3 mb-6 md:mb-0">
+                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                                <mat-label>เลขที่(no)</mat-label>
+                                <input matInput [formControlName]="'pr_no'" [placeholder]="'no'">
+                                <!-- <mat-hint>This is a hint text</mat-hint> -->
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="-mx-3 md:flex mb-6">
+                        <div class="md:w-full px-3 mb-6 md:mb-0">
+                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                                <mat-label>หมวดหมู่สินค้าหลัก</mat-label>
+                                <mat-select [formControlName]="'category_product_id'">
+                                    <mat-option [value]="''">
+                                        <span>เลือกหมวดหมู่สินค้า</span>
+                                    </mat-option>
+                                    <mat-option *ngFor="let item of item1Data" [value]="item.id">
+                                        {{item.name}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="-mx-3 md:flex mb-6">
+                        <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                                <mat-label>ผู้จำหน่าย</mat-label>
+                                <mat-select [formControlName]="'supplier_id'">
+                                    <mat-option [value]="''">
+                                        <span>เลือกผู้จำหน่าย</span>
+                                    </mat-option>
+                                    <mat-option *ngFor="let item of itemSupplier" [value]="item.id">
+                                        {{item.name}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="md:w-1/2 px-3">
+                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                                <mat-label>ประเภทรถ</mat-label>
+                                <mat-select [formControlName]="'type'">
+                                    <mat-option [value]="''">
+                                        <span>เลือกประเภทรถ</span>
+                                    </mat-option>
+                                    <mat-option value="First">มือหนึ่ง</mat-option>
+                                    <mat-option value="Secound">มือสอง</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="-mx-3 md:flex mb-6">
+                        <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                                <mat-label>บริษัท</mat-label>
+                                <mat-select [formControlName]="'companie_id'"
+                                    (selectionChange)="somethingCompanie($event)">
+                                    <mat-option [value]="''">
+                                        <span>เลือกบริษัท</span>
+                                    </mat-option>
+                                    <mat-option *ngFor="let item of companie" [value]="item.id">
+                                        {{item.name}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="md:w-1/2 px-3">
+                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                                <mat-label>สาขา</mat-label>
+                                <mat-select [formControlName]="'area_id'">
+                                    <mat-option [value]="''">
+                                        <span>เลือกสาขา</span>
+                                    </mat-option>
+                                    <mat-option *ngFor="let item of areas" [value]="item.id">
+                                        {{item.name}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="-mx-3 md:flex mb-6">
+                        <div class="md:min-w-full px-3 mb-6 md:mb-0">
+                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                                <mat-label>ชื่อสินค้า</mat-label>
+                                <input matInput [formControlName]="'name'" [placeholder]="'ชื่อสินค้า'">
+                                <!-- <mat-hint>This is a hint text</mat-hint> -->
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="-mx-3 md:flex mb-6">
+                        <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                                <mat-label>ราคาทุน</mat-label>
+                                <input matInput [placeholder]="'ต้นทุน'" [formControlName]="'cost'" type="number">
+                                <!-- <mat-hint>This is a hint text</mat-hint> -->
+                            </mat-form-field>
+                        </div>
+                        <div class="md:w-1/2 px-3">
+                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                                <mat-label>ราคาขาย</mat-label>
+                                <input matInput [placeholder]="'ราคาขาย'" [formControlName]="'sale_price'"
+                                    type="number">
+                                <!-- <mat-hint>This is a hint text</mat-hint> -->
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <!-- <div class="-mx-3 md:flex mb-6">
+                        <div class="md:w-full px-3 mb-6 md:mb-0">
+                            <mat-label class="font-bold">สถานะ VAT</mat-label>
+                            <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group"
+                                formControlName="vat_status">
+                                <mat-radio-button class="example-radio-button" *ngFor="let item of status"
+                                    [color]="'primary'" [value]="item.id">
+                                    {{item.name}}
+                                </mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                    </div> -->
+                    <div class="-mx-3 md:flex mb-6" *ngIf="this.formData.value.type === 'Secound'">
+                        <div class="md:w-full px-3 mb-6 md:mb-0">
+                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                                <mat-label>เลขไมล์</mat-label>
+                                <input matInput [placeholder]="'เลขไมล์'" [formControlName]="'mile'" type="number">
+                                <!-- <mat-hint>This is a hint text</mat-hint> -->
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="-mx-3 md:flex mb-2">
+                        <div class="md:min-w-full px-3 mb-6 md:mb-0">
+                            <mat-form-field class="w-full">
+                                <mat-label>รายละเอียด</mat-label>
+                                <textarea matInput [placeholder]="'กรอกข้อมูลที่อยู่'" [formControlName]="'detail'"
+                                    [rows]="6"></textarea>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <div class="my-2">
+                    <span
+                        class="text-xl md:text-xl font-bold tracking-tight leading-7 sm:leading-10 truncate text-gray-500">
+                        ค่าใช้จ่ายเพิ่มเติม
+                    </span>
+
+                    <!-- Other Cost List -->
+                    <div class="relative overflow-x-auto shadow-md m-0 border-2 mb-4">
+                        <table class="w-full text-md text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                            <thead
+                                class="text-md text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 w-3/6">
+                                        รายการค่าใช้จ่าย
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 w-2/6 text-center">
+                                        จำนวนเงิน
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 w-1/6 text-center">
+                                        จัดการ
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                                    *ngFor="let cost of otherCosts; let i = index">
+                                    <td class="px-6 py-3">
+                                        {{cost.name}}
+                                    </td>
+                                    <td class="px-6 py-3 text-center">
+                                        {{cost.cost | number}}
+                                    </td>
+                                    <td class="px-6 py-3 text-center">
+                                        <button class="cursor-pointer" (click)="removeCost(i)">
+                                            <mat-icon svgIcon="heroicons_outline:trash"
+                                                class="icon-size-5 text-red-500"></mat-icon>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="otherCosts.length === 0">
+                                    <td colspan="3" class="px-6 py-3 text-center">
+                                        ไม่มีรายการค่าใช้จ่ายเพิ่มเติม
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Add Other Cost Form -->
+                    <div class="-mx-3 md:flex mb-6">
+                        <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                                <mat-label>รายการค่าใช้จ่าย</mat-label>
+                                <input matInput [(ngModel)]="newCostItem.name" [ngModelOptions]="{standalone: true}"
+                                    placeholder="เช่น ค่าแรง, ค่าอะไหล่">
+                            </mat-form-field>
+                        </div>
+                        <div class="md:w-1/3 px-3">
+                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                                <mat-label>จำนวนเงิน</mat-label>
+                                <input matInput type="number" [(ngModel)]="newCostItem.cost"
+                                    [ngModelOptions]="{standalone: true}" placeholder="ระบุจำนวนเงิน">
+                            </mat-form-field>
+                        </div>
+                        <div class="md:w-1/6 px-3 flex items-center">
+                            <button mat-flat-button [color]="'primary'"
+                                [disabled]="!newCostItem.name || !newCostItem.cost" (click)="addCost()">
+                                เพิ่ม
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form
+                class="bg-card rounded-2xl md:shadow overflow-hidden px-8 pt-6 pb-8 mb-4 flex flex-col my-2 col-span-2"
+                [formGroup]="formData"> <span
+                    class="text-xl md:text-xl font-bold tracking-tight leading-7 sm:leading-10 truncate text-gray-500">
+                    คุณลักษณะ
+                </span>
+                <div class="-mx-3 md:flex mb-6">
+                    <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>เลขถัง</mat-label>
+                            <input matInput [placeholder]="'เลขถัง'" [formControlName]="'tank_no'">
+                            <!-- <mat-hint>This is a hint text</mat-hint> -->
+                        </mat-form-field>
+                    </div>
+                    <div class="md:w-1/2 px-3">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>เลขเครื่อง</mat-label>
+                            <input matInput [placeholder]="'เลขเครื่อง'" [formControlName]="'engine_no'">
+                            <!-- <mat-hint>This is a hint text</mat-hint> -->
+                        </mat-form-field>
+                    </div>
+
+                </div>
+                <div class="-mx-3 md:flex mb-6">
+                    <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>เลขทะเบียนรถ</mat-label>
+                            <input matInput [placeholder]="'เลขทะเบียนรถ'" [formControlName]="'license_plate'">
+                            <!-- <mat-hint>This is a hint text</mat-hint> -->
+                        </mat-form-field>
+                    </div>
+                    <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>วันหมดภาษี</mat-label>
+                            <input matInput [matDatepicker]="start" formControlName="tax_expire">
+                            <mat-datepicker-toggle matIconSuffix [for]="start"></mat-datepicker-toggle>
+                            <mat-datepicker #start></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                    <!-- <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>จังหวัด</mat-label>
+                            <input matInput [placeholder]="'จังหวัด'" [formControlName]="'province'">
+                        </mat-form-field>
+                    </div> -->
+                </div>
+                <div class="-mx-3 md:flex mb-6">
+                    <div class="md:min-w-full px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" (selectionChange)="somethingBrandChanged($event)"
+                            class="w-full">
+                            <mat-label>ยี่ห้อ</mat-label>
+                            <mat-select [formControlName]="'brand_id'" (selectionChange)="getBrandModel($event.value)">
+                                <mat-option [value]="''">
+                                    <span>เลือกยี่ห้อ</span>
+                                </mat-option>
+                                <mat-option *ngFor="let item of itemBrand" [value]="item.id">
+                                    {{item.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="-mx-3 md:flex mb-6">
+                    <div class="md:min-w-full px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers"
+                            (selectionChange)="somethingBrandModelChanged($event)" class="w-full">
+                            <mat-label>รุ่น</mat-label>
+                            <mat-select [formControlName]="'brand_model_id'"
+                                (selectionChange)="getccAndcolor($event.value)">
+                                <mat-option [value]="''">
+                                    <span>เลือกรุ่น</span>
+                                </mat-option>
+                                <mat-option *ngFor="let item of itemBrandModel" [value]="item.id">
+                                    {{item.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="-mx-3 md:flex mb-6">
+                    <div class="md:w-1/3 px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>ปี</mat-label>
+                            <input matInput [placeholder]="'ปี'" [formControlName]="'year'" type="number">
+                            <!-- <mat-hint>This is a hint text</mat-hint> -->
+                        </mat-form-field>
+                    </div>
+                    <div class="md:min-w-1/3 px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" (selectionChange)="somethingCCChanged($event)"
+                            class="w-full">
+                            <mat-label>ซีซี</mat-label>
+                            <mat-select [formControlName]="'cc_id'">
+                                <mat-option [value]="''">
+                                    <span>เลือกซีซี</span>
+                                </mat-option>
+                                <mat-option *ngFor="let item of itemCC" [value]="item.id">
+                                    {{item.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="md:min-w-1/3 px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" (selectionChange)="somethingColorChanged($event)"
+                            class="w-full">
+                            <mat-label>สี</mat-label>
+                            <mat-select [formControlName]="'color_id'">
+                                <mat-option [value]="''">
+                                    <span>เลือกสี</span>
+                                </mat-option>
+                                <mat-option *ngFor="let item of itemColor" [value]="item.id">
+                                    {{item.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="mb-8">
+                    <!-- Header Section -->
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                                รูปรถยนต์
+                            </h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                กรุณาอัปโหลดอย่างน้อย 1 รูปภาพของรถยนต์ของคุณ (ขนาดไม่เกิน 5MB ต่อรูป)
+                            </p>
+                        </div>
+                        <input #fileInput type="file" hidden multiple accept="image/*"
+                            (change)="onFileSelect($event)" />
+                        <button mat-raised-button color="primary" (click)="fileInput.click()" class="flex items-center">
+                            <mat-icon class="mr-2">cloud_upload</mat-icon>
+                            เพิ่มรูปภาพ
+                        </button>
+                    </div>
+
+                    <!-- Upload Area -->
+                    <div *ngIf="vehicleImages.length === 0"
+                        class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                        (click)="fileInput.click()">
+                        <mat-icon class="text-gray-400 dark:text-gray-500 mb-2"
+                            style="font-size: 48px;">photo_camera</mat-icon>
+                        <p class="text-gray-500 dark:text-gray-400 mb-2">ลากและวางรูปภาพที่นี่ หรือคลิกเพื่อเลือกไฟล์
+                        </p>
+                        <p class="text-xs text-gray-400 dark:text-gray-500">รองรับไฟล์ JPG, PNG (ขนาดไม่เกิน 5MB ต่อรูป)
+                        </p>
+                    </div>
+
+                    <!-- Image Grid -->
+                    <div *ngIf="vehicleImages.length > 0" class="space-y-4">
+                        <!-- Summary Card -->
+                        <div
+                            class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4 flex items-center">
+                            <mat-icon class="text-blue-500 dark:text-blue-300 mr-3">info</mat-icon>
+                            <p class="text-sm text-blue-700 dark:text-blue-300">
+                                คุณเลือกรูปภาพ {{vehicleImages.length}} รูป
+                                <span *ngIf="vehicleImages.length < 3" class="font-medium">แนะนำให้อัปโหลดอย่างน้อย 3
+                                    รูปเพื่อให้เห็นรายละเอียดได้ชัดเจนขึ้น</span>
+                            </p>
+                        </div>
+
+                        <!-- Image Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+                            <div *ngFor="let file of vehicleImages; let i = index"
+                                class="border rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                                <!-- Image Preview -->
+                                <div class="relative aspect-video bg-gray-100 dark:bg-gray-700">
+                                    <img [src]="getImagePreview(file)" class="w-full h-full object-cover"
+                                        alt="ภาพตัวอย่างรถยนต์" />
+
+                                    <!-- Upload Status Indicator -->
+                                    <div
+                                        class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2 text-xs">
+                                        <div class="flex items-center justify-between">
+                                            <span>
+                                                <ng-container [ngSwitch]="uploadStatuses[file.name]">
+                                                    <span *ngSwitchCase="'uploading'" class="flex items-center">
+                                                        <mat-icon class="text-yellow-300 mr-1"
+                                                            style="font-size: 16px;">hourglass_top</mat-icon>
+                                                        กำลังอัปโหลด...
+                                                    </span>
+                                                    <span *ngSwitchCase="'done'" class="flex items-center">
+                                                        <mat-icon class="text-green-300 mr-1"
+                                                            style="font-size: 16px;">check_circle</mat-icon>
+                                                        อัปโหลดแล้ว
+                                                    </span>
+                                                    <span *ngSwitchCase="'queued'" class="flex items-center">
+                                                        <mat-icon class="text-blue-300 mr-1"
+                                                            style="font-size: 16px;">schedule</mat-icon>
+                                                        รออัปโหลด
+                                                    </span>
+                                                </ng-container>
+                                            </span>
+                                            <span class="text-gray-200">{{ (file.size / 1024).toFixed(0) }} KB</span>
+                                        </div>
+                                        <mat-progress-bar *ngIf="uploadStatuses[file.name] === 'uploading'"
+                                            mode="determinate" [value]="uploadProgress[file.name] || 0" color="accent"
+                                            class="mt-1"></mat-progress-bar>
+                                    </div>
+                                </div>
+
+                                <!-- Image Actions -->
+                                <div class="p-3 flex justify-between items-center bg-white dark:bg-gray-800">
+                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300 truncate">
+                                        {{file.name ?? '-'}}
+                                    </span>
+                                    <div class="flex space-x-2">
+                                        <button mat-icon-button color="warn" matTooltip="ลบรูปภาพ"
+                                            (click)="removeFile(i)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- Image Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 mt-4" *ngIf="images.length > 0">
+                        <div *ngFor="let file of images; let i = index"
+                            class="border rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                            <!-- Image Preview -->
+                            <div class="relative aspect-video bg-gray-100 dark:bg-gray-700">
+                                <img [src]="file.image" class="w-full h-full object-cover" alt="ภาพตัวอย่างรถยนต์" (click)="showMultiPicture(images, i)" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-row mt-2 justify-end">
+                    <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                        <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="onSubmit()">
+                            บันทึก
+                        </button>
+                        <button class="px-6 ml-3" mat-flat-button [color]="'warn'" (click)="backTo()">
+                            ยกเลิก
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

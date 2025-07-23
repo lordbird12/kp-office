@@ -1,0 +1,106 @@
+<div class="mb-8">
+    <!-- Header Section -->
+    <div class="flex justify-between items-center mb-4">
+        <div>
+            <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                Vehicle Images
+            </h4>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                Upload at least 1 image of your vehicle (Max 5MB per image)
+            </p>
+        </div>
+        <input #fileInput type="file" hidden multiple accept="image/*" (change)="onFileSelect($event)" />
+        <button mat-raised-button color="primary" (click)="fileInput.click()" class="flex items-center">
+            <mat-icon class="mr-2">cloud_upload</mat-icon>
+            Add Images
+        </button>
+    </div>
+
+    <!-- Upload Area -->
+    <div *ngIf="vehicleImages.length === 0" 
+         class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+         (click)="fileInput.click()">
+        <mat-icon class="text-gray-400 dark:text-gray-500 mb-2" style="font-size: 48px;">photo_camera</mat-icon>
+        <p class="text-gray-500 dark:text-gray-400 mb-2">Drag & drop images here or click to browse</p>
+        <p class="text-xs text-gray-400 dark:text-gray-500">Supports JPG, PNG (Max 5MB each)</p>
+    </div>
+
+    <!-- Image Grid -->
+    <div *ngIf="vehicleImages.length > 0" class="space-y-4">
+        <!-- Summary Card -->
+        <div class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4 flex items-center">
+            <mat-icon class="text-blue-500 dark:text-blue-300 mr-3">info</mat-icon>
+            <p class="text-sm text-blue-700 dark:text-blue-300">
+                You've selected {{vehicleImages.length}} image{{vehicleImages.length > 1 ? 's' : ''}}. 
+                <span *ngIf="vehicleImages.length < 3" class="font-medium">We recommend uploading at least 3 images for better visibility.</span>
+            </p>
+        </div>
+
+        <!-- Image Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+            <div *ngFor="let file of vehicleImages; let i = index" class="border rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                <!-- Image Preview -->
+                <div class="relative aspect-video bg-gray-100 dark:bg-gray-700">
+                    <img [src]="getImagePreview(file)" 
+                         class="w-full h-full object-cover"
+                         alt="Vehicle image preview"/>
+                    
+                    <!-- Upload Status Indicator -->
+                    <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2 text-xs">
+                        <div class="flex items-center justify-between">
+                            <span>
+                                <ng-container [ngSwitch]="uploadStatuses[file.name]">
+                                    <span *ngSwitchCase="'uploading'" class="flex items-center">
+                                        <mat-icon class="text-yellow-300 mr-1" style="font-size: 16px;">hourglass_top</mat-icon>
+                                        Uploading...
+                                    </span>
+                                    <span *ngSwitchCase="'done'" class="flex items-center">
+                                        <mat-icon class="text-green-300 mr-1" style="font-size: 16px;">check_circle</mat-icon>
+                                        Uploaded
+                                    </span>
+                                    <span *ngSwitchCase="'queued'" class="flex items-center">
+                                        <mat-icon class="text-blue-300 mr-1" style="font-size: 16px;">schedule</mat-icon>
+                                        Queued
+                                    </span>
+                                </ng-container>
+                            </span>
+                            <span class="text-gray-200">{{ (file.size / 1024).toFixed(0) }} KB</span>
+                        </div>
+                        <mat-progress-bar *ngIf="uploadStatuses[file.name] === 'uploading'" 
+                                          mode="determinate" 
+                                          [value]="uploadProgress[file.name] || 0"
+                                          color="accent"
+                                          class="mt-1"></mat-progress-bar>
+                    </div>
+                </div>
+                
+                <!-- Image Actions -->
+                <div class="p-3 flex justify-between items-center bg-white dark:bg-gray-800">
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300 truncate">
+                        {{file.name ?? '-'}}
+                    </span>
+                    <div class="flex space-x-2">
+                        <button mat-icon-button 
+                                matTooltip="Set as primary"
+                                [disabled]="i === 0"
+                                (click)="setAsPrimary(i)">
+                            <mat-icon [class.text-gray-400]="i === 0" [class.text-blue-500]="i !== 0">star</mat-icon>
+                        </button>
+                        <button mat-icon-button 
+                                color="warn" 
+                                matTooltip="Remove image"
+                                (click)="removeFile(i)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Validation Message -->
+    <!-- <div *ngIf="showValidationError" class="mt-4 text-red-500 text-sm flex items-center">
+        <mat-icon class="mr-1" style="font-size: 18px;">error</mat-icon>
+        Please upload at least 1 image of your vehicle.
+    </div> -->
+</div>

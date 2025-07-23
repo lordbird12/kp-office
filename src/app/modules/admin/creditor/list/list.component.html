@@ -1,0 +1,166 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <!-- Loader -->
+    <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+    </div>
+    <div
+        class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 flemin-w-0">
+            <!-- Title -->
+            <div class="flex flex-row mt-2 justify-between">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    รายการเจ้าหนี้ / ลูกหนี้
+                </h2>
+                <div class="flex flex-col justify-between w-full md:w-fit gap-4 md:flex-row">
+                    <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="addElement()">
+                        <mat-icon svgIcon="heroicons_outline:plus"></mat-icon>
+                        &nbsp;
+                        เพิ่ม
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Main -->
+
+    <div class="grid gap-4 sm:grid-cols-1 mx-5 mt-5 ">
+        <form class="bg-card rounded-lg md:shadow px-8 pt-6 pb-8 mb-4 flex flex-col my-2" [formGroup]="form">
+            <div class="-mx-3 md:flex mb-6">
+                <div class="md:w-1/5 px-3 mb-6 md:mb-0">
+                    <mat-form-field class="w-full" [ngClass]="formFieldHelpers">
+                        <mat-label>ชื่อร้านค้า/พนักงาน</mat-label>
+                        <input matInput formControlName="partner_name" placeholder="พิมพ์ชื่อ...">
+                    </mat-form-field>
+                </div>
+
+                <div class="md:w-1/5 px-3 mb-6 md:mb-0">
+                    <mat-form-field class="w-full" [ngClass]="formFieldHelpers" appearance="fill">
+                        <mat-label>วันที่เริ่ม</mat-label>
+                        <input matInput [matDatepicker]="picker1" formControlName="start_date">
+                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                        <mat-datepicker #picker1></mat-datepicker>
+                    </mat-form-field>
+                </div>
+
+                <div class="md:w-1/5 px-3 mb-6 md:mb-0">
+                    <mat-form-field class="w-full" [ngClass]="formFieldHelpers" appearance="fill">
+                        <mat-label>วันที่สิ้นสุด</mat-label>
+                        <input matInput [matDatepicker]="picker2" formControlName="end_date">
+                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                        <mat-datepicker #picker2></mat-datepicker>
+                    </mat-form-field>
+                </div>
+                <div class="md:w-1/5 px-3 mb-6 md:mb-0">
+                    <mat-form-field class="w-full" [ngClass]="formFieldHelpers">
+                        <mat-label>สถานะ</mat-label>
+                        <mat-select formControlName="status">
+                            <mat-option [value]="null">ทั้งหมด</mat-option>
+                            <mat-option [value]="'pending'">ยังไม่จ่าย/คืน</mat-option>
+                            <mat-option [value]="'paid'">จ่ายแล้ว/คืนแล้ว</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="flex flex-row mt-2 justify-end">
+                <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="rerender()">
+                        <mat-icon>search</mat-icon>
+                        &nbsp;
+                        ค้นหา
+                    </button>
+                    <button class="px-6 ml-3" mat-flat-button [color]="'accent'" (click)="ClearForm()">
+                        ล้าง
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg m-5 bg-white"> <mat-tab-group
+            [(selectedIndex)]="selectedTabIndex" (selectedIndexChange)="onTabChanged($event)">
+
+            <mat-tab label="เจ้าหนี้">
+                <ng-container *ngTemplateOutlet="recordTable; context: { type: 'creditor' }"></ng-container>
+            </mat-tab>
+            <mat-tab label="ลูกหนี้">
+                <ng-container *ngTemplateOutlet="recordTable; context: { type: 'debtor' }"></ng-container>
+            </mat-tab>
+        </mat-tab-group>
+        <ng-template #recordTable let-type="type">
+            <div class="flex flex-col flex-auto p-5 sm:overflow-y-auto">
+                <table datatable [dtOptions]="dtOptions" class="table row-border hover w-full whitespace-nowrap">
+                    <thead>
+                        <tr>
+                            <th class="w-[100px]">จัดการ</th>
+                            <th class="w-[10px]">ลำดับ</th>
+                            <th *ngIf="type === 'creditor'">ร้านค้า</th>
+                            <th *ngIf="type === 'debtor'">ชื่อพนักงาน</th>
+                            <th>ยอด{{ type === 'creditor' ? 'หนี้' : 'ยืม' }}</th>
+                            <th>ประเภทการทำรายการ</th>
+                            <th>สถานะ</th>
+                            <th>วันที่ทำรายการ</th>
+                            <th>วันที่{{ type === 'creditor' ? 'จ่ายจริง' : 'คืน' }}</th>
+                            <th>หมายเหตุ</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="dataRow.length > 0">
+                        <tr *ngFor="let item of dataRow; let i = index">
+                            <td>
+                                <button mat-icon-button [matMenuTriggerFor]="menu">
+                                    <mat-icon svgIcon="heroicons_solid:cog-6-tooth" [color]="'accent'"></mat-icon>
+                                </button>
+                                <mat-menu #menu="matMenu">
+                                    <ng-container>
+                                        <button mat-menu-item (click)="editElement(item)" [color]="'accent'">
+                                            <mat-icon [color]="'accent'">edit</mat-icon>
+                                            <span>แก้ไข</span>
+                                        </button>
+                                        <!-- <button mat-menu-item (click)="viewElement(item)" [color]="'accent'">
+                                            <mat-icon [color]="'accent'">search</mat-icon>
+                                            <span>เปลี่ยนสถานะ</span>
+                                        </button> -->
+                                    </ng-container>
+                                    <ng-container>
+                                        <button mat-menu-item (click)="deleteElement(item.id)" [color]="'accent'">
+                                            <mat-icon [color]="'accent'">delete</mat-icon>
+                                            <span>ลบ</span>
+                                        </button>
+                                    </ng-container>
+                                </mat-menu>
+                            </td>
+                            <td>{{ pages.begin + i + 1 }}</td>
+                            <td *ngIf="item.partner_type === 'creditor'">{{ item.partner_name || '-' }}</td>
+                            <td *ngIf="item.partner_type === 'debtor'">{{ item.partner_name || '-' }}</td>
+                            <td>{{ item.total_amount || item.amount | number:'1.2-2' }}</td>
+                            <td class="text-center">
+                                {{ item.direction === 'in' ? 'รับเงิน' : item.direction === 'out' ? 'จ่ายเงิน' : '-' }}
+                            </td>
+                            <td class="text-center">
+                                <span [ngClass]="item.status === 'paid' ? 'text-green-600' : 'text-red-600'">
+                                    {{ item.status === 'paid'
+                                    ? (item.partner_type === 'creditor' ? 'จ่ายแล้ว' : 'คืนแล้ว')
+                                    : (item.partner_type === 'creditor' ? 'ยังไม่จ่าย' : 'ยังไม่คืน') }}
+                                </span>
+
+                            </td>
+                            <td class="text-center">{{ item.transaction_date | date:'dd/MM/yyyy' }}</td>
+                            <td class="text-center">{{ item.receipe_date ? (item.receipe_date | date:'dd/MM/yyyy') :
+                                '-'}}</td>
+                            <td>
+                                {{item?.remark ?? '-'}}
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="dataRow.length === 0">
+                        <tr>
+                            <td colspan="10" class="text-center">ไม่มีข้อมูล</td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        </ng-template>
+    </div>
+</div>

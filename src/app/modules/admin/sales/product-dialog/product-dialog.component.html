@@ -1,0 +1,39 @@
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg m-5  bg-white" *ngIf="data.type === 'LIST'">
+    <div class="flex flex-col flex-auto p-5  sm:overflow-y-auto">
+        <table datatable [dtOptions]="dtOptions" class="table row-border hover w-full bg-white whitespace-nowrap">
+            <thead>
+                <tr>
+                    <th class="w-[100px]">จัดการ</th>
+                    <th class="w-[10px]">ลำดับ</th>
+                    <th>ชื่อ</th>
+                    <th>ทะเบียน</th>
+                    <th>จังหวัด</th>
+                    <th>ปี</th>
+                    <th>ยี่ห้อ</th>
+                    <th>รุ่น</th>
+                </tr>
+            </thead>
+            <tbody *ngIf="dataRow?.length != 0">
+                <tr *ngFor="let item of dataRow; let i = index">
+                    <td>
+                        <button mat-icon-button color="accent" (click)="onSelect(item)">
+                            <mat-icon>check</mat-icon>
+                        </button>
+                    </td>
+                    <td>{{ pages.begin + (i + 1) }}</td>
+                    <td>{{ item.name ? item.name : "-"}}</td>
+                    <td>{{ item.license_plate ? item.license_plate : "-"}}</td>
+                    <td>{{ item.province ? item.province : "-"}}</td>
+                    <td>{{ item.year ? item.year : "-" }}</td>
+                    <td>{{ item.brand ? item?.brand?.name : "-" }}</td>
+                    <td>{{ item.brand_model ? item?.brand_model?.name : "-" }}</td>
+                </tr>
+            </tbody>
+            <tbody *ngIf="dataRow?.length == 0">
+                <tr>
+                    <td colspan="7" class="no-data-available text-center">ไม่มีข้อมูล !</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

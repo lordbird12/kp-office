@@ -1,0 +1,139 @@
+<!-- dashboard.component.html -->
+<div class="p-6 grid gap-6">
+    <!-- Status Summary Boxes - Improved with icons and better styling -->
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <ng-container *ngFor="let stat of [
+            { title: 'New Cars', value: data.status_boxes.new_cars, icon: 'directions_car', color: 'bg-blue-50 text-blue-600' },
+            { title: 'Cars Sold', value: data.status_boxes.cars_sold, icon: 'local_shipping', color: 'bg-green-50 text-green-600' },
+            { title: 'In Repair', value: data.status_boxes.in_repair, icon: 'build', color: 'bg-amber-50 text-amber-600' },
+            { title: 'Ready for Sale', value: data.status_boxes.ready_for_sale, icon: 'check_circle', color: 'bg-teal-50 text-teal-600' },
+            { title: 'Waiting for Billing', value: data.status_boxes.waiting_for_billing, icon: 'receipt', color: 'bg-purple-50 text-purple-600' },
+            { title: 'Waiting for Payment', value: data.status_boxes.waiting_for_payment, icon: 'payments', color: 'bg-indigo-50 text-indigo-600' }
+        ]">
+            <div class="bg-white rounded-xl shadow-sm p-4 border border-gray-100 hover:shadow-md transition-shadow duration-200">
+                <div class="flex items-center justify-center w-10 h-10 {{stat.color}} rounded-full mb-3 mx-auto">
+                    <span class="material-icons">{{stat.icon}}</span>
+                </div>
+                <div class="text-gray-500 text-sm font-medium">{{ stat.title }}</div>
+                <div class="text-2xl font-bold mt-1">{{ stat.value }}</div>
+            </div>
+        </ng-container>
+    </div>
+
+    <!-- Summary Section - Card layout with improved hierarchy -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Repair Jobs Card -->
+        <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-semibold text-gray-700">Repair Jobs</h3>
+                <span class="material-icons text-blue-500">construction</span>
+            </div>
+            <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500">Total:</span>
+                    <span class="font-medium">{{ data.summary.repair_jobs.total }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500">Completed:</span>
+                    <span class="font-medium text-green-600">{{ data.summary.repair_jobs.completed }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sales Bills Card -->
+        <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-semibold text-gray-700">Sales Bills</h3>
+                <span class="material-icons text-green-500">receipt_long</span>
+            </div>
+            <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500">Today:</span>
+                    <span class="font-medium">{{ data.summary.sales_bills.today }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500">Completed:</span>
+                    <span class="font-medium text-green-600">{{ data.summary.sales_bills.completed }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Income Card -->
+        <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-semibold text-gray-700">Daily Income</h3>
+                <span class="material-icons text-teal-500">trending_up</span>
+            </div>
+            <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500">Total:</span>
+                    <span class="font-medium">{{ data.summary.daily_income.total | currency:'THB':'symbol':'1.0-0' }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500">From Clients:</span>
+                    <span class="font-medium text-green-600">{{ data.summary.daily_income.from_clients | currency:'THB':'symbol':'1.0-0' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Expense Card -->
+        <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-semibold text-gray-700">Daily Expense</h3>
+                <span class="material-icons text-amber-500">trending_down</span>
+            </div>
+            <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500">Total:</span>
+                    <span class="font-medium">{{ data.summary.daily_expense.total | currency:'THB':'symbol':'1.0-0' }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500">To Suppliers:</span>
+                    <span class="font-medium text-red-600">{{ data.summary.daily_expense.to_suppliers | currency:'THB':'symbol':'1.0-0' }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weekly Sales Chart - Improved with visual elements -->
+    <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="font-semibold text-gray-700 text-lg">Weekly Sales Performance</h3>
+            <div class="flex space-x-2">
+                <button class="px-3 py-1 text-xs bg-blue-50 text-blue-600 rounded-lg">Export</button>
+                <button class="px-3 py-1 text-xs bg-gray-50 text-gray-600 rounded-lg">Filter</button>
+            </div>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="p-3 text-left text-gray-500 font-medium rounded-l-lg">Day</th>
+                        <th class="p-3 text-right text-gray-500 font-medium">New Cars</th>
+                        <th class="p-3 text-right text-gray-500 font-medium rounded-r-lg">Cars Sold</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    <tr *ngFor="let day of data.weekly_sales.days; let i = index" class="hover:bg-gray-50">
+                        <td class="p-3 text-left font-medium text-gray-700">{{ day }}</td>
+                        <td class="p-3 text-right">{{ data.weekly_sales.new_cars[i] }}</td>
+                        <td class="p-3 text-right">
+                            <span class="font-medium" [ngClass]="{
+                                'text-green-600': data.weekly_sales.cars_sold[i] > 3,
+                                'text-amber-600': data.weekly_sales.cars_sold[i] <= 3
+                            }">
+                                {{ data.weekly_sales.cars_sold[i] }}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr class="bg-gray-50 font-semibold">
+                        <td class="p-3 text-left text-gray-700">Total</td>
+                        <td class="p-3 text-right">{{ getTotal(data.weekly_sales.new_cars) }}</td>
+                        <td class="p-3 text-right text-blue-600">{{ getTotal(data.weekly_sales.cars_sold) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

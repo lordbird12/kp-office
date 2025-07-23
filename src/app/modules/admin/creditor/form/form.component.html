@@ -1,0 +1,79 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <div
+        class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 min-w-0">
+            <!-- Title -->
+            <div class="flex flex-row mt-2 justify-between">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    เพิ่ม {{ isCreditor ? 'เจ้าหนี้' : 'ลูกหนี้' }}
+                </h2>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+        <div class="grid gap-4 w-full sm:grid-cols-1">
+            <form [formGroup]="form" class="bg-card rounded-2xl md:shadow grid gap-4 grid-cols-1 md:grid-cols-2 p-6">
+                <mat-form-field class="w-full" [ngClass]="formFieldHelpers">
+                    <mat-label>ประเภท</mat-label>
+                    <mat-select formControlName="partner_type"
+                        (selectionChange)="isCreditor = $event.value === 'creditor'">
+                        <mat-option value="creditor">เจ้าหนี้</mat-option>
+                        <mat-option value="debtor">ลูกหนี้</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field class="w-full" [ngClass]="formFieldHelpers">
+                    <mat-label>วันที่ทำรายการ</mat-label>
+                    <input matInput [matDatepicker]="picker1" formControlName="transaction_date" />
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field class="w-full" [ngClass]="formFieldHelpers">
+                    <mat-label>{{ isCreditor ? 'ชื่อร้านค้า' : 'ชื่อผู้ยืมเงิน' }}</mat-label>
+                    <input matInput formControlName="partner_name" />
+                </mat-form-field>
+                <mat-form-field class="w-full" [ngClass]="formFieldHelpers">
+                    <mat-label>จำนวนเงิน</mat-label>
+                    <input matInput type="number" formControlName="amount" />
+                </mat-form-field>
+                <mat-form-field class="w-full" [ngClass]="formFieldHelpers">
+                    <mat-label>ประเภทการทำรายการ </mat-label>
+                    <mat-select formControlName="direction">
+                        <mat-option [value]="'in'">รับเงิน</mat-option>
+                        <mat-option [value]="'out'">จ่ายเงิน</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field class="w-full" [ngClass]="formFieldHelpers">
+                    <mat-label>สถานะ</mat-label>
+                    <mat-select formControlName="status">
+                        <mat-option [value]="'pending'">ยังไม่จ่าย/คืน</mat-option>
+                        <mat-option [value]="'paid'">จ่ายแล้ว/คืนแล้ว</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field class="w-full" [ngClass]="formFieldHelpers">
+                    <mat-label>วันที่จ่าย/คืน</mat-label>
+                    <input matInput [matDatepicker]="picker4" formControlName="receipe_date" />
+                    <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
+                    <mat-datepicker #picker4></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field class="w-full md:col-span-2" [ngClass]="formFieldHelpers">
+                    <mat-label>หมายเหตุ</mat-label>
+                    <textarea matInput formControlName="description"></textarea>
+                </mat-form-field>
+
+                <div class="flex justify-center mt-2 col-span-2">
+                    <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="onSubmit()">
+                        บันทึก
+                    </button>
+                    <button class="px-6 ml-3" mat-flat-button [color]="'warn'" (click)="backTo()">
+                        ยกเลิก
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

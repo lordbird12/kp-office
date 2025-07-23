@@ -1,0 +1,176 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <div
+        class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 flemin-w-0">
+            <!-- Title -->
+            <div class="flex flex-row mt-2 justify-between">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate" *ngIf="!this.Id">
+                    เพิ่มข้อมูล
+                </h2>
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate" *ngIf="this.Id">
+                    แก้ไขข้อมูล
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex-auto p-6 md:p-5">
+        <div class="grid gap-4 w-full sm:grid-cols-1">
+            <form class="bg-card rounded-2xl md:shadow overflow-hidden px-8 pt-6 pb-8 mb-4 flex flex-col my-2" [formGroup]="addForm">
+                <span
+                    class="text-xl md:text-xl font-bold tracking-tight leading-7 sm:leading-10 truncate text-gray-500">
+                    ข้อมูลตัวแทนนายหน้า
+                </span>
+                <div class="-mx-3 md:flex mb-6">
+                    <div class="md:w-1/2 px-3">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>รหัสตัวแทน</mat-label>
+                            <input matInput [placeholder]="'กรอกชื่อตัวแทนนายหน้า'" formControlName="code">
+                            <!-- <mat-hint>This is a hint text</mat-hint> -->
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="-mx-3 md:flex mb-6">
+                    <div class="md:w-1/3 px-3">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>ชื่อตัวแทนนายหน้า</mat-label>
+                            <input matInput [placeholder]="'กรอกชื่อตัวแทนนายหน้า'" formControlName="name">
+                            <!-- <mat-hint>This is a hint text</mat-hint> -->
+                        </mat-form-field>
+                    </div>
+                    <div class="md:w-1/3 px-3">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>เลขประจำตัวผู้เสียภาษี</mat-label>
+                            <input matInput [placeholder]="'กรอกเลขประจำตัวผู้เสียภาษี'" formControlName="tax">
+                            <!-- <mat-hint>This is a hint text</mat-hint> -->
+                        </mat-form-field>
+                    </div>
+                    <div class="md:w-1/3 px-3">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>เบอร์ติดต่อ</mat-label>
+                            <input matInput [placeholder]="'กรุณากรอกเบอร์ติดต่อ'" formControlName="phone">
+                            <!-- <mat-hint>This is a hint text</mat-hint> -->
+                        </mat-form-field>
+                    </div>
+                </div>
+                <!-- <div class="-mx-3 md:flex mb-6">
+                    <div class="md:w-1/2 px-3">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>เบอร์ติดต่อ</mat-label>
+                            <input matInput [placeholder]="'กรุณากรอกเบอร์ติดต่อ'" formControlName="phone">
+                        </mat-form-field>
+                    </div>
+                    <div class="md:w-1/2 px-3 mb-6 md:mb-0">
+                        <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                            <mat-label>Email</mat-label>
+                            <input matInput [placeholder]="'กรุณากรอก Email'" formControlName="email">
+                        </mat-form-field>
+                    </div>
+                </div> -->
+                <div class="-mx-3 md:flex mb-2">
+                    <div class="md:min-w-full px-3 mb-6 md:mb-0">
+                        <mat-form-field class="w-full">
+                            <mat-label>ที่อยู่</mat-label>
+                            <textarea matInput [placeholder]="'กรอกข้อมูลที่อยู่'" [rows]="3"
+                                formControlName="address"></textarea>
+                            <mat-icon class="icon-size-5" matPrefix>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                    aria-hidden="true" fit="" height="100%" width="100%"
+                                    preserveAspectRatio="xMidYMid meet" focusable="false">
+                                    <path fill-rule="evenodd"
+                                        d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z"
+                                        clip-rule="evenodd"></path>
+                                </svg></mat-icon>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="-mx-3 md:flex mb-2">
+                    <div class="md:min-w-full px-3 mb-6 md:mb-0">
+                        <mat-form-field class="w-full">
+                            <mat-label>รายละเอียดเพิ่มเติม</mat-label>
+                            <textarea matInput [placeholder]="'กรอกรายละเอียดเพิ่มเติม'" [rows]="3"
+                                formControlName="detail"></textarea>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="flex flex-col" formArrayName="license_plates">
+                    <div class="relative overflow-x-auto shadow-md rounded-md border-2">
+                        <table class="w-full text-md text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                            <thead
+                                class="text-md text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 w-5/6">
+                                        ทะเบียนรถ
+                                    </th>
+                                    <th scope="col" class="px-6 py-3 w-1/6">
+                                        ค่าแนะนำ
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of license_plates.controls; let i = index" [formGroupName]="i"
+                                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                    <th scope="row"
+                                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <div class="flex flex-row gap-2">
+                                            <div class="flex-col justify-center mt-2">
+                                                <mat-icon class="icon-size-7 cursor-pointer"
+                                                    svgIcon="heroicons_solid:minus-circle"
+                                                    (click)="removeArray(i)"></mat-icon>
+                                            </div>
+                                            <div>
+                                                <p>{{this.addForm.value.license_plates[i].license_plate}}</p>
+                                                <p class="text-gray-500"> {{this.addForm.value.license_plates[i].item_name}}</p>
+                                            </div>
+                                        </div>
+                                    </th>
+                                    <td class="px-6 py-4">
+                                        <mat-form-field class="w-full" [ngClass]="formFieldHelpers">
+                                            <div class="md:min-w-full mb-6 md:mb-0  flex flex-col md:flex-row gap-2">
+                                                <input matInput placeholder="ระบุค่าแนะนำ" [formControlName]="'commision'"
+                                                    type="number">
+                                            </div>
+                                        </mat-form-field>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tbody>
+                                <tr
+                                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                    <th scope="row" colspan="5"
+                                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <div class="md:min-w-full px-3 mb-6 md:mb-0  flex flex-col md:flex-row gap-2">
+                                            <mat-form-field class="w-full md:w-9/12" [ngClass]="formFieldHelpers">
+                                                <mat-label>ค้นหาทะเบียนรถ</mat-label>
+                                                <input matInput [formControl]="itemFilter" [matAutocomplete]="item"
+                                                    placeholder="ค้นหาทะเบียนรถ" />
+                                                <mat-autocomplete #item="matAutocomplete"
+                                                    (optionSelected)="selectProduct($event)">
+                                                    <mat-option *ngFor="let item of filterItem | async"
+                                                        [value]="item.id">
+                                                        <span class="product-name">[ทะเบียนรถ: {{item.license_plate}}]</span>
+                                                        <span class="product-name">[ชื่อสินค้า: {{item.name}}]</span>
+                                                    </mat-option>
+                                                </mat-autocomplete>
+                                            </mat-form-field>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="flex justify-end mt-2">
+                    <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="onSubmit()">
+                        บันทึก
+                    </button>
+                    <button class="px-6 ml-3" mat-flat-button [color]="'warn'" (click)="backTo()">
+                        ยกเลิก
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

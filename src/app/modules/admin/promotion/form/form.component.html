@@ -1,0 +1,147 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b
+        bg-card dark:bg-transparent" *ngIf="this.isForm === true">
+        <div class="flex-1 flemin-w-0">
+            <!-- Title -->
+            <div class="flex flex-row mt-2 justify-between">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate"
+                    *ngIf="this.isForm === true">
+                    สร้างโปรโมชั่น
+                </h2>
+
+                <!-- <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="onSubmit()">
+                        บันทึก
+                    </button>
+                    <button class="px-6 ml-3" mat-flat-button [color]="'warn'" (click)="onBack()">
+                        ยกเลิก
+                    </button>
+                </div> -->
+            </div>
+        </div>
+    </div>
+    <div class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent"
+        *ngIf="this.isForm === false">
+        <div class="flex-1 flemin-w-0">
+            <!-- Title -->
+            <div class="flex flex-row mt-2 justify-between">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    แก้ไขโปรโมชั่น
+                </h2>
+                <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+
+                    <button class="px-6 ml-3" mat-flat-button [color]="'warn'" (click)="onBack()">
+                        ย้อนกลับ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+        <div class="grid gap-4 w-full sm:grid-cols-1 md:grid-cols-1 bg-card rounded-lg">
+            <form [formGroup]="formData">
+                <div class="flex-auto mt-5">
+                    <div class="flex flex-col mx-3 md:flex mb-6">
+                        <div class="md:w-full px-3">
+                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                                <mat-label>ชื่อโปรโมชั่น</mat-label>
+                                <input matInput [placeholder]="'กรุณาระบุโปรโมชัน'" formControlName="name">
+                            </mat-form-field>
+                        </div>
+                        <div class="md:w-full px-3">
+                            <mat-form-field class="w-full">
+                                <mat-label>รายละเอียด</mat-label>
+                                <textarea matInput [placeholder]="'กรอกรายละเอียด'" [formControlName]="'remark'"
+                                    [rows]="6"></textarea>
+                            </mat-form-field>
+                        </div>
+                       
+                    </div>
+                    <div class="flex md:flex-row flex-col mx-3 md:flex mb-6">
+                        <div class="md:w-1/2 px-3">
+                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                                <mat-label>วันที่เริ่ม</mat-label>
+                                <input matInput [matDatepicker]="start" formControlName="start">
+                                <mat-datepicker-toggle matIconSuffix [for]="start"></mat-datepicker-toggle>
+                                <mat-datepicker #start></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                        <div class="md:w-1/2 px-3">
+                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                                <mat-label>วันที่สิ้นสุด</mat-label>
+                                <input matInput [matDatepicker]="end" formControlName="end">
+                                <mat-datepicker-toggle matIconSuffix [for]="end"></mat-datepicker-toggle>
+                                <mat-datepicker #end></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                       
+                    </div>
+                </div>
+                <div class="flex md:flex-row flex-col">
+                    <div class="flex flex-col mx-3 md:flex mb-6 w-full">
+                        <span
+                            class="px-6 text-xl md:text-xl font-bold tracking-tight leading-7 sm:leading-10 truncate text-gray-500">
+                            ข้อมูลส่วนลด
+                        </span>
+                        <div class="relative overflow-x-auto shadow-md m-4 border-2" formArrayName="promotion_lists">
+                            <table class="w-full text-md text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                <thead
+                                    class="text-md text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 w-1/12 h-full">
+                                            ลำดับ
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 w-10/12 h-full">
+                                            รายการส่วนลด
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let depo; of: promotion_lists().controls; let i = index" [formGroupName]="i"
+                                        class="bg-white border-b dark:bg-gray-800 h-15 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                        <td class="px-6 py-1">
+                                            <button class="mb-2 bg-red-500" mat-flat-button [color]="'warn'"
+                                                (click)="removeRepair(i)">
+                                                <mat-icon svgIcon="heroicons_solid:trash"> </mat-icon>&nbsp;
+                                            </button>
+                                        </td>
+                                        <td class="px-6 py-1 text-center">
+                                            <mat-form-field [ngClass]="formFieldHelpers" class="w-full md:w-full mt-3">
+                                                <mat-select [formControlName]="'discount_id'">
+                                                    <mat-option *ngFor="let item of discount;" [value]="item.id">
+                                                        {{item.name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </td>
+                                    </tr>
+                                    <tr
+                                        class="text-md text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                        <td colspan="4">
+                                            <button class="mx-6 my-3" mat-flat-button [color]="'accent'"
+                                                (click)="addArray()">
+                                                <mat-icon svgIcon="heroicons_outline:plus-circle"></mat-icon>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="flex justify-center m-4">
+                <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="onSubmit()">
+                    บันทึก
+                </button>
+                <button class="px-6 ml-3" mat-flat-button [color]="'warn'" (click)="onBack()">
+                    ยกเลิก
+                </button>
+            </div>
+        </div>
+        <!-- {{this.formData.value | json}} -->
+
+    </div>
+</div>

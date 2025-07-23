@@ -1,0 +1,413 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <div
+        class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 min-w-0 flex items-center justify-between">
+            <!-- Title -->
+            <div class="flex flex-row mt-2 justify-between w-full">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    รายละเอียดงาน</h2>
+
+                <!-- Status Badge -->
+                <div class="flex items-center">
+                    <span class="inline-flex items-center px-2.5 py-1.5 rounded-md text-base font-medium ml-2"
+                        [ngClass]="{
+                            'bg-green-100 text-green-800': job?.status === 'completed',
+                            'bg-blue-100 text-blue-800': job?.status === 'in_progress',
+                            'bg-yellow-100 text-yellow-800': job?.status === 'pending',
+                            'bg-red-100 text-red-800': job?.status === 'cancelled'
+                        }">
+                        {{ getStatusText(job?.status) }}
+                    </span>
+                    <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="gotoEdit()">
+                        แก้ไข
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="flex-auto p-2 sm:p-6">
+        <mat-tab-group animationDuration="0ms"
+            class="bg-card rounded-2xl md:shadow overflow-hidden px-2 md:px-4 pt-4 pb-6 mt-2">
+            <mat-tab label="ข้อมูลรายละเอียด">
+                <!-- 1. ข้อมูลรถ -->
+                <div class="bg-card rounded-2xl md:shadow overflow-hidden px-4 md:px-6 pt-6 pb-8 mb-4">
+                    <h3 class="text-2xl font-bold mb-4">ข้อมูลรถ</h3>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                        <!-- ข้อมูลรถ: กินพื้นที่ 3 คอลัมน์ -->
+                        <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">รหัสสินค้า</span>
+                                <span class="font-medium">{{job?.product?.code || '-'}}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">ชื่อรถ</span>
+                                <span class="font-medium">{{job?.product?.name || '-'}}</span>
+                            </div>
+                             <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">ยี่ห้อ</span>
+                                <span class="font-medium">{{job?.product?.brand?.name || '-'}}</span>
+                            </div>
+                             <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">รุ่น</span>
+                                <span class="font-medium">{{job?.product?.brand_model?.name || '-'}}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">ทะเบียนรถ</span>
+                                <span class="font-medium">{{job?.product?.license_plate || '-'}}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">เลขตัวถัง</span>
+                                <span class="font-medium">{{job?.product?.tank_no || '-'}}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">เลขเครื่องยนต์</span>
+                                <span class="font-medium">{{job?.product?.engine_no || '-'}}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">ปีรถ</span>
+                                <span class="font-medium">{{job?.product?.year || '-'}}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">สี</span>
+                                <span class="font-medium">{{getColorName(job?.product?.color_id) || '-'}}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">ภาษีหมดอายุ</span>
+                                <span class="font-medium">
+                                    {{ job?.product?.tax_expire ? (job.product.tax_expire | date:'dd/MM/yyyy') : '-' }}
+                                </span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">ราคาขาย</span>
+                                <span class="font-medium">{{ job?.product?.sale_price != null ? (job.product.sale_price
+                                    | number) : '-' }}
+                                </span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">ไมล์</span>
+                                <span class="font-medium">{{job?.product?.mile || '-'}}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">เกียร์</span>
+                                <span class="font-medium">{{job?.product?.gear || '-'}}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-lg text-gray-500">วันหมดภาษี</span>
+                                <span class="font-medium">
+                                    {{ job?.product?.tax_expire ? (job.product.tax_expire | date:'dd/MM/yyyy') : '-' }}
+                                </span>
+                            </div>
+                            <div class="flex flex-col md:col-span-2 lg:col-span-3">
+                                <span class="text-lg text-gray-500">รายละเอียด</span>
+                                <span class="font-medium">{{job?.product?.detail || '-'}}</span>
+                            </div>
+                        </div>
+
+                        <!-- คอลัมน์รูปภาพ (แยกฝั่งขวา) -->
+                        <div class="flex justify-center items-start">
+                            <div class="w-full h-auto flex items-center justify-center">
+                                <img [src]="converImage(job?.product?.image)" (error)="onImageError($event)"
+                                    alt="รูปภาพ" class="w-full h-full object-cover rounded-lg" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 2. วันที่สำเร็จและหมายเหตุ -->
+                <div class="bg-card rounded-2xl md:shadow overflow-hidden px-4 md:px-6 pt-6 pb-8 mb-4">
+                    <h3 class="text-2xl font-bold mb-4">ข้อมูลงาน</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col">
+                            <span class="text-lg text-gray-500">วันที่สร้าง</span>
+                            <span class="font-medium">
+                                {{ job?.created_at ? (job.created_at | date:'d/M/yyyy HH:mm') : '-' }}
+                            </span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-lg text-gray-500">วันที่สำเร็จ</span>
+                            <span class="font-medium">
+                                {{ job?.completed_date ? (job.completed_date | date:'dd/MM/yyyy') : '-' }}
+                            </span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-lg text-gray-500">หมายเหตุ</span>
+                            <span class="font-medium">{{job?.remark || '-'}}</span>
+                        </div>
+                    </div>
+
+                    <!-- ค่าใช้จ่ายอื่นๆ -->
+                    <div class="mt-6" *ngIf="job?.other_expenses && job.other_expenses.length > 0">
+                        <h4 class="text-lg font-semibold mb-2">ค่าใช้จ่ายอื่นๆ</h4>
+                        <div class="overflow-x-auto shadow-sm border">
+                            <table class="w-full text-lg">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="px-4 py-2 text-left">รายการ</th>
+                                        <th class="px-4 py-2 text-right">จำนวนเงิน</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let expense of job?.other_expenses" class="border-b">
+                                        <td class="px-4 py-2">{{expense.name}}</td>
+                                        <td class="px-4 py-2 text-right">{{expense.amount | number:'1.2-2'}} บาท</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- 3. รูปภาพ -->
+                <div class="bg-card rounded-2xl md:shadow overflow-hidden px-4 md:px-6 pt-6 pb-8 mb-4">
+                    <h3 class="text-2xl font-bold mb-4">รูปภาพ</h3>
+                    <div *ngIf="job?.images && job.images.length > 0"
+                        class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <div *ngFor="let image of job.images; let i = index"
+                            class="relative group overflow-hidden rounded-lg" (mouseenter)="hoveredIndex = i"
+                            (mouseleave)="hoveredIndex = null">
+
+                            <img [src]="image.image" alt="Job Image"
+                                class="w-auto h-40 object-cover rounded-lg cursor-pointer transform transition duration-300 ease-in-out"
+                                [ngClass]="{
+            'scale-105 shadow-lg z-10': hoveredIndex === i,
+            'brightness-50': hoveredIndex !== null && hoveredIndex !== i
+         }" (click)="openImageViewer(image.image)">
+                        </div>
+                    </div>
+                    <div *ngIf="!job?.images || job.images.length === 0" class="text-center py-8 text-gray-500">
+                        ไม่มีรูปภาพ
+                    </div>
+                </div>
+
+                <!-- 4. ขั้นตอนการทำงาน -->
+                <div class="bg-card rounded-2xl md:shadow overflow-hidden px-4 md:px-6 pt-6 pb-8">
+                    <h3 class="text-2xl font-bold mb-4">ขั้นตอนการทำงาน</h3>
+
+                    <div *ngIf="job?.steps && job.steps.length > 0">
+                        <div *ngFor="let step of job?.steps; let i = index" class="border rounded-lg p-4 mb-4">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-semibold">ขั้นตอนที่ {{step.step_no}}</h3>
+                                <div>
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-md text-lg font-medium"
+                                        [ngClass]="{
+                                    'bg-green-100 text-green-800': job?.status === 'completed',
+                                    'bg-blue-100 text-blue-800': job?.status === 'in_progress',
+                                    'bg-yellow-100 text-yellow-800': job?.status === 'waiting',
+                                    'bg-red-100 text-red-800': job?.status === 'cancelled'
+                                }">
+                                        {{ getStatusText(step.status) }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <span class="text-lg text-gray-500">วันที่ดำเนินการเสร็จ</span>
+                                <div class="font-medium">{{step.completed_date | date:'dd/MM/yyyy' || '-'}}</div>
+                            </div>
+
+                            <!-- Work Types within step -->
+                            <div *ngFor="let workType of step.step_job_type_lists"
+                                class="border-l-4 border-[#bb9149] pl-4 mb-4">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="flex flex-col md:flex-row gap-4">
+                                        <h4 class="font-semibold">{{workType.work_type?.name || 'ประเภทงาน'}}</h4>
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-1 rounded-md text-lg font-medium"
+                                            [ngClass]="{
+                                        'bg-green-100 text-green-800': job?.status === 'completed',
+                                        'bg-blue-100 text-blue-800': job?.status === 'in_progress',
+                                        'bg-yellow-100 text-yellow-800': job?.status === 'waiting',
+                                        'bg-red-100 text-red-800': job?.status === 'cancelled'
+                                    }">
+                                            {{ getStatusText(workType.status) }}
+                                        </span>
+                                    </div>
+                                    <button class="px-6 ml-3" mat-flat-button [color]="'primary'"
+                                        (click)="opendialogStatus(workType)">
+                                        อัปเดตสถานะ
+                                    </button>
+                                </div>
+
+                                <!-- Product Attributes (อะไหล่) Section -->
+                                <div class="p-2 md:p-4 rounded mb-3 border"
+                                    *ngIf="workType.product_attributes && workType.product_attributes.length > 0">
+                                    <h4 class="font-semibold mb-2">อะไหล่</h4>
+                                    <div class="overflow-x-auto shadow-sm border mb-3">
+                                        <table class="w-full text-lg">
+                                            <thead class="bg-gray-100">
+                                                <tr>
+                                                    <th class="px-4 py-2 text-left">ประเภท</th>
+                                                    <th class="px-4 py-2 text-left">รายการอะไหล่</th>
+                                                    <th class="px-4 py-2 text-center">จำนวน</th>
+                                                    <th class="px-4 py-2 text-center">ราคา</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let part of workType.product_attributes" class="border-b">
+                                                    <td class="px-4 py-2">{{getDepositTypeName(part.deposit_type)}}</td>
+                                                    <td class="px-4 py-2">
+                                                        {{getProductAttributeName(part.product_attribute_id)}}
+                                                    </td>
+                                                    <td class="px-4 py-2 text-center">{{part.product_attribute_qty |
+                                                        number}}
+                                                    </td>
+                                                    <td class="px-4 py-2 text-center">{{part.amount | number:'1.2-2'}}
+                                                        บาท</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- Custom Product Attributes Section -->
+                                <div class="p-2 md:p-4 rounded mb-3 border"
+                                    *ngIf="workType.product_attribute_others && workType.product_attribute_others.length > 0">
+                                    <h4 class="font-semibold mb-2">อะไหล่อื่นๆ</h4>
+                                    <div class="overflow-x-auto shadow-sm border mb-3">
+                                        <table class="w-full text-lg">
+                                            <thead class="bg-gray-100">
+                                                <tr>
+                                                    <th class="px-4 py-2 text-left">ประเภท</th>
+                                                    <th class="px-4 py-2 text-left">ชื่ออะไหล่</th>
+                                                    <th class="px-4 py-2 text-left">รายละเอียด</th>
+                                                    <th class="px-4 py-2 text-center">จำนวน</th>
+                                                    <th class="px-4 py-2 text-center">ราคา</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let part of workType.product_attribute_others"
+                                                    class="border-b">
+                                                    <td class="px-4 py-2">{{getDepositTypeName(part.deposit_type)}}</td>
+                                                    <td class="px-4 py-2">{{part.name}}</td>
+                                                    <td class="px-4 py-2">{{part.detail}}</td>
+                                                    <td class="px-4 py-2 text-center">{{part.qty | number}}</td>
+                                                    <td class="px-4 py-2 text-center">{{part.amount | number:'1.2-2'}}
+                                                        บาท</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- Services (บริการ) Section -->
+                                <div class="p-2 md:p-4 rounded mb-3 border"
+                                    *ngIf="workType.expenses && workType.expenses.length > 0">
+                                    <h4 class="font-medium mb-2">บริการ</h4>
+                                    <div class="overflow-x-auto shadow-sm border mb-3">
+                                        <table class="w-full text-lg">
+                                            <thead class="bg-gray-100">
+                                                <tr>
+                                                    <th class="px-4 py-2 text-left">รายการบริการ</th>
+                                                    <th class="px-4 py-2 text-center">ราคา</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let expense of workType.expenses" class="border-b">
+                                                    <td class="px-4 py-2">
+                                                        {{getExpenseTypeName(expense.expense_type_id)}}</td>
+                                                    <td class="px-4 py-2 text-center">{{expense.amount |
+                                                        number:'1.2-2'}} บาท
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div *ngIf="workType?.images && workType.images.length > 0"
+                                    class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                    <div *ngFor="let image of workType?.images" class="relative group">
+                                        <img [src]="image.image" alt="Job Image"
+                                            class="w-auto h-40 object-cover rounded-lg cursor-pointer"
+                                            (click)="openImageViewer(image.image)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="!job?.steps || job.steps.length === 0" class="text-center py-8 text-gray-500">
+                        ไม่มีขั้นตอนการทำงาน
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab label="ไทม์ไลน์">
+                <div class="bg-card rounded-2xl md:shadow overflow-hidden px-4 md:px-6 pt-6 pb-8 mt-4">
+                    <h3 class="text-2xl font-bold mb-6">ขั้นตอนการทำงาน</h3>
+
+                    <div *ngIf="job?.steps && job.steps.length > 0" class="relative">
+                        <!-- Timeline -->
+                        <div class="flex flex-col">
+                            <div *ngFor="let step of job?.steps; let i = index; let isLast = last" class="flex">
+                                <!-- Timeline Connector -->
+                                <div class="flex flex-col items-center mr-4 relative">
+                                    <!-- Circle indicator -->
+                                    <div class="w-8 h-8 rounded-full flex items-center justify-center z-10 bg-white"
+                                        [ngClass]="step.status === 'completed' ? 'bg-red-800 text-white' : 'border-2 border-red-400'">
+                                        <mat-icon *ngIf="step.status === 'completed'"
+                                            class="text-white">check</mat-icon>
+                                        <span *ngIf="step.status !== 'completed'">{{ step.step_no }}</span>
+                                    </div>
+
+                                    <!-- Continuous line that spans the entire height -->
+                                    <div *ngIf="!isLast" class="absolute top-8 bottom-0 w-0.5 -ml-0.25 z-0"
+                                        [ngClass]="step.status === 'completed' ? 'bg-red-800' : 'bg-red-400'">
+                                    </div>
+                                </div>
+
+                                <!-- Content Card -->
+                                <div class="bg-white rounded-lg shadow-sm border p-4 flex-1 mb-6 w-full">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <h4 class="text-lg font-semibold">ขั้นตอนที่ {{ step.step_no }}</h4>
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-1 rounded-md text-lg font-medium"
+                                            [ngClass]="getStatusClass(step.status)">
+                                            {{ getStatusText(step.status) }}
+                                        </span>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 gap-2 mt-3">
+                                        <div *ngFor="let workType of step.step_job_type_lists"
+                                            class="border-l-2 border-[#bb9149] pl-3 py-1">
+                                            <div class="flex justify-between items-center">
+                                                <div clas="flex gap-2">
+                                                    <span class="font-medium">{{ workType.work_type?.name || 'ประเภทงาน'
+                                                        }}</span>
+                                                    <span
+                                                        class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium"
+                                                        [ngClass]="getStatusClass(workType.status)">
+                                                        {{ getStatusText(workType.status) }}
+                                                    </span>
+                                                </div>
+
+                                                <div class="flex items-center">
+                                                    <button class="px-3 ml-2 text-lg" mat-flat-button
+                                                        [color]="'primary'" (click)="opendialogStatus(workType)">
+                                                        อัปเดตสถานะ
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <p *ngIf="step.completed_date" class="text-lg text-gray-500 mt-2">
+                                        สำเร็จเมื่อ: {{ step.completed_date | date:'dd/MM/yyyy' }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="!job?.steps || job.steps.length === 0" class="text-center py-8 text-gray-500">
+                        ไม่มีขั้นตอนการทำงาน
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>

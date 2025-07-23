@@ -1,0 +1,169 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Header -->
+    <!-- Loader -->
+    <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+    </div>
+    <div
+        class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+        <div class="flex-1 flemin-w-0">
+            <!-- Title -->
+            <div class="flex flex-row mt-2 justify-between">
+                <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    รายงานเจ้าหนี้ / ลูกหนี้
+                </h2>
+            </div>
+        </div>
+    </div>
+    <!-- Main -->
+
+    <div class="grid gap-4 sm:grid-cols-1 mx-5 mt-5 ">
+        <form class="bg-card rounded-lg md:shadow px-8 pt-6 pb-8 mb-4 flex flex-col my-2" [formGroup]="form">
+            <div class="-mx-3 md:flex mb-6">
+                <div class="md:w-1/5 px-3 mb-6 md:mb-0">
+                    <mat-form-field class="w-full" [ngClass]="formFieldHelpers">
+                        <mat-label>ประเภท</mat-label>
+                        <mat-select formControlName="partner_type">
+                            <mat-option value="creditor">เจ้าหนี้</mat-option>
+                            <mat-option value="debtor">ลูกหนี้</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="md:w-1/5 px-3 mb-6 md:mb-0">
+                    <mat-form-field class="w-full" [ngClass]="formFieldHelpers">
+                        <mat-label>ชื่อร้านค้า/พนักงาน</mat-label>
+                        <input matInput formControlName="partner_name" placeholder="พิมพ์ชื่อ...">
+                    </mat-form-field>
+                </div>
+
+                <div class="md:w-1/5 px-3 mb-6 md:mb-0">
+                    <mat-form-field class="w-full" [ngClass]="formFieldHelpers" appearance="fill">
+                        <mat-label>วันที่เริ่ม</mat-label>
+                        <input matInput [matDatepicker]="picker1" formControlName="start_date">
+                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                        <mat-datepicker #picker1></mat-datepicker>
+                    </mat-form-field>
+                </div>
+
+                <div class="md:w-1/5 px-3 mb-6 md:mb-0">
+                    <mat-form-field class="w-full" [ngClass]="formFieldHelpers" appearance="fill">
+                        <mat-label>วันที่สิ้นสุด</mat-label>
+                        <input matInput [matDatepicker]="picker2" formControlName="end_date">
+                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                        <mat-datepicker #picker2></mat-datepicker>
+                    </mat-form-field>
+                </div>
+                <div class="md:w-1/5 px-3 mb-6 md:mb-0">
+                    <mat-form-field class="w-full" [ngClass]="formFieldHelpers">
+                        <mat-label>สถานะ</mat-label>
+                        <mat-select formControlName="status">
+                            <mat-option [value]="null">ทั้งหมด</mat-option>
+                            <mat-option [value]="'pending'">ยังไม่จ่าย/คืน</mat-option>
+                            <mat-option [value]="'paid'">จ่ายแล้ว/คืนแล้ว</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="flex flex-row mt-2 justify-end">
+                <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                    <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="loadTableNormal()">
+                        <mat-icon>search</mat-icon>
+                        &nbsp;
+                        ค้นหา
+                    </button>
+                    <button class="px-6 ml-3" mat-flat-button [color]="'accent'" (click)="ClearForm()">
+                        ล้าง
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg m-5 bg-white">
+        <div class="flex flex-col flex-auto p-5 sm:overflow-y-auto">
+            <table class="table-auto w-full border border-gray-300 text-md">
+                <thead class="bg-gray-100 text-gray-700">
+                    <tr>
+                        <th class="border border-gray-300 px-3 py-2 w-[10px]">ลำดับ</th>
+                        <th class="border border-gray-300 px-3 py-2 ">ประเภท</th>
+                        <th class="border border-gray-300 px-3 py-2">
+                            รายการ</th>
+
+                        <th class="border border-gray-300 px-3 py-2">ประเภทการทำรายการ</th>
+                        <th class="border border-gray-300 px-3 py-2">สถานะ</th>
+                        <th class="border border-gray-300 px-3 py-2">วันที่ทำรายการ</th>
+                        <th class="border border-gray-300 px-3 py-2">วันที่{{ form.value.partner_type === 'creditor' ?
+                            'จ่ายจริง' : 'คืน' }}</th>
+                        <th class="border border-gray-300 px-3 py-2">หมายเหตุ</th>
+                        <th class="border border-gray-300 px-3 py-2">ยอด{{ form.value.partner_type === 'creditor' ?
+                            'หนี้' : 'ยืม' }}</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="dataRow.length > 0">
+                    <tr *ngFor="let item of dataRow; let i = index" class="even:bg-gray-50 text-md">
+                        <td class="border border-gray-300 px-3 py-2 text-center">{{ pages.begin + i + 1 }}</td>
+                        <td class="border border-gray-300 px-3 py-2 text-center">
+                            {{ item.partner_type === 'creditor' ? 'เจ้าหนี้' : item.partner_type === 'debtor' ?
+                            'ลูกหนี้' : '-' }}
+                        </td>
+                        <td class="border border-gray-300 px-3 py-2" *ngIf="item.partner_type === 'creditor'">{{
+                            item.partner_name || '-' }}</td>
+                        <td class="border border-gray-300 px-3 py-2" *ngIf="item.partner_type === 'debtor'">{{
+                            item.partner_name || '-' }}</td>
+
+                        <td class="border border-gray-300 px-3 py-2 text-center">
+                            {{ item.direction === 'in' ? 'รับเงิน' : item.direction === 'out' ? 'จ่ายเงิน' : '-' }}
+                        </td>
+                        <td class="border border-gray-300 px-3 py-2 text-center">
+                            <span [ngClass]="item.status === 'paid' ? 'text-green-600' : 'text-red-600'">
+                                {{ item.status === 'paid'
+                                ? (item.partner_type === 'creditor' ? 'จ่ายแล้ว' : 'คืนแล้ว')
+                                : (item.partner_type === 'creditor' ? 'ยังไม่จ่าย' : 'ยังไม่คืน') }}
+                            </span>
+                        </td>
+                        <td class="border border-gray-300 px-3 py-2 text-center">{{ item.transaction_date |
+                            date:'dd/MM/yyyy' }}</td>
+                        <td class="border border-gray-300 px-3 py-2 text-center">{{ item.receipe_date ?
+                            (item.receipe_date | date:'dd/MM/yyyy') : '-' }}</td>
+                        <td class="border border-gray-300 px-3 py-2">{{ item?.remark ?? '-' }}</td>
+                        <td class="border border-gray-300 px-3 py-2 text-right">{{ item.total_amount || item.amount |
+                            number:'1.2-2' }}</td>
+                    </tr>
+                </tbody>
+                <tfoot *ngIf="dataRow.length > 0">
+                    <tr class="font-semibold bg-gray-200">
+                        <td colspan="8" class="border border-gray-300 px-3 py-2 text-right">รวมทั้งหมด</td>
+                        <td class="border border-gray-300 px-3 py-2 text-right">
+                            {{ getTotalAmount() | number:'1.2-2' }}
+                        </td>
+                    </tr>
+                </tfoot>
+                <tbody *ngIf="dataRow.length === 0">
+                    <tr>
+                        <td colspan="10" class="text-center px-4 py-6 text-gray-500 border border-gray-300">ไม่มีข้อมูล
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-6">
+                <div class="text-center border p-4 rounded-lg">
+                    <div class="text-gray-600">
+                        จำนวนบิลที่{{ form.value.partner_type === 'creditor' ? 'ค้างจ่าย' : 'ค้างรับ' }}
+                    </div>
+                    <div class="text-xl font-bold text-blue-600">{{ countPendingBills() }} บิล</div>
+                </div>
+                <div class="text-center border p-4 rounded-lg">
+                    <div class="text-gray-600">
+                        ยอด{{ form.value.partner_type === 'creditor' ? 'หนี้รวม' : 'ยืมรวม' }}
+                    </div>
+                    <div class="text-xl font-bold text-blue-600">
+                        {{ getTotalPendingAmount() | number:'1.2-2' }} บาท
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>

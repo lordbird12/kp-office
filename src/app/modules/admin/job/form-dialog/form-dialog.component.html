@@ -1,0 +1,75 @@
+<div class="md:max-w-lg mx-auto">
+    <h1 mat-dialog-title class="text-xl font-semibold mb-4">อัปเดตสถานะ</h1>
+
+    <div mat-dialog-content>
+        <form [formGroup]="addForm" class="flex flex-col gap-4">
+            <!-- Status Selection -->
+            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                <mat-label>สถานะ</mat-label>
+                <mat-select formControlName="status" required>
+                    <mat-option *ngFor="let item of status" [value]="item.values">
+                        {{item.name}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="addForm.get('status').hasError('required')">
+                    กรุณาเลือกสถานะ
+                </mat-error>
+            </mat-form-field>
+
+            <!-- Date Field -->
+            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                <mat-label>วันที่ดำเนินการเสร็จ</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="date" required>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error *ngIf="addForm.get('date').hasError('required')">
+                    กรุณาระบุวันที่
+                </mat-error>
+            </mat-form-field>
+
+            <!-- Image Upload -->
+            <div class="mb-4">
+                <label class="text-sm font-medium mb-2 block">แนบรูปภาพ</label>
+                <div class="border-2 border-dashed border-gray-300 rounded-md p-6 text-center">
+                    <div class="flex justify-center mb-4">
+                        <mat-icon class="text-gray-400 text-4xl">photo_camera</mat-icon>
+                    </div>
+                    <input type="file" multiple class="hidden" #fileInput (change)="onFileSelected($event)">
+                    <button mat-button type="button"
+                        class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded text-gray-700"
+                        (click)="fileInput.click()">
+                        เลือกรูปภาพ
+                    </button>
+                    <p class="mt-2 text-xs text-gray-500">สามารถแนบได้มากกว่า 1 รูป</p>
+                </div>
+
+                <!-- Preview selected images -->
+                <div *ngIf="imageArray?.length > 0" class="flex flex-wrap gap-2 mt-3">
+                    <div *ngFor="let fileControl of imageArray.controls; let i = index" class="relative">
+                        <img [src]="filePreviewUrls[i]" alt="Preview" class="h-18 w-18 object-cover rounded">
+                        <button type="button" mat-icon-button
+                            class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center"
+                            (click)="removeFile(i)">
+                            <mat-icon class="text-xs">close</mat-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Remarks -->
+            <mat-form-field [ngClass]="formFieldHelpers" class="w-full">
+                <mat-label>หมายเหตุเพิ่มเติม</mat-label>
+                <textarea matInput formControlName="remark" rows="3"></textarea>
+            </mat-form-field>
+        </form>
+    </div>
+
+    <div mat-dialog-actions class="flex justify-end mt-4">
+        <button class="px-6 ml-3" mat-flat-button [color]="'primary'" (click)="onSaveClick();">
+            บันทึก
+        </button>
+        <button class="px-6 ml-3" mat-flat-button [color]="'warn'" (click)="onCancelClick()">
+            ยกเลิก
+        </button>
+    </div>
+</div>
