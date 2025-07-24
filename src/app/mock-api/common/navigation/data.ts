@@ -165,6 +165,20 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 link: '/admin/product-attribute/list',
             },
             {
+                id: 'spare-part.withdraw',
+                title: 'เบิกอะไหล่',
+                type: 'basic',
+                icon: 'heroicons_outline:building-storefront',
+                link: '/admin/withdraw/list',
+            },
+            {
+                id: 'spare-part.withdraw-report',
+                title: 'รายงานใบเบิกทั้งหมด',
+                type: 'basic',
+                icon: 'heroicons_outline:building-storefront',
+                link: '/admin/withdraw/stock-view',
+            },
+            {
                 id: 'supplier.list',
                 title: 'ผู้จำหน่าย',
                 type: 'basic',
@@ -297,7 +311,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         icon: 'heroicons_outline:truck',
                         link: '/admin/report-cost-by-car/list',
                     },
-                      {
+                    {
                         id: 'ar.report-ar-pr',
                         title: 'รายงานเจ้าหนี้ - ลูกหนี้',
                         type: 'basic',
