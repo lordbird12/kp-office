@@ -9,88 +9,80 @@
         class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
         <div class="flex-1 min-w-0">
             <!-- Title -->
-            <div class="flex flex-row mt-2 justify-between">
+            <div class="flex flex-row mt-2 justify-between items-center">
                 <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
                     รายงานค่าใช้จ่ายของแต่ละรถ
                 </h2>
-                <div class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
-                    <div class="flex flex-col md:flex-row gap-1 md:gap-4 items-center mt-4">
-                        <!-- <button class="px-6" mat-flat-button [color]="'primary'" (click)="search()">
-                            <mat-icon [svgIcon]="'heroicons_outline:clipboard-document-list'"></mat-icon> &nbsp; ค้นหา
-                        </button> -->
-                    </div>
-                </div>
+                <button
+                    class="ml-4 mt-2 sm:mt-0 inline-flex items-center gap-2 px-4 py-2 border border-primary text-primary hover:bg-primary hover:text-white rounded-md transition"
+                    (click)="printReport()">
+                    <mat-icon>print</mat-icon>
+                    พิมพ์รายงาน
+                </button>
             </div>
         </div>
     </div>
-
-    <!-- Filter Form -->
-    <!-- <div class="p-6 sm:py-4 sm:px-10 border-b bg-card dark:bg-transparent">
-        <form [formGroup]="searchForm" class="flex flex-col md:flex-row gap-4">
-            <mat-form-field class="w-full flex-auto" [ngClass]="formFieldHelpers">
-                <mat-label>ช่วงวันที่</mat-label>
-                <mat-date-range-input  [rangePicker]="picker">
-                    <input matStartDate formControlName="startDate" placeholder="วันที่เริ่มต้น">
-                    <input matEndDate formControlName="endDate" placeholder="วันที่สิ้นสุด">
-                </mat-date-range-input>
-                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-date-range-picker #picker xPosition="end"></mat-date-range-picker>
-            </mat-form-field>
-
-            <mat-form-field class="w-full flex-auto">
-                <mat-label>ทะเบียนรถ</mat-label>
-                <input matInput formControlName="licensePlate">
-            </mat-form-field>
-
-            <mat-form-field class="w-full flex-auto">
-                <mat-label>ยี่ห้อรถ</mat-label>
-                <input matInput formControlName="brand">
-            </mat-form-field>
-        </form>
-    </div> -->
-
     <!-- Main -->
-    <div class="p-2 sm:py-2 sm:px-6 overflow-auto">
+    <div class="p-2 sm:py-2 sm:px-6 overflow-auto " id="print-section">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden p-2 md:py-4 px-6">
             <!-- Data table -->
             <table class="w-full min-w-full table-auto border border-gray-300 border-collapse">
                 <thead>
-                    <tr class="bg-gray-100 dark:bg-gray-600 text-left border-b border-gray-300">
-                        <th class="p-3 border-r border-gray-300">รหัสรถ / ทะเบียน</th>
-                        <th class="p-3 border-r border-gray-300">ยี่ห้อ - รุ่น</th>
-                        <th class="p-3 text-right border-r border-gray-300">ค่าใช้จ่าย</th>
-                        <th class="p-3 text-right border-r border-gray-300">ค่าใช้จ่ายอื่น ๆ</th>
-                        <th class="p-3 text-right border-r border-gray-300">รวมค่าใช้จ่าย (บาท)</th>
-                        <th class="p-3 text-center w-20">จัดการ</th>
+                    <tr
+                        class="bg-gray-100 dark:bg-gray-700 text-left border-b border-gray-300 text-sm font-semibold text-gray-700 dark:text-white">
+                        <th class="p-3 border-r border-gray-300 w-1/6">รหัสรถ / ทะเบียน</th>
+                        <th class="p-3 border-r border-gray-300 w-1/4">ยี่ห้อ - รุ่น</th>
+                        <th class="p-3 text-right border-r border-gray-300 w-1/6">รวมค่าใช้จ่าย (บาท)</th>
+                        <th class="p-3 text-right border-r border-gray-300 w-1/6">ราคาทุน (บาท)</th>
+                        <th class="p-3 text-right border-r border-gray-300 w-1/6">ราคาขาย (บาท)</th>
+                        <th class="p-3 text-right w-1/6">กำไร (บาท)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let row of itemData"
-                        class="hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-200"
+                        class="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer border-b border-gray-200 dark:border-gray-600"
                         (click)="viewDetail(row)">
-                        <td class="p-3 border-r border-gray-200">{{ row.product_details?.license_plate }}</td>
+                        <td class="p-3 border-r border-gray-200">{{ row.product_details?.license_plate || '-' }}</td>
                         <td class="p-3 border-r border-gray-200">
-                            {{ row.product_details?.brand?.name }} {{ row.product_details?.brand_model?.name }} {{
-                            row.product_details?.year }}
+                            {{ row.product_details?.brand?.name || '' }}
+                            {{ row.product_details?.brand_model?.name || '' }}
+                            {{ row.product_details?.year || '' }}
+                        </td>
+                        <td
+                            class="p-3 text-right border-r border-gray-200 text-green-700 dark:text-green-400 font-semibold">
+                            {{ calculateJobTotalForProduct(row) | number : '1.2-2' }}
                         </td>
                         <td class="p-3 text-right border-r border-gray-200">
-                            {{ calculateTotalAmount(row.expenses_by_type) | number:'1.2-2' }}
+                            {{ row.product_details?.cost || 0 | number : '1.2-2' }}
                         </td>
                         <td class="p-3 text-right border-r border-gray-200">
-                            {{ row.other_expenses | number: '1.2-2' }}
+                            {{ row.product_details?.sale_price || 0 | number : '1.2-2' }}
                         </td>
-                        <td class="p-3 text-right border-r border-gray-200 font-bold">
-                            {{ totalAll  }}
+                        <td class="p-3 text-right font-bold" [ngClass]="{
+                    'text-green-700 dark:text-green-400': calculateProfitForProduct(row) >= 0,
+                    'text-red-600 dark:text-red-400': calculateProfitForProduct(row) < 0
+                }">
+                            {{ calculateProfitForProduct(row) | number : '1.2-2' }}
                         </td>
-                        <td class="p-3 text-center">
-                            <button class="flex items-center px-4 py-2 w-full hover:bg-gray-100"
-                                (click)="viewDetail(row); $event.stopPropagation()">
-                                <mat-icon class="mr-2">visibility</mat-icon>
-                            </button>
+                    </tr>
+
+                    <!-- Total Row -->
+                    <tr
+                        class="bg-gray-50 dark:bg-gray-800 font-bold text-gray-800 dark:text-white border-t border-gray-300">
+                        <td colspan="2" class="p-3 text-right border-r border-gray-300">รวมทั้งหมด</td>
+                        <td class="p-3 text-right border-r border-gray-300 text-green-700 dark:text-green-400">
+                            {{ totalAll | number : '1.2-2' }}
+                        </td>
+                        <td colspan="3"
+                            class="p-3 text-center text-sm text-gray-500 dark:text-gray-400 border-gray-300">
+                            <!-- Optional note or empty -->
+                            -
                         </td>
                     </tr>
                 </tbody>
             </table>
+
+
 
         </div>
     </div>

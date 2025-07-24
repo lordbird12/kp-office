@@ -1,0 +1,13 @@
+@media print {
+  body {
+    background: white !important;
+  }
+
+  mat-icon {
+    display: none !important;
+  }
+
+  button, .mat-icon-button {
+    display: none !important;
+  }
+}

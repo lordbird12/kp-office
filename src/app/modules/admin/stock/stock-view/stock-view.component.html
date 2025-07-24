@@ -1,0 +1,83 @@
+<div class="w-full space-y-6 p-5">
+    <div class="flex items-center gap-4 mb-4 bg-white border border-gray-200 shadow-lg rounded-xl p-6">
+        <mat-form-field [ngClass]="formFieldHelpers" class="w-full sm:max-w-xs">
+            <mat-label>ค้นหาใบเบิก</mat-label>
+            <input matInput [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()"
+                placeholder="กรอกเลขที่ใบเบิก...">
+            <button *ngIf="searchTerm" matSuffix mat-icon-button aria-label="Clear" (click)="clearSearch()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
+    </div>
+    <div *ngFor="let doc of filteredItemData" class="bg-white border border-gray-200 shadow-lg rounded-xl p-6">
+        <!-- Header of Issued Document -->
+        <div class="mb-6">
+
+
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <!-- Dynamic Title -->
+                <div class="flex flex-col">
+                    <h2 class="text-xl font-bold text-gray-900">ใบเบิก: {{ doc?.code || '-' }}</h2>
+                </div>
+                <!-- Buttons Container -->
+                <div class="flex flex-col sm:flex-row gap-2 sm:gap-4">
+                    <button (click)="viewElement(itemData)" mat-raised-button color="accent"
+                        class="w-full sm:w-auto px-4 min-w-[160px]">
+                        <mat-icon class="mr-2">print</mat-icon>
+                        พิมพ์ใบเบิกอะไหล่
+                    </button>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                <div class="flex flex-col">
+                    <span class="text-sm text-gray-500">สถานะ</span>
+                    <span *ngIf="doc?.status === 'pending'" class="text-gray-400">รอดำเนินการ</span>
+                    <span *ngIf="doc?.status === 'approved'" class="text-green-600">อนุมัติแล้ว</span>
+                    <span *ngIf="doc?.status === 'rejected'" class="text-red-600">ไม่อนุมัติ</span>
+                    <span *ngIf="doc?.status === 'completed'" class="text-blue-600">เสร็จสิ้น</span>
+                    <span *ngIf="doc?.status === 'cancelled'" class="text-gray-500">ยกเลิก</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-sm text-gray-500">วันที่สร้าง</span>
+                    <span class="text-lg font-semibold text-gray-800">{{ doc?.created_at | date: 'dd MMM yyyy, HH:mm'
+                        }}</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-sm text-gray-500">เบิกจาก JOB</span>
+                    <span class="text-lg font-semibold text-gray-800">{{ doc?.job?.code || '-' }}</span>
+                </div>
+            </div>
+            <div class="mt-4">
+                <span class="text-sm text-gray-500">หมายเหตุ</span>
+                <p class="text-lg text-gray-800 mt-1">{{ doc?.remark || '-' }}</p>
+            </div>
+        </div>
+
+        <!-- Table of product items -->
+        <div class="overflow-x-auto">
+            <table class="w-full table-auto border-collapse text-base">
+                <thead class="bg-gray-100 text-gray-700">
+                    <tr>
+                        <th class="px-6 py-3 border border-gray-300 text-left">#</th>
+                        <th class="px-6 py-3 border border-gray-300 text-left">รหัสสินค้า</th>
+                        <th class="px-6 py-3 border border-gray-300 text-left">ชื่อสินค้า</th>
+                        <th class="px-6 py-3 border border-gray-300 text-right">จำนวน</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of doc?.product_attribute_trans_lists; let i = index" class="hover:bg-gray-50">
+                        <td class="px-6 py-4 border border-gray-200 text-center">{{ i + 1 }}</td>
+                        <td class="px-6 py-4 border border-gray-200 font-medium">{{ item?.product_attribute?.code || '-'
+                            }}</td>
+                        <td class="px-6 py-4 border border-gray-200">{{ item?.product_attribute?.name || '-' }}</td>
+                        <td class="px-6 py-4 border border-gray-200 text-right font-medium">{{ item?.qty || 0 }}</td>
+                    </tr>
+                    <tr *ngIf="!doc?.product_attribute_trans_lists?.length">
+                        <td colspan="4" class="text-center text-gray-500 py-6 border border-gray-200 text-lg">
+                            ไม่พบรายการอะไหล่</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

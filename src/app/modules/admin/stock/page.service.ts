@@ -23,7 +23,7 @@ export class Service {
     /**
      * Constructor
      */
-    constructor(private _httpClient: HttpClient) {}
+    constructor(private _httpClient: HttpClient) { }
 
     httpOptionsFormdata = {
         headers: new HttpHeaders({ Authorization: `Bearer ${token}` }),
@@ -47,9 +47,9 @@ export class Service {
             );
     }
 
-        update(data: any, id: any): Observable<any> {
+    update(data: any, id: any): Observable<any> {
         return this._httpClient
-            .put<any>(environment.baseURL + '/api/update_status_product_attribute_trans/' + id, data)
+            .put<any>(environment.baseURL + '/api/product_attribute_trans/' + id, data)
             .pipe(
                 tap((result) => {
                     this._data.next(result);
@@ -75,6 +75,65 @@ export class Service {
                 })
             );
     }
+
+    getJobs(): Observable<any> {
+        return this._httpClient
+            .get<any>(environment.baseURL + '/api/get_jobs')
+            .pipe(
+                tap((data) => {
+                    this._data.next(data);
+                })
+            );
+    }
+
+    getByIdJob(id: any): Observable<any> {
+        return this._httpClient
+            .get<any>(environment.baseURL + '/api/jobs/' + id)
+            .pipe(
+                tap((data) => {
+                    this._data.next(data);
+                })
+            );
+    }
+
+    getProductAttribute(): Observable<any> {
+        return this._httpClient
+            .get<any>(environment.baseURL + '/api/get_product_attribute_all')
+            .pipe(
+                tap((data) => {
+                    this._data.next(data);
+                })
+            );
+    }
+
+    getWorkType(): Observable<any> {
+        return this._httpClient
+            .get<any>(environment.baseURL + '/api/get_work_type')
+            .pipe(
+                tap((data) => {
+                    this._data.next(data);
+                })
+            );
+    }
+    
+    getAllTrans(): Observable<any> {
+        return this._httpClient
+            .get<any>(environment.baseURL + '/api/get_product_attribute_trans')
+            .pipe(
+                tap((data) => {
+                    this._data.next(data);
+                })
+            );
+    }
+
+    updateStatus(data: any, Id: number): Observable<any> {
+        return this._httpClient.put<any>(
+            environment.baseURL + '/api/update_status_product_attribute_trans/' + Id,
+            data,
+            this.httpOptionsFormdata
+        );
+    }
+
 
     /**
      * Get products

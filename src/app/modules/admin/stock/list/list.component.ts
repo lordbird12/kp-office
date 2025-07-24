@@ -31,6 +31,8 @@ import { DataTableDirective, DataTablesModule } from 'angular-datatables';
 import { Router } from '@angular/router';
 import { PictureComponent } from '../../picture/picture.component';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
+import { StatusDialogComponent } from '../status-dialog/status-dialog.component';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
     selector: 'list-product-attribute',
@@ -55,6 +57,7 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
         MatPaginatorModule,
         MatTableModule,
         DataTablesModule,
+        MatMenuModule
     ],
 })
 export class ListComponent implements OnInit, AfterViewInit {
@@ -102,11 +105,14 @@ export class ListComponent implements OnInit, AfterViewInit {
 
     // เพิ่มเมธอด editElement(element) และ deleteElement(element)
     editElement(data: any) {
-        this._router.navigate(['/admin/product-attribute/edit/' + data.id]);
+        this._router.navigate(['/admin/withdraw/edit/' + data.id]);
+    }
+    viewElement(data: any) {
+        this._router.navigate(['/admin/withdraw/view/' + data.id]);
     }
 
     addElement() {
-        this._router.navigate(['admin/product-attribute/form']);
+        this._router.navigate(['admin/withdraw/form']);
     }
 
     pages = { current_page: 1, last_page: 1, per_page: 10, begin: 0 };
@@ -157,6 +163,7 @@ export class ListComponent implements OnInit, AfterViewInit {
         };
     }
 
+
     deleteElement(itemid: any) {
         const confirmation = this._fuseConfirmationService.open({
             title: 'ลบข้อมูล',
@@ -185,7 +192,7 @@ export class ListComponent implements OnInit, AfterViewInit {
                     this.rerender();
                 });
             }
-            error: (err: any) => {};
+            error: (err: any) => { };
         });
     }
 
